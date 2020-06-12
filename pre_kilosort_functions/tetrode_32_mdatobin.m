@@ -24,8 +24,8 @@ function tetrode_32_mdatobin(workspace)
 
 %make a new folder for the bin files we will make today and add it to your
 %path
-mkdir(myparentfolder,'/binfilesforkilosort2');
-binfolder = [myparentfolder '/binfilesforkilosort2'];
+mkdir(myparentfolder,'\binfilesforkilosort2');
+binfolder = [myparentfolder '\binfilesforkilosort2'];
 addpath(binfolder);
 
 % in my directory, find all the mda folders
