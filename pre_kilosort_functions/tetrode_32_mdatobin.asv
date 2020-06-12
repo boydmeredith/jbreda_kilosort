@@ -75,17 +75,13 @@ allfoldernames = {thefolders.name};
 % for each mda folder, make groups of eight tetrodes into binary files for
 % kilosort2 processing save these into the binfolder
 
-% for debugging
-N_channels = 32
-N_folders = 1  % so I can run from X:\physdata\Emily\ephys 
-
-for i = 1:(1 + N_folders)
+for i = 1:2
 % for i = 1:length(allfoldernames)
 
     % datafolder = [allfoldernames{i} '/results']; this wasn't working
     % because the way the data is stored, the result file does not actually
     % contain the .mda files we want. They are all different sizes and
-    % break the function.
+    % break the function
     
     datafolder = [allfoldernames{i}]
     cd(datafolder)
@@ -96,10 +92,10 @@ for i = 1:(1 + N_folders)
     fourthbundle=[];
     
     %load the first bundle of tetrodes
-    for j = 1:N_channels
-        % If you get readmda errors here, check to make sure the file
-        % suffix is correct (JB)
-        thisfilename = [genericfilename{i} sprintf('.nt%d.referenced.mda',j)];
+    for j = 1:32
+        % Added .results on 06/12/2020 if you get 'readmda' errors, start
+        % by checking to make sure the file suffix matches (JB)
+        thisfilename = [genericfilename{i} sprintf('.nt%d.referenced.mda.results',j)];
         if j < 9
             firstbundle = [firstbundle;int16(readmda(thisfilename))];
         elseif j > 24
@@ -111,32 +107,43 @@ for i = 1:(1 + N_folders)
         end
     end
    
+    
+%           if j < 2
+%             first_chan = [int16(readmda(thisfilename))];
+%         elseif j < 3
+%             second_chan = [int16(readmda(thisfilename))];
+%         elseif j < 4
+%             third_chan = [int16(readmda(thisfilename))];
+%             
+%         end
+%         
+%     end
 
-    sprintf('folder %n of %d is now saving...',i,length(allfoldernames))    
+    sprintf('folder %n of %d is now saving...',i,length(allfilenames))    
     fid = fopen([binfolder genericfilename '_firstbundle.bin'],'w');
     fwrite(fid,firstbundle,'int16');
     fclose(fid);
-    sprintf('bundle 1 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
+    sprintf('bundle 1 of 4 of folder %n of %d is now saving...',i,length(allfilenames))
     
     fid = fopen([binfolder genericfilename '_secondbundle.bin'],'w');
     fwrite(fid,secondbundle,'int16');
     fclose(fid);
-    sprintf('bundle 2 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
+    sprintf('bundle 2 of 4 of folder %n of %d is now saving...',i,length(allfilenames))
    
     fid = fopen([binfolder genericfilename '_thirdbundle.bin'],'w');
     fwrite(fid,thirdbundle,'int16');
     fclose(fid);
-    sprintf('bundle 3 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
+    sprintf('bundle 3 of 4 of folder %n of %d is now saving...',i,length(allfilenames))
 
     fid = fopen([binfolder genericfilename '_fourthbundle.bin'],'w');
     fwrite(fid,fourthbundle,'int16');
     fclose(fid);
-    sprintf('bundle 4 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
+    sprintf('bundle 4 of 4 of folder %n of %d is now saving...',i,length(allfilenames))
     
     % head back to the parent folder so we can tackle the next recording
     cd myparentfolder
     %tell the user something is happening
-    sprintf('folder %n of %d done processing',i,length(allfoldernames))
+    sprintf('folder %n of %d done processing',i,length(allfilenames))
 
 end
 end
