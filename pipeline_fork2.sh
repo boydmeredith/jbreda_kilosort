@@ -15,10 +15,8 @@ else
 	echo "Skipping step 1: creation rec file"
 fi
 
-session=${session}_fromSD
-
 	echo "Step 2: Creating mda files from rec file"
-#	exportdio -rec ${session}.rec
+	exportdio -rec $1
 	exportmda -rec $1
 #	mv ${session}.rec recs
 #	mv ${session}.DIO/* ${session}.mda
