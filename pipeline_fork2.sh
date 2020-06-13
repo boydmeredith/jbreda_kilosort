@@ -17,6 +17,8 @@ if typeoffile=".dat"; then
 	echo "Step 1: Creating rec file from dat file"
 	./sdtorec -sd $stringinputfromuser -numchan 128 -mergeconf 128_Tetrodes_Sensors_CustomRF.trodesconf
 #	rm ${session}.dat
+# the above step appends a _fromSD to the filename
+	stringinputfromuser=${stringinputfromuser}_fromSD
 else
 	echo "Skipping step 1: creation rec file"
 fi
