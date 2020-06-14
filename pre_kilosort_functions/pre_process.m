@@ -18,9 +18,12 @@ function kilosort_preprocess(varargin)
 % OPTIONAL PARAMETERS:
 % - string directing us to a folder
 % - chan = number of channels in the binary file, defaults to 32
+% - ops.fs - param for butterworth filter
+% - ops.fshigh - param for butterworth filter
 % 
 % RETURNS:
-% - 
+% - nothing, but saves a new binary file and outputs several plots for
+% quality control
 % 
 % = EXAMPLE CALLS:
 % - 
@@ -40,19 +43,25 @@ else
     homedirectory=pwd;
 end
 
-listofbinaryfiles=dir('*.bin');
+if length(varargin)<3
+    ops.fshigh = 300;
+    ops.fs     = 32000;    
+    % make a filter for the data
+    [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
+else
+end
 
+listofbinaryfiles=dir('*.bin');
 
 %% NEED TO LOOP THIS THROUGH THE LIST! FIRST I'M MAKING THE FIRST LOOP.
 
-
-t0 = 0;
+for i = 1:length(listofbinaryfiles)
+    fname = listofbinaryfiles(i).name;
 
 % while loop started here
-    ops.fshigh = 300;
-    ops.fs     = 32000;
-    
+
 % first, open the binary file to read
+fid=fopen(fname,'r')
 
 % next, open the binary file to write
 fidw = fopen('xxx.bin', 'w');
@@ -67,8 +76,6 @@ fidw = fopen('xxx.bin', 'w');
     dataRAW = dataRAW';
     dataRAW = double(dataRAW)/1000;
     
-    % make a filter for the data
-    [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
     
     % apply the filter
     datr = filtfilt(b1, a1, dataRAW); % causal forward filter
