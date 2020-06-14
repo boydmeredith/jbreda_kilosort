@@ -10,7 +10,7 @@ function kilosort_preprocess(varargin)
 %
 %
 % TODO:
-% - 
+% - clean up ifelse checks for inputs
 %
 % INPUT PARAMETERS:
 % - none needed - it should be able to be run from a local folder
@@ -29,24 +29,30 @@ function kilosort_preprocess(varargin)
 % - 
 % ---------------------
 
-if ~isempty(varargin)
+if isempty(varargin)
+    homedirectory=pwd;
+    chan=32;
+    ops.fs     = 32000;    
+    ops.fshigh = 300;        
     %if user provides input, check that it is a string for a directory
+
+elseif length(varargin)==1
     if isfolder(varargin{1})
         homedirectory=pwd;
         directorywithbinaries=varargin{1};
         cd directorywithbinaries
-    else 
+    else
         error('input must be in the format of a string leading to a directory')
-    end
-else
-    % if user does not input a directory- run here and save things to this folder
-    homedirectory=pwd;
-end
-
-if length(varargin)<3
+    end    
+    chan=32;    
+    ops.fs     = 32000;    
+    ops.fshigh = 300;
+elseif length(varargin)==2
+    chan = varargin{2}
     ops.fs     = 32000;    
     ops.fshigh = 300;
 elseif varargin == 3
+    chan=varargin{2}
     ops.fs = varargin{3};
     ops.fshigh=300;
 else
@@ -63,26 +69,20 @@ end
     
 listofbinaryfiles=dir('*.bin');
 
-%% NEED TO LOOP THIS THROUGH THE LIST! FIRST I'M MAKING THE FIRST LOOP.
-
 for i = 1:length(listofbinaryfiles)
     fname = listofbinaryfiles(i).name;
 
-% while loop started here
-
 % first, open the binary file to read
-fid=fopen(fname,'r')
+fid=fopen(fname,'r');
 
 % next, open the binary file to write
-fidw = fopen('xxx.bin', 'w');
+fidw = fopen(sprintf('%s_forkilosort.bin',fname(1:end-4)), 'w');
 
-% now, read in a PORTION of the data. Format it as a matrix with X rows and
-% Y values
+% now, read in a PORTION of the data. Format it as a matrix with chan rows and
+% 1e5 values - we will loop through this for each file until all data is
+% read in
 
-% d1 = fread(fid1, [32 2e6], 'int16');
-% d2 = fread(fid2, [32 2e6], 'int16');
-% d3 = fread(fid3, [32 2e6], 'int16');
-    dataRAW = fread(fid1, [32 1e5], 'int16');
+    dataRAW = fread(fid1, [chan 1e5], 'int16');
     dataRAW = dataRAW';
     dataRAW = double(dataRAW)/1000;
     

@@ -43,7 +43,9 @@ else
     homedirectory=pwd;
 end
 
-if length(varargin)<3
+if length(varargin)<2
+    chan=32;
+elseif length(varargin)==2
     ops.fs     = 32000;    
     ops.fshigh = 300;
 elseif varargin == 3
@@ -57,30 +59,26 @@ end
     % make a filter for the data based on ops inputs/defaults
     [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); 
     % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
-    % Wn (ops.fshigh/ops.fs) must be between 0.0
+    % Wn (ops.fshigh/ops.fs) is the cutoff frequency, and must be between 0.0 and 1.0. 1.0 is half the
+    % sample rate
+    % high means it's a highpass filter
     
 listofbinaryfiles=dir('*.bin');
-
-%% NEED TO LOOP THIS THROUGH THE LIST! FIRST I'M MAKING THE FIRST LOOP.
 
 for i = 1:length(listofbinaryfiles)
     fname = listofbinaryfiles(i).name;
 
-% while loop started here
-
 % first, open the binary file to read
-fid=fopen(fname,'r')
+fid=fopen(fname,'r');
 
 % next, open the binary file to write
-fidw = fopen('xxx.bin', 'w');
+fidw = fopen(sprintf('%s_forkilosort.bin',fname(1:end-4)), 'w');
 
-% now, read in a PORTION of the data. Format it as a matrix with X rows and
-% Y values
+% now, read in a PORTION of the data. Format it as a matrix with chan rows and
+% 1e5 values - we will loop through this for each file until all data is
+% read in
 
-% d1 = fread(fid1, [32 2e6], 'int16');
-% d2 = fread(fid2, [32 2e6], 'int16');
-% d3 = fread(fid3, [32 2e6], 'int16');
-    dataRAW = fread(fid1, [32 1e5], 'int16');
+    dataRAW = fread(fid1, [chan 1e5], 'int16');
     dataRAW = dataRAW';
     dataRAW = double(dataRAW)/1000;
     
