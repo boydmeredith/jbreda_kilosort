@@ -4,7 +4,7 @@ function kilosort_preprocess(varargin)
 % ---------------------
 % written by Emily Jane Dennis 2020-06-14 (during pandemic!)
 % purpose is to take in binary files for each tetrode bundle from a 128
-% channel (32 tetrode) drive and remove/interpolate giant sections where
+% channel (32 tetrode) drive and remove/zero/interpolate giant sections where
 % there is huge noise that we want to ignore. We also want to output some
 % plots and save them so we can do some quick validation by eye.
 %
@@ -72,61 +72,50 @@ end
 listofbinaryfiles=dir('*.bin');
 
 for i = 1:length(listofbinaryfiles)
+
+    % first, open the binary file to read
     fname = listofbinaryfiles(i).name;
+    fid=fopen(fname,'r');
 
-% first, open the binary file to read
-fid=fopen(fname,'r');
+    % next, name and open a new binary file to write to
+    fidw = fopen(sprintf('%s_forkilosort.bin',fname(1:end-4)), 'w');
 
-% next, name and open a new binary file to write to
-fidw = fopen(sprintf('%s_forkilosort.bin',fname(1:end-4)), 'w');
+    while 1
+    % now, read in a PORTION of the data. Format it as a matrix with chan rows and
+    % 1e5 values - we will loop through this for each file until all data is
+    % read in
+        dataRAW = fread(fid, [chan 1e5], 'int16');
+        sizeofdata=size(dataRAW);
+        if 0 < sizeofdata(2) < 1e5
+            dataRAW=fread(fid, [chan sizeofdata(2)], 'int16');
+        elseif sizeofdata(2) < 1
+            break %breaks the while loop
+        end
 
+        % transpose
+        dataRAW = dataRAW';
+        % divide by 1000
+        dataRAW = double(dataRAW)/1000;
 
+        % apply the filter
+        datr = filtfilt(b1, a1, dataRAW);
 
+        % find the moving mean of filtered data
+            % first we want absolute values, so we square datr, take the means of each
+            % row (channel), and then take the square root
+        ff = mean(datr.^2, 2).^.5; 
+            % for the rows where ff > 1, use a window of every 1000 data points
+        ff = movmean(double(ff>1), 1000)<.01;
 
-while 1
-% now, read in a PORTION of the data. Format it as a matrix with chan rows and
-% 1e5 values - we will loop through this for each file until all data is
-% read in
-    dataRAW = fread(fid, [chan 1e5], 'int16');
-    sizeofdata=size(dataRAW);
-    if 0 < sizeofdata(2) < 1e5
-        dataRAW=fread(fid, [chan sizeofdata(2)], 'int16');
-    elseif sizeofdata(2) < 1
-        break %breaks the while loop
+        dat16 = int16(1000*datr(ff, :)');
+
+        fwrite(fidw, dat16, 'int16');
     end
-    
-    % transpose
-    dataRAW = dataRAW';
-    % divide by 1000
-    dataRAW = double(dataRAW)/1000;
 
-    % apply the filter
-    datr = filtfilt(b1, a1, dataRAW);
-    
-    % find the moving mean of filtered data
-        % first we want absolute values, so we square datr, take the means of each
-        % row (channel), and then take the square root
-    ff = mean(datr.^2, 2).^.5; 
-        % for the rows where ff > 1, use a window of every 1000 data points
-    ff = movmean(double(ff>1), 1000)<.01;
-       
-%     if t0 + sum(ff)>size(dat,2)
-%        break; 
-%     end 
-%end of while loop
-    
-    dat16 = int16(1000*datr(ff, :)');
-    
-    fwrite(fidw, dat16, 'int16');
-    
-    t0 = t0 + sum(ff);
-    % tell us how far we are through the file
-    sprintf('for file %s we have processed %d of the data',fname,(100*(t0/ops.fs)))
-end
-%     datr(~ff, :) = 0;
-%     plot(abs(fft(mean(datr,2))))
-%     drawnow
-%     pause
+    %     datr(~ff, :) = 0;
+    %     plot(abs(fft(mean(datr,2))))
+    %     drawnow
+    %     pause
 
 
 %%
@@ -143,10 +132,14 @@ figure;
         legend('y','x');
     saveas(gcf,[homedirectory, '_datr2'],'epsc')
     close gcf
+    
+sprintf('finished file %d of %d files to process',i,length(listofbinaryfiles)
 
+end
 
 
 %%
+
 
 
 end
