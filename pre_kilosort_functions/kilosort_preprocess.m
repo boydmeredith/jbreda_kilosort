@@ -114,20 +114,21 @@ for i = 1:length(listofbinaryfiles)
         ff1 = movmean(double(ff>1), 1000);
         ff2=ff1<.01;
         
-        % add if statement once I have a favorite output but for now I want to
+        % TODO add if statement once I have a favorite output but for now I want to
         % save all for testing
 
-        % save as removed
-%         datr=datr(ff, :);
+        % TODO add option, save as removed
+        % datr=datr(ff, :);
+            % TODO here add output of time vector 0s/1s
 
         %save with zeroed out
-        datr(~ff, :) = 0;
+        datr(~ff2, :) = 0;
         
         %save as interp'd
 %        TODO pull out good/bad times, interp end of good blocks to start
 %        of next good block, steal from rmartifacts
 
-        %end if statement
+        %TODO end if statement
         
         % save
         dat16 = int16(1000*datr');
@@ -140,14 +141,23 @@ for i = 1:length(listofbinaryfiles)
 fclose(fid);
 fclose(fidw);
 
-% hold on;plot(dataRAW(:,1))
-% hold on;plot(y(:,1))
+if ispc
+    delim='\';
+else
+    delim='/';
+end
 
-figure;
-    plot(abs(fft(mean(datr,2))))
-        title('datr2','fontsize',14,'fontweight','bold');
-        legend('y','x');
-    saveas(gcf,[homedirectory, '_datr2'],'epsc')
+ figure(200);subplot(5,1,1);plot(dataRAW(:,2))
+        title('data','fontsize',14,'fontweight','bold')
+     subplot(5,1,2);plot(ff);
+        title('abs mean of filter','fontsize',14,'fontweight','bold')
+     subplot(5,1,3);plot(ff1);
+        title('rolling mean of filter','fontsize',14,'fontweight','bold')
+     subplot(5,1,4);plot(ff2);
+        title('binarized mask for data','fontsize',14,'fontweight','bold');
+    subplot(5,1,5);plot(datr);
+        title('saved data')
+    saveas(gcf,[homedirectory,delim,fname, '_exampleplot'],'epsc')
     close gcf
     
 sprintf('finished file %d of %d files to process',i,length(listofbinaryfiles))
