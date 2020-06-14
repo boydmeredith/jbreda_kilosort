@@ -44,12 +44,18 @@ else
 end
 
 if length(varargin)<3
-    ops.fshigh = 300;
     ops.fs     = 32000;    
-    % make a filter for the data
-    [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
+    ops.fshigh = 300;
+elseif varargin == 3
+    ops.fs = varargin{3};
+    ops.fshigh=300;
 else
+    ops.fs=varargin{3};
+    ops.fshigh=varargin{4};
 end
+
+    % make a filter for the data based on ops inputs/defaults
+    [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
 
 listofbinaryfiles=dir('*.bin');
 
