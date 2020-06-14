@@ -100,15 +100,32 @@ for i = 1:length(listofbinaryfiles)
         % apply the filter
         datr = filtfilt(b1, a1, dataRAW);
 
-        % find the moving mean of filtered data
+        % make a binary 'mask' for the data, looking for big changes to
+        % remove
             % first we want absolute values, so we square datr, take the means of each
             % row (channel), and then take the square root
         ff = mean(datr.^2, 2).^.5; 
-            % for the rows where ff > 1, use a window of every 1000 data points
-        ff = movmean(double(ff>1), 1000)<.01;
+            % for the rows where ff > 1, use a window of every 1000 data
+            % points and if the moving average is above 1
+        ff1 = movmean(double(ff>1), 1000);
+        ff2=ff1<.01;
+        
+        % add if statement once I have a favorite output but for now I want to
+        % save all for testing
 
-        dat16 = int16(1000*datr(ff, :)');
+        % save as removed
+        datr=datr(ff, :);
 
+        %save with zeroed out
+        datr(~ff, :) = 0;
+        
+        %save as interp'd
+%         datr(~ff, :) = 0;
+
+        %end if statement
+        
+        % save
+        dat16 = int16(1000*datr');
         fwrite(fidw, dat16, 'int16');
     end
 
