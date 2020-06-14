@@ -13,12 +13,10 @@ function kilosort_preprocess(varargin)
 % - 
 %
 % INPUT PARAMETERS:
-% - none needed - it should be able to be run from a local folder BUT 
-%   it would be nice to have an optional input for a string directing us to
-%   a folder
+% - none needed - it should be able to be run from a local folder
 % 
 % OPTIONAL PARAMETERS:
-% - 
+% - string directing us to a folder
 % 
 % RETURNS:
 % - 
@@ -29,26 +27,29 @@ function kilosort_preprocess(varargin)
 
 if ~isempty(varargin)
     %if user provides input, check that it is a string for a directory
-    if isdir(varargin{1})
+    if isfolder(varargin{1})
         homedirectory=pwd;
-        cd varargin{1}
+        directorywithbinaries=varargin{1};
+        cd directorywithbinaries
     else 
         error('input must be in the format of a string leading to a directory')
     end
 else
     % if user does not input a directory- run here and save things to this folder
     homedirectory=pwd;
+    directorywithbinaries=pwd;
 end
 
+listofbinaryfiles=dir('*.bin');
 
-fname = dir('*_firstbundle.bin');
-fid1 = fopen(fname, 'r');
-fname = 'C:/DATA/emily\Dennis_secondbundle.bin';
-fid2 = fopen(fname, 'r');
-fname = 'C:/DATA/emily\Dennis_thirdbundle.bin';
-fid3 = fopen(fname, 'r');
 
-fidw = fopen('//dm11/pachitariulab/spikes/temp/concat96.bin', 'w');
+
+
+
+
+%% NEED TO LOOP THIS THROUGH THE LIST! FIRST I'M MAKING THE FIRST LOOP.
+
+fidw = fopen('xxx.bin', 'w');
 
 % d1 = fread(fid1, [32 2e6], 'int16');
 % d2 = fread(fid2, [32 2e6], 'int16');
@@ -102,8 +103,16 @@ fclose(fid2);
 fclose(fid3);
 fclose(fidw);
 
+figure;
+    plot(abs(fft(mean(datr,2))))
+        title('datr2','fontsize',14,'fontweight','bold');
+        legend('y','x');
+    saveas(gcf,[homedirectory, '_datr2'],'epsc')
+    close gcf
+
+
 
 %%
 
-plot(abs(fft(mean(dat, 1))))
+
 end
