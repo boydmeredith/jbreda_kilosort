@@ -39,7 +39,7 @@ if isempty(varargin)
 elseif length(varargin)==1
     if isfolder(varargin{1})
         homedirectory=pwd;
-        directorywithbinaries=varargin{1}; %#ok<NASGU>
+        directorywithbinaries=varargin{1};
         cd directorywithbinaries
     else
         error('input must be in the format of a string leading to a directory')
@@ -48,11 +48,11 @@ elseif length(varargin)==1
     ops.fs     = 32000;    
     ops.fshigh = 400;
 elseif length(varargin)==2
-    chan = varargin{2};
+    chan = varargin{2}
     ops.fs     = 32000;    
     ops.fshigh = 300;
 elseif varargin == 3
-    chan=varargin{2};
+    chan=varargin{2}
     ops.fs = varargin{3};
     ops.fshigh=300;
 else
@@ -67,7 +67,7 @@ end
     % sample rate
     % high means it's a highpass filter
     
-    %outputs filter coefficients b1 (numerator) and a1 (denominator)
+    %outputs b1 (numerator) and a1 (denominator), the the filter coefficients in length N+1 vectors
     
 listofbinaryfiles=dir('*.bin');
 
@@ -82,19 +82,11 @@ fidw = fopen(sprintf('%s_forkilosort.bin',fname(1:end-4)), 'w');
 
 
 
-
-while 1
+%% k loop here
 % now, read in a PORTION of the data. Format it as a matrix with chan rows and
 % 1e5 values - we will loop through this for each file until all data is
 % read in
     dataRAW = fread(fid, [chan 1e5], 'int16');
-    sizeofdata=size(dataRAW);
-    if 0 < sizeofdata(2) < 1e5
-        dataRAW=fread(fid, [chan sizeofdata(2)], 'int16');
-    elseif sizeofdata(2) < 1
-        break %breaks the while loop
-    end
-    
     % transpose
     dataRAW = dataRAW';
     % divide by 1000
@@ -114,7 +106,7 @@ while 1
 %        break; 
 %     end 
 %end of while loop
-    
+%     
     dat16 = int16(1000*datr(ff, :)');
     
     fwrite(fidw, dat16, 'int16');
@@ -122,7 +114,7 @@ while 1
     t0 = t0 + sum(ff);
     % tell us how far we are through the file
     sprintf('for file %s we have processed %d of the data',fname,(100*(t0/ops.fs)))
-end
+   
 %     datr(~ff, :) = 0;
 %     plot(abs(fft(mean(datr,2))))
 %     drawnow
@@ -133,9 +125,6 @@ end
 
 fclose(fid);
 fclose(fidw);
-
-% hold on;plot(dataRAW(:,1))
-% hold on;plot(y(:,1))
 
 figure;
     plot(abs(fft(mean(datr,2))))
