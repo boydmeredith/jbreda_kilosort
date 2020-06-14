@@ -2,15 +2,20 @@
 function kilosort_preprocess(varargin)
 
 % ---------------------
-% written by 
-% purpose is to 
+% written by Emily Jane Dennis 2020-06-14 (during pandemic!)
+% purpose is to take in binary files for each tetrode bundle from a 128
+% channel (32 tetrode) drive and remove/interpolate giant sections where
+% there is huge noise that we want to ignore. We also want to output some
+% plots and save them so we can do some quick validation by eye.
 %
 %
 % TODO:
 % - 
 %
 % INPUT PARAMETERS:
-% - 
+% - none needed - it should be able to be run from a local folder BUT 
+%   it would be nice to have an optional input for a string directing us to
+%   a folder
 % 
 % OPTIONAL PARAMETERS:
 % - 
@@ -22,7 +27,20 @@ function kilosort_preprocess(varargin)
 % - 
 % ---------------------
 
-if varargin
+if ~isempty(varargin)
+    %if user provides input, check that it is a string for a directory
+    if isdir(varargin{1})
+        homedirectory=pwd;
+        cd varargin{1}
+    else 
+        error('input must be in the format of a string leading to a directory')
+    end
+else
+    % if user does not input a directory- run here and save things to this folder
+    homedirectory=pwd;
+end
+
+
 fname = dir('*_firstbundle.bin');
 fid1 = fopen(fname, 'r');
 fname = 'C:/DATA/emily\Dennis_secondbundle.bin';
@@ -88,3 +106,4 @@ fclose(fidw);
 %%
 
 plot(abs(fft(mean(dat, 1))))
+end
