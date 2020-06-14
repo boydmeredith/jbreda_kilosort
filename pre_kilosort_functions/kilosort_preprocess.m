@@ -11,6 +11,10 @@ function kilosort_preprocess(varargin)
 %
 % TODO:
 % - clean up ifelse checks for inputs
+% - add more plots to outputs
+% - come back after some kilosort testing and add a if/else statement for
+% if we should be saving the new binary files with the bad sections
+% removed, zerod, or interpd
 %
 % INPUT PARAMETERS:
 % - none needed - it should be able to be run from a local folder
@@ -114,13 +118,14 @@ for i = 1:length(listofbinaryfiles)
         % save all for testing
 
         % save as removed
-        datr=datr(ff, :);
+%         datr=datr(ff, :);
 
         %save with zeroed out
         datr(~ff, :) = 0;
         
         %save as interp'd
-%         datr(~ff, :) = 0;
+%        TODO pull out good/bad times, interp end of good blocks to start
+%        of next good block, steal from rmartifacts
 
         %end if statement
         
@@ -128,11 +133,6 @@ for i = 1:length(listofbinaryfiles)
         dat16 = int16(1000*datr');
         fwrite(fidw, dat16, 'int16');
     end
-
-    %     datr(~ff, :) = 0;
-    %     plot(abs(fft(mean(datr,2))))
-    %     drawnow
-    %     pause
 
 
 %%
@@ -150,7 +150,7 @@ figure;
     saveas(gcf,[homedirectory, '_datr2'],'epsc')
     close gcf
     
-sprintf('finished file %d of %d files to process',i,length(listofbinaryfiles)
+sprintf('finished file %d of %d files to process',i,length(listofbinaryfiles))
 
 end
 
