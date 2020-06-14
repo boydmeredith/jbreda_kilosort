@@ -13,12 +13,10 @@ function kilosort_preprocess(varargin)
 % - 
 %
 % INPUT PARAMETERS:
-% - none needed - it should be able to be run from a local folder BUT 
-%   it would be nice to have an optional input for a string directing us to
-%   a folder
+% - none needed - it should be able to be run from a local folder
 % 
 % OPTIONAL PARAMETERS:
-% - 
+% - string directing us to a folder
 % 
 % RETURNS:
 % - 
@@ -29,7 +27,7 @@ function kilosort_preprocess(varargin)
 
 if ~isempty(varargin)
     %if user provides input, check that it is a string for a directory
-    if isdir(varargin{1})
+    if isfolder(varargin{1})
         homedirectory=pwd;
         directorywithbinaries=varargin{1};
         cd directorywithbinaries
@@ -41,19 +39,15 @@ else
     homedirectory=pwd;
 end
 
-try
-    fname = dir('*_firstbundle.bin');
-    fid1 = fopen(fname, 'r');
-catch
-    error('there is no _firstbundle.bin file in %s',)
-end
-    fname = 'C:/DATA/emily\Dennis_secondbundle.bin';
-    fid2 = fopen(fname, 'r');
-    fname = 'C:/DATA/emily\Dennis_thirdbundle.bin';
-    fid3 = fopen(fname, 'r');
+listofbinaryfiles=dir('*.bin');
 
 
-fidw = fopen('//dm11/pachitariulab/spikes/temp/concat96.bin', 'w');
+%% NEED TO LOOP THIS THROUGH THE LIST! FIRST I'M MAKING THE FIRST LOOP.
+
+% first, open the binary file to read
+
+% next, open the binary file to write
+fidw = fopen('xxx.bin', 'w');
 
 % d1 = fread(fid1, [32 2e6], 'int16');
 % d2 = fread(fid2, [32 2e6], 'int16');
@@ -61,10 +55,9 @@ fidw = fopen('//dm11/pachitariulab/spikes/temp/concat96.bin', 'w');
 
 t0 = 0;
 
-while 1
+% while loop started here
     ops.fshigh = 300;
     ops.fs     = 32000;
-    
     
     d1 = fread(fid1, [32 1e5], 'int16');
     d2 = fread(fid2, [32 1e5], 'int16');
@@ -75,13 +68,13 @@ while 1
     dataRAW = dataRAW';
     dataRAW = double(dataRAW)/1000;
     
-%     dat2 = notch_filter(dataRAW, ops.fs, 3125, 150, 3);
-    
+    % make a filter for the data
     [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
     
-    % next four lines should be equivalent to filtfilt (which cannot be used because it requires float64)
+    % apply the filter
     datr = filtfilt(b1, a1, dataRAW); % causal forward filter
     
+    % find the moving mean
     ff = mean(datr.^2, 2).^.5;
     ff = movmean(double(ff>1), 1000)<.01;
        
@@ -101,7 +94,9 @@ while 1
 %     plot(abs(fft(mean(datr,2))))
 %     drawnow
 %     pause
-end
+
+
+%%
 fclose(fid1);
 fclose(fid2);
 fclose(fid3);

@@ -17,6 +17,7 @@ function kilosort_preprocess(varargin)
 % 
 % OPTIONAL PARAMETERS:
 % - string directing us to a folder
+% - chan = number of channels in the binary file, defaults to 32
 % 
 % RETURNS:
 % - 
@@ -37,47 +38,42 @@ if ~isempty(varargin)
 else
     % if user does not input a directory- run here and save things to this folder
     homedirectory=pwd;
-    directorywithbinaries=pwd;
 end
 
 listofbinaryfiles=dir('*.bin');
 
 
-
-
-
-
 %% NEED TO LOOP THIS THROUGH THE LIST! FIRST I'M MAKING THE FIRST LOOP.
 
+
+t0 = 0;
+
+% while loop started here
+    ops.fshigh = 300;
+    ops.fs     = 32000;
+    
+% first, open the binary file to read
+
+% next, open the binary file to write
 fidw = fopen('xxx.bin', 'w');
+
+% now, read in a PORTION of the data. Format it as a matrix with X rows and
+% Y values
 
 % d1 = fread(fid1, [32 2e6], 'int16');
 % d2 = fread(fid2, [32 2e6], 'int16');
 % d3 = fread(fid3, [32 2e6], 'int16');
-
-t0 = 0;
-
-while 1
-    ops.fshigh = 300;
-    ops.fs     = 32000;
-    
-    
-    d1 = fread(fid1, [32 1e5], 'int16');
-    d2 = fread(fid2, [32 1e5], 'int16');
-    d3 = fread(fid3, [32 1e5], 'int16');
-    dataRAW = cat(1, d1, d2, d3);
-%     dataRAW = d1;
-    
+    dataRAW = fread(fid1, [32 1e5], 'int16');
     dataRAW = dataRAW';
     dataRAW = double(dataRAW)/1000;
     
-%     dat2 = notch_filter(dataRAW, ops.fs, 3125, 150, 3);
-    
+    % make a filter for the data
     [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
     
-    % next four lines should be equivalent to filtfilt (which cannot be used because it requires float64)
+    % apply the filter
     datr = filtfilt(b1, a1, dataRAW); % causal forward filter
     
+    % find the moving mean
     ff = mean(datr.^2, 2).^.5;
     ff = movmean(double(ff>1), 1000)<.01;
        
@@ -97,7 +93,9 @@ while 1
 %     plot(abs(fft(mean(datr,2))))
 %     drawnow
 %     pause
-end
+
+
+%%
 fclose(fid1);
 fclose(fid2);
 fclose(fid3);
