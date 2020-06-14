@@ -90,9 +90,9 @@ for i = 1:length(listofbinaryfiles)
     % read in
         dataRAW = fread(fid, [chan 1e5], 'int16');
         sizeofdata=size(dataRAW);
-        if 0 < sizeofdata(2) < 1e5
+        if sizeofdata(2) == 0
+        elseif sizeofdata(2) < 1e5
             dataRAW=fread(fid, [chan sizeofdata(2)], 'int16');
-        elseif sizeofdata(2) < 1
             break %breaks the while loop
         end
 
