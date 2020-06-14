@@ -55,8 +55,12 @@ else
 end
 
     % make a filter for the data based on ops inputs/defaults
-    [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
-
+    [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); 
+    % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
+    % Wn (ops.fshigh/ops.fs) is the cutoff frequency, and must be between 0.0 and 1.0. 1.0 is half the
+    % sample rate
+    % high means it's a highpass filter
+    
 listofbinaryfiles=dir('*.bin');
 
 %% NEED TO LOOP THIS THROUGH THE LIST! FIRST I'M MAKING THE FIRST LOOP.
