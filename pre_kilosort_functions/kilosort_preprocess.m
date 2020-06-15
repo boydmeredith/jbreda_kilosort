@@ -72,8 +72,11 @@ end
     % high means it's a highpass filter
     
     %outputs filter coefficients b1 (numerator) and a1 (denominator)
-    
+   
+% make list of files to process
 listofbinaryfiles=dir('*.bin');
+%make empty fftosave
+fftosave=[];
 
 for i = 1:length(listofbinaryfiles)
 
@@ -114,15 +117,16 @@ for i = 1:length(listofbinaryfiles)
         ff1 = movmean(double(ff>1), 1000);
         ff2=ff1<.01;
         
-        % TODO add if statement once I have a favorite output but for now I want to
-        % save all for testing
+        % TODO add if statement once we have a favorite output for default
 
-        % TODO add option, save as removed
-        % datr=datr(ff, :);
-            % TODO here add output of time vector 0s/1s
+        % TODO add as option, remove noise and save binary mask for data
+        % points
+%         datr=datr(ff2, :);
+%         newff=~ff2;
+%         fftosave=[fftosave newff];
 
         %save with zeroed out
-        datr(~ff2, :) = 0;
+       datr(~ff2, :) = 0;
         
         %save as interp'd
 %        TODO pull out good/bad times, interp end of good blocks to start
@@ -134,18 +138,19 @@ for i = 1:length(listofbinaryfiles)
         dat16 = int16(1000*datr');
         fwrite(fidw, dat16, 'int16');
     end
-
-
-%%
-
-fclose(fid);
-fclose(fidw);
+    %%
 
 if ispc
     delim='\';
 else
     delim='/';
 end
+
+fclose(fid);
+fclose(fidw);
+
+%if running as 'remove noise' mode
+%save([homedirectory,delim,fname, '_timemask.mat'],fftosave)
 
  figure(200);subplot(5,1,1);plot(dataRAW(:,2))
         title('data','fontsize',14,'fontweight','bold')
