@@ -58,11 +58,17 @@ function tetrode_32_mdatobin(workspace)
         end
     end
 
+%check if on pc or mac & adjust file names accordingly
+if ispc
+    delim='\';
+else
+    delim='/';
+end
+
 %make a new folder for the bin files we will make today and add it to your
 %path 
-% Note: change \ to / for mac
-mkdir(myparentfolder,'\binfilesforkilosort2');
-binfolder = [myparentfolder '\binfilesforkilosort2'];
+mkdir(myparentfolder,delim,'binfilesforkilosort2');
+binfolder = [myparentfolder,delim 'binfilesforkilosort2'];
 addpath(binfolder);
 
 % in my directory, find all the mda folders

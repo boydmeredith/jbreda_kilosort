@@ -26,27 +26,20 @@ Steps 1-8 taken & modified from [here](https://brodylabwiki.princeton.edu/wiki/i
 2. In globus, take a .dat or .rec file(s) from archive and copy it into your scratch folder
 
 - Stored in: `/jukebox/archive/brody/RATTER/PhysData/Raw/*your folder*/*your rat*/*session file*`
-- `cp /jukebox/archive/brody/RATTER/PhysData/Raw/*your folder*/*your rat*/*session file* /jukebox/scratch/*your folder*/ephys`
+- move to: `/jukebox/scratch/*your folder*/ephys`
 
 - File format
-  - For .dat must be in:
-    - `data_sdc_20190821_123456.dat`
-    - `{session} = data_sdc_20190821_123456`
-  - For .rec must be in:
-    - `data_sdc_20190821_123456_fromSD.rec`
-    - `{session} = data_sdc_20190821_123456_fromSD`
+  - previous pipeline.sh versions needed file in specific naming format (see wiki for more info)
+  - this is no longer the case
 
-3. In globus, copy important scripts to folder that you will need for processing pipeline (can also do this in spock but might run into permission issues)
+3. Clone brody_lab_ephys git hub repo to your scratch folder
 
-- scripts found in:
-  - `jukebox/brody/ejdennis/ephys/Mountainsort/*fillhere*`
-- transfer files to:
-  - `/jukebox/scratch/*your folder*/ephys`
+- `git clone https://github.com/jess-breda/Brody_Lab_Ephys`
 
-- For this project:
-    - main script being used is the bash pipeline_fork2.sh
-    - this function calls `sdtorec`, `exportdio` and `exportmda`
-    - these are written by Marino in bash (I think? Might be from mountainsort?) *TODO*
+- Function highlights:
+    - `pipeline_fork2.sh` converts .dat or .rec files to .mda files
+    - `tetrode_32_mdatobin` converts .mda files into .bin files and splits 32 tetrodes into groups of 8 to reduce processing time
+    - `kilosort_preprocess` removes large noise artifacts from .bin fem
 
 4. In spock, add an export path to your bashrc file, explanation of this [here](https://unix.stackexchange.com/questions/129143/what-is-the-purpose-of-bashrc-and-how-does-it-work)
 
@@ -176,8 +169,3 @@ Tested on: `X:\physdata\Emily\ephys\data_sdb_20190609_123456_fromSD.mda`
 ---
 - determine 'protocol' for phy
 - Post-processing
-
-
-
-
-
