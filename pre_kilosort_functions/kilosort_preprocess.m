@@ -112,7 +112,7 @@ for i = 1:length(listofbinaryfiles)
         ff = mean(datr.^2, 2).^.5; 
             % for the rows where ff > 1, use a window of every 1000 data
             % points and if the moving average is above 1
-        ff1 = movmean(double(ff>1), 1000);
+        ff1 = movmean(double(ff>1), 2000);
         ff2=ff1<.01;
         
         % TODO add if statement once we have a favorite output for default
@@ -150,18 +150,18 @@ fclose(fidw);
 %if running as 'remove noise' mode
 %save([homedirectory,delim,fname, '_timemask.mat'],fftosave)
 
- figure(200);subplot(5,1,1);plot(dataRAW(:,2))
-        title('data','fontsize',14,'fontweight','bold')
-     subplot(5,1,2);plot(ff);
-        title('abs mean of filter','fontsize',14,'fontweight','bold')
-     subplot(5,1,3);plot(ff1);
-        title('rolling mean of filter','fontsize',14,'fontweight','bold')
-     subplot(5,1,4);plot(ff2);
-        title('binarized mask for data','fontsize',14,'fontweight','bold');
-    subplot(5,1,5);plot(datr);
-        title('saved data')
-    saveas(gcf,[homedirectory,delim,fname, '_exampleplot'],'epsc')
-    close gcf
+%  figure(200);subplot(5,1,1);plot(dataRAW(:,2))
+%         title('data','fontsize',14,'fontweight','bold')
+%      subplot(5,1,2);plot(ff);
+%         title('abs mean of filter','fontsize',14,'fontweight','bold')
+%      subplot(5,1,3);plot(ff1);
+%         title('rolling mean of filter','fontsize',14,'fontweight','bold')
+%      subplot(5,1,4);plot(ff2);
+%         title('binarized mask for data','fontsize',14,'fontweight','bold');
+%     subplot(5,1,5);plot(datr);
+%         title('saved data')
+%     saveas(gcf,[homedirectory,delim,fname, '_exampleplot'],'epsc')
+%     close gcf
     
 sprintf('finished file %d of %d files to process',i,length(listofbinaryfiles))
 
