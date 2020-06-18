@@ -14,25 +14,16 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ### 1. Prepare for Kilosort
 
-**currently working**
+Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions). 1-3 only needed for first time use
 
-Steps 1-8 taken & modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions)
-
-1. First time: In scratch make sure there is a folder with your name and subfolder with ephys info. This is where you will run and save your data from/to
+1.In scratch make sure there is a folder with your name and subfolder with ephys info. This is where you will run and save your data from/to
 
 - '/jukebox/scratch/*your folder*/ephys'
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
-2. In globus, take a .dat or .rec file(s) from archive and copy it into your scratch folder
+-*this might need to be done into the Brody_Lab_Ephys repo*
 
-- Stored in: `/jukebox/archive/brody/RATTER/PhysData/Raw/*your folder*/*your rat*/*session file*`
-- move to: `/jukebox/scratch/*your folder*/ephys`
-
-- File format
-  - previous pipeline.sh versions needed file in specific naming format (see wiki for more info)
-  - this is no longer the case
-
-3. Clone brody_lab_ephys git hub repo to your scratch folder
+2. Clone brody_lab_ephys git hub repo to your scratch folder
 
 - `git clone https://github.com/jess-breda/Brody_Lab_Ephys`
 
@@ -41,7 +32,7 @@ Steps 1-8 taken & modified from [here](https://brodylabwiki.princeton.edu/wiki/i
     - `tetrode_32_mdatobin` converts .mda files into .bin files and splits 32 tetrodes into groups of 8 to reduce processing time
     - `kilosort_preprocess` removes large noise artifacts from .bin fem
 
-4. In spock, add an export path to your bashrc file, explanation of this [here](https://unix.stackexchange.com/questions/129143/what-is-the-purpose-of-bashrc-and-how-does-it-work)
+3. In spock, add an export path to your bashrc file, explanation of this [here](https://unix.stackexchange.com/questions/129143/what-is-the-purpose-of-bashrc-and-how-does-it-work)
 
 ```
 ssh PUID@spock
@@ -54,90 +45,76 @@ cd /jukebox/scratch/*your folder*/
  export PATH=$PATH:/jukebox/scratch/*your folder*/ephys```
 -----
 
-6. In spock, Create new screen
+4. In globus, take a .dat or .rec file(s) from archive and copy it into your scratch folder
 
-- ```cd  /jukebox/scratch/*your folder*/ephys`
+- Stored in: `/jukebox/archive/brody/RATTER/PhysData/Raw/*your folder*/*your rat*/*session file*`
+- move to: `/jukebox/scratch/*your folder*/ephys`
+
+- File format
+  - previous pipeline.sh versions needed file in specific naming format (see wiki for more info)
+  - this is no longer the case
+5. In spock, Create new screen
+
+- ```cd  /jukebox/scratch/*your folder*/ephys/Brody_Lab_Ephys`
 tmux new -s pipeline```
 - To exit screen: `Ctrl+b + d`
 
-7. Grab a Brody lab node
+6. Grab a Brody lab node
 
 - `salloc -p Brody -t 4:00:00 -c 44 srun --pty bash`
   - Creates a new shell on the node & reserved for 4 hours
 
-8. Run the pipeline_fork2.sh (pipeline for kilosort 2)
+7. Run the pipeline_fork2.sh (pipeline for kilosort 2)
     `pipeline_fork2 nameoffile.dat` OR `pipeline_fork2 nameoffile.rec`
 
-- This is a modified version of pipeline.sh where we only have steps 1 & 2. Further steps were specific to mountainsort & other analyses. The purpose of this script is to convert .dat or .rec → .mda
-  - Step 1 converts from .dat → .rec
-    - Using sdtorec from [here](https://bitbucket.org/mkarlsso/trodes/wiki/SDFunctions)
-    - Removes .dat
+- This is a modified version of pipeline.sh written by Marino
+  - Step 1 converts from .dat → .rec (skipped if .rec file is passed)
+    - Using sdtorec from [here](https://bitbucket.org/mkarlsso/trodes/wiki/SDFunctions
+    - Using 128_Tetrodes_Sensors_CustomRF.trodesconf from ?? Trodes **TODO**
   - Step 2 converts from .rec → .mda
     - Using exportdio, exportmda
-    - moves .rec to `rec` and .DIO to `{session}.mda`
     - Some files don't have DIO, will need to make an exceptional statement for this *TODO*
-  - If .dat file: `./pipeline.sh data_sdc_20190821_123456 1`
-  - If .rec file  `./pipeline.sh data_sdc_20190821_123456 2`
   - Returns:
-    - In your folder export folder, there will be a directory with session info and this will contain .mda file
-    - Might contain other things? Maybe dio info? * *TODO*
+    - In your folder export folder, there will be a directory with `nameoffile`and this will contain .mda file
+    - Might contain other things? * *TODO*
 
+In matlab:
 
-  **Current Error** Emily working here
+8. Run `tetrode_32_mdatobin.m`
 
-  ```bash pipeline_fork2.sh "data_sdb_20190722_131813.dat" 1
-  Processing Session
-  data_sdb_20190722_131813.dat                                                          
-Step 1: Creating rec file from dat file                                                                                   
-sdtorec: sdtorec: cannot execute binary file                                                                                   
-rm: cannot remove 'data_sdb_20190722_131813.dat.dat': No such file or directory                                                                              
-Step 2: Creating mda files from rec file                                                                                   
-exportmda: exportmda: cannot execute binary file
-```
-```
-  bash pipeline.sh "data_sdb_20190722_131813.dat"                                                         
-  Processing Session data_sdb_20190722_131813.dat                                                          
-   Step 1: Creating rec file from dat file                                                                                   
-   pipeline.sh: line 12: sdtorec: command not found                                                                                  
-   rm: cannot remove 'data_sdb_20190722_131813.dat.dat': No such file or directory                                                                              
-   Step 2: Creating mda files from rec file                                                                                   
-   pipeline.sh: line 22: exportdio: command not found                                                                                  
-   .sh: line 23: exportmda: command not found
-  mv: cannot stat 'data_sdb_20190722_131813.dat_fromSD.rec': No such file or directory                                                                             
-  mv: cannot stat 'data_sdb_20190722_131813.dat_fromSD.DIO/*': No such file or directory                                                                                
-  rmdir: failed to remove 'data_sdb_20190722_131813.dat_fromSD.DIO': No such file or directory
-  ```                                                                         
+- overall: takes 32 channel .mda files and converts them to 4 .bin files in groups of 8 tetordes
 
+- this function takes:
+    - a directory containing output(s) from pipeline function above, or current working dirctory with no argument
+      - multiple mda output folders can be in directory (ie multiple sessions can be run at the same time)
+          - folder format: `/jukebox/scratch/*your folder*/ephys/{session}.mda/*32_mda_files_here*`
+            - note: folder name has `.mda` in title
+            - you want to run the function from the directory `/jukebox/scratch/*your folder*/ephys` (or the directory that has the .mda folders in it)
+      - note: the .mda files **must** all be the same size for this function to properly work/for you to be running it on the correct files
+      - directory is flexible for mac or pc
 
+- this function calls:
+  - `read.mda` from MountainSort repo see [here] (https://github.com/flatironinstitute/mountainlab-js/blob/master/utilities/matlab/mdaio/readmda.m)
+
+- this function returns:
+  - a folder with `binfilesforkilsort2` located in `/jukebox/scratch/*your folder*/ephys`
+  - for each session, 4 .bin files in groups of 8 tetrodes will be created with the naming scheme `{session}_Nbundle.bin`
 
 **Jess working here**
-Further steps in matlab found in `pre_kilosort_functions`
 
-9. Run `tetrode_32_mdatobin.m`
+9. Run `kilosort_preprocess.m`
 
-- this function takes a directory (mda_dir) containing output(s) from pipeline fx above
-    - multiple mda output folders can be in directory (ie multiple sessions can be run at the same time)
-        - folder format: `mda_dir/data_sdb_date_nums_fromSD.mda` or `mda_dir/data_sdb_date_nums_dat_fromSD.mda`
-    - within each mda output directory should be 32 .mda file all of the same size
-        - folder format: `mda_dir/data_sdb_date_nums_fromSD.mda/*32_mda_files_here*`
-- it returns:
-  - a folder with `binfilesforkilsort2` located in `mda_dir`
-  - for each sesssion, 4 .bin files in groups of 8 tetrodes will be created
+- overall: this function takes .bin files, identifies large noise artifacts using a butterworth filter, and zeros them out in a new .bin file that can be passed into kilsort
 
-06/12/2020 notes on `tetrode_32_mdatobin.m`
-- updated function info on template
-- thisfilename adjusted to prevent readmda errors
-- `allfilesnames` --> `allfoldernames`
-- N_folders and N_channels need to be set w/i function, currently used to debug on smaller sets of data
-- currently set to run on a PC
+- this function optionally takes:
+  - directory containing .bin files(s) to process (cwd), number of channels (32), butterworth parameters (sample, highpass)
 
-Tested on: `X:\physdata\Emily\ephys\data_sdb_20190609_123456_fromSD.mda`
-
-10. Run `pre_process.m`
-
-- this function is supposed to:
+- this function performs:
+  - takes
   - 1. find large artifacts in the recording (ex: rat hits head on side) that are above a predetermined threshold *TODO*
   - 2. remove these artifacts so that they don't consume templates, and interpolate in its place so temporal structure of recording is maintained
+
+- this function returns:
 
 
 ### 2. kilosort
