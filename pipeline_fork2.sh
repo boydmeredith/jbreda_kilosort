@@ -1,4 +1,4 @@
-#!/bin/bash
+#/bin/bash
 
 stringinputfromuser=$1
 echo $stringinputfromuser
@@ -18,7 +18,9 @@ if typeoffile=".dat"; then
 	./sdtorec -sd $stringinputfromuser -numchan 128 -mergeconf 128_Tetrodes_Sensors_CustomRF.trodesconf
 #	rm ${session}.dat
 # the above step appends a _fromSD to the filename
-	stringinputfromuser=${stringinputfromuser}_fromSD
+	 
+
+	stringinputfromuser=${session}_fromSD.rec 
 else
 	echo "Skipping step 1: creation rec file"
 fi
