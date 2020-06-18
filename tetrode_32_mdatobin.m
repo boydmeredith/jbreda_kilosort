@@ -11,7 +11,6 @@
 % 
 % TODO:
 % - 
-% - add an option for mac vs. pc paths
 % - add an option to have a file with bad tetrodes (EJD)
 % - ideally make something that allows for easy in/out from EIB testing
 % (EJD)
@@ -58,17 +57,17 @@ function tetrode_32_mdatobin(workspace)
         end
     end
 
-%check if on pc or mac & adjust file names accordingly
+% check if on pc or mac & adjust file names accordingly
 if ispc
     delim='\';
 else
     delim='/';
 end
 
-%make a new folder for the bin files we will make today and add it to your
-%path 
-mkdir(myparentfolder,delim,'binfilesforkilosort2');
-binfolder = [myparentfolder,delim 'binfilesforkilosort2'];
+% make a new folder for the bin files we will make today and add it to your
+% path 
+mkdir(fullfile(myparentfolder, delim, 'binfilesforkilosort2'));
+binfolder = [myparentfolder, delim, 'binfilesforkilosort2'];
 addpath(binfolder);
 
 % in my directory, find all the mda folders
@@ -83,10 +82,12 @@ allfoldernames = {thefolders.name};
 
 % for debugging
 N_channels = 32
-N_folders = 1  % so I can run from X:\physdata\Emily\ephys 
+% N_folders = 1  % so I can run debug and only run one folder at a time
 
-for i = 1:(1 + N_folders)
-% for i = 1:length(allfoldernames)
+
+for i = 1:length(allfoldernames)
+% for i = 1:length(N_folders) % debugging
+
 
     % datafolder = [allfoldernames{i} '/results']; this wasn't working
     % because the way the data is stored, the result file does not actually
@@ -95,7 +96,12 @@ for i = 1:(1 + N_folders)
     
     datafolder = [allfoldernames{i}]
     cd(datafolder)
+    
+    % note this makes a 1 X 2 array with the second being empty, so we grab
+    % the first, otherwise this will break the fopen function below
     genericfilename = strsplit(allfoldernames{i},'.mda');
+    genericfilename = genericfilename{1}
+    
     firstbundle=[];
     secondbundle=[];
     thirdbundle=[];
@@ -104,8 +110,11 @@ for i = 1:(1 + N_folders)
     %load the first bundle of tetrodes
     for j = 1:N_channels
         % If you get readmda errors here, check to make sure the file
-        % suffix is correct (JB)
-        thisfilename = [genericfilename{i} sprintf('.nt%d.referenced.mda',j)];
+        % suffix is correct (JB).
+        % genericfilename{i} was here before. may
+        % need to return if running with more than one folder?
+        
+        thisfilename = [genericfilename sprintf('.nt%d.referenced.mda',j)];
         if j < 9
             firstbundle = [firstbundle;int16(readmda(thisfilename))];
         elseif j > 24
@@ -118,29 +127,38 @@ for i = 1:(1 + N_folders)
     end
    
 
-    sprintf('folder %n of %d is now saving...',i,length(allfoldernames))    
-    fid = fopen([binfolder genericfilename '_firstbundle.bin'],'w');
+    sprintf('folder %n of %d is now saving...',i,length(allfoldernames))
+    
+    
+    
+    fname = [binfolder, delim genericfilename, '_firstbundle.bin']
+    fid = fopen(fname,'w');
     fwrite(fid,firstbundle,'int16');
     fclose(fid);
     sprintf('bundle 1 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
     
-    fid = fopen([binfolder genericfilename '_secondbundle.bin'],'w');
+    fname = [binfolder, '\', genericfilename, '_secondbundle.bin']
+    fid = fopen(fname,'w');
     fwrite(fid,secondbundle,'int16');
     fclose(fid);
     sprintf('bundle 2 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
    
-    fid = fopen([binfolder genericfilename '_thirdbundle.bin'],'w');
+    fname = [binfolder, '\', genericfilename, '_thirdbundle.bin']
+    fid = fopen(fname,'w');
     fwrite(fid,thirdbundle,'int16');
     fclose(fid);
     sprintf('bundle 3 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
 
-    fid = fopen([binfolder genericfilename '_fourthbundle.bin'],'w');
+    fname = [binfolder, '\', genericfilename, '_fourthbundle.bin']
+    fid = fopen(fname,'w');
     fwrite(fid,fourthbundle,'int16');
     fclose(fid);
     sprintf('bundle 4 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
     
     % head back to the parent folder so we can tackle the next recording
-    cd myparentfolder
+    cd ..
+    % cd myparent folder %% this does not work, just need to step back one
+    % directory
     %tell the user something is happening
     sprintf('folder %n of %d done processing',i,length(allfoldernames))
 
