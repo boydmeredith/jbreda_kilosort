@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-#SBATCH -J pre_kilosort_slurm                # create a short name for your job
 #SBATCH --nodes=1                            # node count
-#SBATCH --ntasks=1                           # total number of tasks across all nodes
-#SBATCH -o slurm_outfiles/ephys_jess-%j.out  # where to save the output files of the job
-#SBATCH -e slurm_outfiles/ephys_jess-%j.out  # where to save the error files of the job
+#SBATCH -o jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys/ephys_jess.out  # where to save the output files of the job
+#SBATCH -e jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys/ephys_jess.err  # where to save the error files of the job
 #SBATCH -t 840                               # 14 hour time limit
 #SBATCH --mem=32000 # 32GB of RAM
 #SBATCH --mail-type=all
