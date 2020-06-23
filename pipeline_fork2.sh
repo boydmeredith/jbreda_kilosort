@@ -5,6 +5,8 @@ echo $stringinputfromuser
 lengthofstring=${#stringinputfromuser}
 echo $lengthofstring
 
+directorystring=$2
+
 session=${stringinputfromuser:0:lengthofstring-4}
 echo $session
 typeoffile=${stringinputfromuser:lengthofstring-4:4}
@@ -12,8 +14,9 @@ echo $typeoffile
 
 echo "Processing Session $session"
 
+mv ${directorystring} /jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys
 
-if typeoffile=".dat"; then
+if ["$typeoffile" == ".dat"]; then
 	echo "Step 1: Creating rec file from dat file"
 	./sdtorec -sd $stringinputfromuser -numchan 128 -mergeconf 128_Tetrodes_Sensors_CustomRF.trodesconf
 #	rm ${session}.dat
