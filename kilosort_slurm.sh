@@ -1,19 +1,20 @@
-#!/usr/bin/env bash
-#SBATCH --nodes=1                            # node count
-#SBATCH -o jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys/ephys_jess.out  # where to save the output files of the job
-#SBATCH -e jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys/ephys_jess.err  # where to save the error files of the job
-#SBATCH -t 840                               # 14 hour time limit
-#SBATCH --mem=32000 # 32GB of RAM
+#!/bin/bash
+#SBATCH --job-name=prekilosort_slurm     # create a short name for your job
+#SBATCH --output=logs/slurm-%N.%j.out # STDOUT file
+#SBATCH --error=logs/slurm-%N.%j.err  # STDERR file
+#SBATCH --nodes=1                # node count
+#SBATCH --ntasks=1               # total number of tasks across all nodes
+#SBATCH --cpus-per-task=11        # cpu-cores per task (>1 if multi-threaded tasks)
+#SBATCH --time=10:00:00          # total run time limit (HH:MM:SS)
 #SBATCH --mail-type=all
 #SBATCH --mail-user=jbreda@princeton.edu
-#SBATCH --cpus-per-task=11                   # 11 cores requested
 
-
+echo "my pwd is $PWD"
 
 # Step 1 pipeline_fork2
 # cd into dir with .dat or .rec file, pass into pipeline_fork2.sh
-cd /jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys/
-bash pipeline_fork2 "data_sdc_20190902_145404.dat"
+# cd /scratch/jbreda/ephys/Brody_Lab_Ephys
+bash pipeline_fork2.sh "data_sdc_20190902_145404.dat"
 
 
 
