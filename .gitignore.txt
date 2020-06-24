@@ -1,14 +1,13 @@
-# folder
-data\
-data/
+# file type
 
-# folders with mda files
-data.*
-
-# file types
 *.rec
 *.dat
 *.bin
 *.mda
+*.asv
 
-
+# folder- anything with data in name
+data.*
+data
+logs/
+data/
