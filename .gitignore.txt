@@ -6,9 +6,9 @@ data/
 data.*
 
 # file types
-
 *.rec
 *.dat
 *.bin
+*.mda
 
 
