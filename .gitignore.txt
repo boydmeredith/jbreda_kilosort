@@ -5,6 +5,9 @@
 *.bin
 *.mda
 *.asv
+*.npy
+*.tsv
+*.phy
 
 # folder- anything with data in name/content
 
@@ -14,4 +17,5 @@ logs/
 data/
 data/*
 data/**
-data/*/*/*/*/*/*/*/*
+data/*/*/*/*/*/*/*/*/*/*
+data/**/
