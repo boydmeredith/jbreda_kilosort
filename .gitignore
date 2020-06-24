@@ -1,0 +1,9 @@
+# file type
+
+*.rec
+*.dat
+*.bin
+*.mda
+
+# folder- anything with data in name
+data.*
