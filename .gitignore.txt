@@ -6,8 +6,12 @@
 *.mda
 *.asv
 
-# folder- anything with data in name
+# folder- anything with data in name/content
+
 data.*
 data
 logs/
 data/
+data/*
+data/**
+data/*/*/*/*/*/*/*/*
