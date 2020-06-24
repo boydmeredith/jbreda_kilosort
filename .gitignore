@@ -13,7 +13,9 @@
 
 data.*
 data
+logs/**
 logs/
+logs*
 data/
 data/*
 data/**
