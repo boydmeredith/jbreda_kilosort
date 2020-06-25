@@ -14,7 +14,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ### 1. Prepare for Kilosort
 
-Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions). 1-3 only needed for first time use
+Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions). 1-2 only needed for first time use
 
 1.In scratch make sure there is a folder with your name and subfolder with ephys info. This is where you will run and save your data from/to
 
@@ -43,7 +43,7 @@ Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?tit
   - this is no longer the case, just needs to be `.dat` or `.rec`
   - Brody lab naming conventions = `{session}.dat` or `{session}.rec` where `{session}` = `data_sdX_date_tetrodenums.dat` or `data_sdX_date_tetrodenums_fromSD.rec` where `X = c or b`
 
-5. Sign into spock and create a new tmux screen in the repo.
+4. Sign into spock and create a new tmux screen in the repo.
 
 ```
 ssh yourid@spock
@@ -55,12 +55,12 @@ tmux new -s pipeline
 ```
 - To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
-6. Grab a Brody lab node
+5. Grab a Brody lab node
 
 - `salloc -p Brody -t 4:00:00 -c 11 srun --pty bash`
   - Creates a new shell on the node  with 11 cores & reserves for 4 hours
 
-7. Run the pipeline_fork2.sh (pipeline for kilosort 2)
+6. Run the pipeline_fork2.sh (pipeline for kilosort 2)
     `pipeline_fork2 "{session}.dat"` OR `pipeline_fork2 "{session}.rec"`
 
 - This is a modified version of pipeline.sh written by Marino
@@ -72,13 +72,13 @@ tmux new -s pipeline
 - Returns:
   - In `/jukebox/scratch/*your folder*/ephys/Brody_Lab_Ephys` there will be a directory named `{session}.mda`
   - `{session}.mda` will contain .mda files, .matlab files and results files
-  - we only care about the `.mda` files that have the naming convention:
+  - we only care about the .mda files that have the naming convention:
     - `{session}.ntX.referenced` where `X = channel number`
     - they will all be the same size and there will be 32 of them
 
-In matlab:
+#### In matlab:
 
-8. Run `tetrode_32_mdatobin.m`
+7. Run `tetrode_32_mdatobin.m`
 
 - overall: takes 32 channel .mda files and converts them to 4 .bin files in groups of 8 tetordes
 
