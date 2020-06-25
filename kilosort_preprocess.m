@@ -65,7 +65,7 @@ else
 end
 
     % make a filter for the data based on ops inputs/defaults
-    [b1, a1] = butter(3, ops.fshigh/ops.fs, 'high'); 
+    [b1, a1] = butter(3, ops.fshigh/(ops.fs/2), 'high'); 
     % butterworth filter with only 3 nodes (otherwise it's unstable for float32)
     % Wn (ops.fshigh/ops.fs) is the cutoff frequency, and must be between 0.0 and 1.0. 1.0 is half the
     % sample rate
@@ -85,7 +85,7 @@ for i = 1:length(listofbinaryfiles)
     fid=fopen(fname,'r');
 
     % next, name and open a new binary file to write to
-    fidw = fopen(sprintf('%s_forkilosort.bin',fname(1:end-4)), 'w');
+    fidw = fopen(sprintf('%s_forkilosort_normfreq.bin',fname(1:end-4)), 'w');
 
     while 1
     % now, read in a PORTION of the data. Format it as a matrix with chan rows and
