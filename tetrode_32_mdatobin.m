@@ -155,8 +155,10 @@ for i = 1:length(allfoldernames)
     fclose(fid);
     sprintf('bundle 4 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
     
+    pwd
     % head back to the parent folder so we can tackle the next recording
     cd ..
+    pwd
     % cd myparent folder %% this does not work, just need to step back one
     % directory
     %tell the user something is happening

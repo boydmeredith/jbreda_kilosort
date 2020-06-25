@@ -50,7 +50,7 @@ elseif length(varargin)==1
     end    
     chan=32;    
     ops.fs     = 32000;    
-    ops.fshigh = 400;
+    ops.fshigh = 300;
 elseif length(varargin)==2
     chan = varargin{2};
     ops.fs     = 32000;    
@@ -99,7 +99,7 @@ for i = 1:length(listofbinaryfiles)
 
         % transpose
         dataRAW = dataRAW';
-        % divide by 1000
+        % divide by 1000 because the filter prefers that
         dataRAW = double(dataRAW)/1000;
 
         % apply the filter
@@ -110,7 +110,7 @@ for i = 1:length(listofbinaryfiles)
             % first we want absolute values, so we square datr, take the means of each
             % row (channel), and then take the square root
         ff = mean(datr.^2, 2).^.5; 
-            % for the rows where ff > 1, use a window of every 1000 data
+            % for the rows where ff > 1 (ie, good channels), use a window of every 2000 data
             % points and if the moving average is above 1
         ff1 = movmean(double(ff>1), 2000);
         ff2=ff1<.01;
