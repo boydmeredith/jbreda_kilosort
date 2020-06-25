@@ -21,7 +21,7 @@ Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?tit
 - '/jukebox/scratch/*your folder*/ephys'
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
--*this might need to be done into the Brody_Lab_Ephys repo*
+*this might need to be done into the Brody_Lab_Ephys repo, update once pipeline is completed*
 
 2. Clone brody_lab_ephys git hub repo to your scratch folder
 
@@ -30,53 +30,51 @@ Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?tit
 - Function highlights:
     - `pipeline_fork2.sh` converts .dat or .rec files to .mda files
     - `tetrode_32_mdatobin` converts .mda files into .bin files and splits 32 tetrodes into groups of 8 to reduce processing time
-    - `kilosort_preprocess` removes large noise artifacts from .bin fem
+    - `kilosort_preprocess` removes large noise artifacts & persistent noise from .bin files so they don't eat up templates in kilosort
 
-3. In spock, add an export path to your bashrc file, explanation of this [here](https://unix.stackexchange.com/questions/129143/what-is-the-purpose-of-bashrc-and-how-does-it-work)
 
-```
-ssh PUID@spock
-password
-
-cd /jukebox/scratch/*your folder*/
-```
-
-- ``` nano .bashrc
- export PATH=$PATH:/jukebox/scratch/*your folder*/ephys```
------
-
-4. In globus, take a .dat or .rec file(s) from archive and copy it into your scratch folder
+3. In globus, take a .dat or .rec file(s) from archive and copy it into your scratch folder
 
 - Stored in: `/jukebox/archive/brody/RATTER/PhysData/Raw/*your folder*/*your rat*/*session file*`
 - move to: `/jukebox/scratch/*your folder*/ephys`
 
-- File format
+- File format:
   - previous pipeline.sh versions needed file in specific naming format (see wiki for more info)
-  - this is no longer the case
-5. In spock, Create new screen
+  - this is no longer the case, just needs to be `.dat` or `.rec`
+  - Brody lab naming conventions = `{session}.dat` or `{session}.rec` where `{session}` = `data_sdX_date_tetrodenums.dat` or `data_sdX_date_tetrodenums_fromSD.rec` where `X = c or b`
 
-- ```cd  /jukebox/scratch/*your folder*/ephys/Brody_Lab_Ephys`
-tmux new -s pipeline```
-- To exit screen: `Ctrl+b + d`
+5. Sign into spock and create a new tmux screen in the repo.
+
+```
+ssh yourid@spock
+password
+
+cd  /jukebox/scratch/*your folder*/ephys/Brody_Lab_Ephys
+
+tmux new -s pipeline
+```
+- To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
 6. Grab a Brody lab node
 
-- `salloc -p Brody -t 4:00:00 -c 44 srun --pty bash`
-  - Creates a new shell on the node & reserved for 4 hours
+- `salloc -p Brody -t 4:00:00 -c 11 srun --pty bash`
+  - Creates a new shell on the node  with 11 cores & reserves for 4 hours
 
 7. Run the pipeline_fork2.sh (pipeline for kilosort 2)
-    `pipeline_fork2 nameoffile.dat` OR `pipeline_fork2 nameoffile.rec`
+    `pipeline_fork2 "{session}.dat"` OR `pipeline_fork2 "{session}.rec"`
 
 - This is a modified version of pipeline.sh written by Marino
   - Step 1 converts from .dat → .rec (skipped if .rec file is passed)
-    - Using sdtorec from [here](https://bitbucket.org/mkarlsso/trodes/wiki/SDFunctions
-    - Using 128_Tetrodes_Sensors_CustomRF.trodesconf from ?? Trodes **TODO**
+    - Using sdtorec from [trodes](https://bitbucket.org/mkarlsso/trodes/wiki/SDFunctions/)
+    - takes number of channels and [trodes configuration settings](https://bitbucket.org/mkarlsso/trodes/wiki/Configuration/) as inputs
   - Step 2 converts from .rec → .mda
-    - Using exportdio, exportmda
-    - Some files don't have DIO, will need to make an exceptional statement for this *TODO*
-  - Returns:
-    - In your folder export folder, there will be a directory with `nameoffile`and this will contain .mda file
-    - Might contain other things? * *TODO*
+    - Using exportdio and export from [trodes & ,mountainlab](https://bitbucket.org/mkarlsso/trodes/wiki/ExportFunctions/)
+- Returns:
+  - In `/jukebox/scratch/*your folder*/ephys/Brody_Lab_Ephys` there will be a directory named `{session}.mda`
+  - `{session}.mda` will contain .mda files, .matlab files and results files
+  - we only care about the `.mda` files that have the naming convention:
+    - `{session}.ntX.referenced` where `X = channel number`
+    - they will all be the same size and there will be 32 of them
 
 In matlab:
 
@@ -94,7 +92,7 @@ In matlab:
       - directory is flexible for mac or pc
 
 - this function calls:
-  - `read.mda` from MountainSort repo see [here] (https://github.com/flatironinstitute/mountainlab-js/blob/master/utilities/matlab/mdaio/readmda.m)
+  - `read.mda` from MountainSort repo see [here](https://github.com/flatironinstitute/mountainlab-js/blob/master/utilities/matlab/mdaio/readmda.m/)
 
 - this function returns:
   - a folder with `binfilesforkilsort2` located in `/jukebox/scratch/*your folder*/ephys`
