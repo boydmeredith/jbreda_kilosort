@@ -124,9 +124,12 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 - writes into a new file `{session}_Nbundle_forkilosort.bin`
 
 *this function returns:*
-- for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files in `binfilesforkilsort2`
+- for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files in `binfilesforkilsort2` with the `_forkilsort` suffix
 
-*for cluster: how does kilosort handle a directory with many .bin files?*
+*for cluster:
+- how does kilosort handle a directory with many .bin files?
+- function to loop over file in a directory that have 'for kilosort in them, generate a new folder with {session} info, pass single bundle into kilosort, save file in {session} dir'
+*
 
 
 ### 2. kilosort
