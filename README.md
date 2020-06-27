@@ -21,7 +21,7 @@ Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?tit
 `/jukebox/scratch/*your folder*/ephys`
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
-*this might need to be done into the Brody_Lab_Ephys repo, update once pipeline is completed*
+**this might need to be done into the Brody_Lab_Ephys repo, update once pipeline is completed**
 
 2. Clone brody_lab_ephys git hub repo to your scratch folder
 
@@ -89,7 +89,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 
 **overall:** takes 32 channel .mda files and converts them to 4 .bin files in groups of 8 tetrodes
 
-*this optionally function takes:*
+*this function optionally takes:*
 - a directory containing output(s) from pipeline function above, or current working directory with no argument
   - multiple mda output folders can be in directory (ie multiple sessions can be run at the same time)
       - mda folder format: `/jukebox/scratch/*your folder*/ephys/{session}.mda/*32_mda_files_here*`
@@ -98,8 +98,8 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
   - directory is flexible for mac or pc
 
 *this function performs:*
-- `read.mda` from MountainSort repo see [here](https://github.com/flatironinstitute/mountainlab-js/blob/master/utilities/matlab/mdaio/readmda.m/)
-- uses base function to bundle tetrodes in groups of 8
+- `readmda` from MountainSort repo see [here](https://github.com/flatironinstitute/mountainlab-js/blob/master/utilities/matlab/mdaio/readmda.m/)
+- uses base functions to bundle tetrodes in groups of 8
 
 *this function returns:*
 - a folder with `binfilesforkilsort2` located in `/jukebox/scratch/*your folder*/ephys`
@@ -110,7 +110,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 
 9. Run `kilosort_preprocess.m`
 
-*for cluster: need to cd into `binfilesforkilsort2`*
+**for cluster: need to cd into `binfilesforkilsort2`**
 
 **overall:** this function takes .bin files, identifies large noise artifacts & low frequency noise using a butterworth filter, and zeros them out in a new .bin file that can be passed into kilosort
 
@@ -118,7 +118,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 - directory containing .bin files(s) to process (cwd), number of channels (32), butterworth parameters (sample rate = 32000, highpass = 300)
   - for this example, you'd run from the directory `/jukebox/scratch/*your folder*/ephys/binfilesforkilsort2`
 
-*this function performs*
+*this function performs:*
 - loops over portions of the data, reads them in, applies the filter
 - finds the moving mean of the filtered data and zeros out voltages where filter is greater than 0.01
 - writes into a new file `{session}_Nbundle_forkilosort.bin`
@@ -126,10 +126,10 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 *this function returns:*
 - for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files in `binfilesforkilsort2` with the `_forkilsort` suffix
 
-*for cluster:
+**for cluster:
 - how does kilosort handle a directory with many .bin files?
-- function to loop over file in a directory that have 'for kilosort in them, generate a new folder with {session} info, pass single bundle into kilosort, save file in {session} dir'
-*
+- function to loop over file in a directory that have 'for kilosort in them, generate a new folder with {session} info, pass single bundle into kilosort, save file in {session} dir'**
+
 
 
 ### 2. kilosort
@@ -154,10 +154,9 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 
 ----------------------------------
 # TODO
-- determine if cluster will be run on one file at a time or many
-- play with kilosort_preprocess and adjust parameters
-- determine if lowering  kilosort parameters on 2 bundles is helpful
-- determine what preprocessing trodes is doing that allows us to see spikes
+- write a function to screen for good/bad data for troubleshooting on kilosort
+- adjust kilosort parameters to 'good' data & then reasses on 'bad' data
+- write cluster script that can take a directory with .rec/.dat files and .mda folders and turn them all into .bin files ready to be preprocessed 
 ---
 - determine 'protocol' for phy
 - Post-processing
