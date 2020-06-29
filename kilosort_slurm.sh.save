@@ -12,7 +12,6 @@
 
 # Step 1: hardcode input and output folders (this assumes you have copied necessary functions to input folder)
 # necessary fx: pipeline_fork2.sh, exportdio, exportmda, sdtorec, trodes.config, readmda, tetrode_32_mdatobin.m
-# input folder needs to have data & functions!!
 
 # input_folder="/jukebox/scratch/jbreda/ephys/data"
 # output_folder="/jukebox/brody/jbreda/ephys"
