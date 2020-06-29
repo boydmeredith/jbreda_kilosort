@@ -85,7 +85,7 @@ for i = 1:length(listofbinaryfiles)
     fid=fopen(fname,'r');
 
     % next, name and open a new binary file to write to
-    fidw = fopen(sprintf('%s_forkilosort_normfreq.bin',fname(1:end-4)), 'w');
+    fidw = fopen(sprintf('%s_forkilosort.bin',fname(1:end-4)), 'w');
 
     while 1
     % now, read in a PORTION of the data. Format it as a matrix with chan rows and
