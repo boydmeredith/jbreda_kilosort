@@ -11,12 +11,19 @@
 
 
 # Step 1: hardcode input and output folders
-# Step 2: in input folder, look for files with .rec and .dat extension, add their names to a list
+# Step 2: in input folder, look for files with .rec and .dat extension, add their names to a lis
+# cd into input folder
+# files=$( ls *{.dat,.rec})
+# echo $files
+
 # Step 3: iterate over the list and pass each file name as a string into pipeline_fork2.sh
 
 
 # Step 4: now everything in current directory is an .mda folder, pass this directory into matlab fx
-# my_mda_dir = pwd 
+# in theory, should run without having to pass in directory, but for the sake of being explicit:
+# mda_dir=$(pwd)
+# echo $mda_dir
 # open matlab & call function
+# something like: 'tetrode_32_mdatobin.m(mda_dir)
 
 # Step 5: move 'binfilesforkilosort2' to output folder
