@@ -8,15 +8,75 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 **fill in more here eventually**
 
+----------------------------------
+# TODO
+- adjust kilosort parameters to 'good' data & then reassess on 'bad' data
+- fill in step 7 of "running on spock" with function information. what is this function doing/how. What is it calling?
+---
+- determine 'protocol' for phy
+- Post-processing
+------------------------------------
+
 # Analysis
 
 ## Pre-processing
 
-### 1. Prepare for Kilosort
+### Running on Spock:
+
+#### .rec, .dat, .mda --> .bin
+
+1. Sign into spock
+```
+ssh yourid@spock
+password
+```
+2. In scratch make sure there is a folder with your name and subfolder with ephys info. This is where you will clone the repo to, add unprocessed data into & use as input_folder for SLURM script
+
+`/jukebox/scratch/*your folder*/ephys`
+- note: you will need to get permission access to scratch from pnihelp via Chuck
+
+3. Clone Brody_lab_ephys git hub repo to your scratch folder, or copy it over from other directory if you already have it. Just note: repo & data files to be processed need to be in the same directory.
+
+```
+cd /jukebox/scratch/*your folder*/ephys
+git clone https://github.com/jess-breda/Brody_Lab_Ephys
+```
+or
+ `cp </path/to/cloned/repo> /jukebox/scratch/*your folder*/ephys`
+
+4. Move files you want to process into `/jukebox/scratch/*your folder*/ephys` (**do this on globus!**)
+
+5. Open & interactive screen & grab a Brody lab node
+
+`tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash`
+- Creates a new shell on the node  with 11 cores & reserves for 11 hours
+- To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
+
+6. Open kilosort_slurm.sh & edit input & output folders. Additionally, adjust paths in the header for job output/errors & email for job updates.
+```
+cd /jukebox/scratch/*your folder*/ephys
+nano kilosort_slurm.sh
+ --- in nano ---
+input_folder="/jukebox/scratch/*your folder*/ephys"
+output_folder="/jukebox/wherever/you/store/your/processed/data"
+
+!also adjust header for your ID!
+```
+
+7. Run kilosort_slurm.sh to convert any .dat, .rec and .mda files into .bin files for kilosort
+
+`sbatch bash kilosort_slurm.sh`
+
+8. (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
+
+
+### Local step by step:
+
+#### Prepare for Kilosort
 
 Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions). 1-2 only needed for first time use
 
-1.In scratch make sure there is a folder with your name and subfolder with ephys info. This is where you will run and save your data from/to
+1. In scratch make sure there is a folder with your name and subfolder with ephys info. This is where you will run and save your data from/to
 
 `/jukebox/scratch/*your folder*/ephys`
 - note: you will need to get permission access to scratch from pnihelp via Chuck
@@ -106,7 +166,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 - for each session, 4 .bin files in groups of 8 tetrodes will be created with the naming scheme `{session}_Nbundle.bin`
 - returns to the directory is starts in
 
-**Jess working here**
+**Jess working here/cluster stops here**
 
 9. Run `kilosort_preprocess.m`
 
@@ -151,12 +211,3 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 - PSTHs/spike trig avgs/etc. *think on this more later*
 - Running in cluster
 - Combine w/ preprocess & run on tigress
-
-----------------------------------
-# TODO
-- write a function to screen for good/bad data for troubleshooting on kilosort
-- adjust kilosort parameters to 'good' data & then reasses on 'bad' data
-- write cluster script that can take a directory with .rec/.dat files and .mda folders and turn them all into .bin files ready to be preprocessed 
----
-- determine 'protocol' for phy
-- Post-processing
