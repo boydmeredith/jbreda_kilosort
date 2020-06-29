@@ -14,7 +14,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 - fill in step 7 of "running on spock" with function information. what is this function doing/how. What is it calling?
 ---
 - determine 'protocol' for phy
-- Post-processing
+- Post-processinga
 ------------------------------------
 
 # Analysis
@@ -32,7 +32,9 @@ password
 ```
 2. In scratch make sure there is a folder with your name and subfolder with ephys info. This is where you will clone the repo to, add unprocessed data into & use as input_folder for SLURM script
 
-`/jukebox/scratch/*your folder*/ephys`
+```
+/jukebox/scratch/*your folder*/ephys
+```
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
 3. Clone Brody_lab_ephys git hub repo to your scratch folder, or copy it over from other directory if you already have it. Just note: repo & data files to be processed need to be in the same directory.
@@ -42,13 +44,17 @@ cd /jukebox/scratch/*your folder*/ephys
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
 or
- `cp </path/to/cloned/repo> /jukebox/scratch/*your folder*/ephys`
+ ```
+ cp </path/to/cloned/repo> /jukebox/scratch/*your folder*/ephys
+ ```
 
 4. Move files you want to process into `/jukebox/scratch/*your folder*/ephys` (**do this on globus!**)
 
 5. Open & interactive screen & grab a Brody lab node
 
-`tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash`
+```
+tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash
+```
 - Creates a new shell on the node  with 11 cores & reserves for 11 hours
 - To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
@@ -60,7 +66,7 @@ nano kilosort_slurm.sh
 input_folder="/jukebox/scratch/*your folder*/ephys"
 output_folder="/jukebox/wherever/you/store/your/processed/data"
 
-!also adjust header for your ID!
+!!!also adjust header for your ID!!!
 ```
 
 7. Run kilosort_slurm.sh to convert any .dat, .rec and .mda files into .bin files for kilosort
