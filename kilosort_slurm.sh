@@ -10,19 +10,13 @@
 
 
 
-# Step 1 pipeline_fork2
-# cd into dir with .dat or .rec file, pass into pipeline_fork2.sh
-cd /jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys/
-bash pipeline_fork2 "data_sdc_20190902_145404.dat"
+# Step 1: hardcode input and output folders
+# Step 2: in input folder, look for files with .rec and .dat extension, add their names to a list
+# Step 3: iterate over the list and pass each file name as a string into pipeline_fork2.sh
 
 
+# Step 4: now everything in current directory is an .mda folder, pass this directory into matlab fx
+# my_mda_dir = pwd 
+# open matlab & call function
 
-# Step 2 tetrode_32_mdatobin
-# cd into folder containing mda folder (only want 1 here probably?)
-# run tetrode_32_mdatobin on mda folder
-# 4 .bin outputs in mda folder
-
-# Step 3 kilosort_preprocess
-# cd (maybe?) into mda folder with .bin bundles
-# run kilosort_preprocess on each .bin
-# make 'binfilesforkilsort2' directory
+# Step 5: move 'binfilesforkilosort2' to output folder
