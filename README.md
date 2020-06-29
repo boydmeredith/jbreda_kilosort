@@ -12,9 +12,10 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 # TODO
 - adjust kilosort parameters to 'good' data & then reassess on 'bad' data
 - fill in step 7 of "running on spock" with function information. what is this function doing/how. What is it calling?
+- clone rep note from emily: instead of `./function` it'd be `./GitHubFolder/function`
 ---
 - determine 'protocol' for phy
-- Post-processinga
+- Post-processing
 ------------------------------------
 
 # Analysis
@@ -75,7 +76,7 @@ output_folder="/jukebox/wherever/you/store/your/processed/data"
 
 8. (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
 
-
+-----------------------
 ### Local step by step:
 
 #### Prepare for Kilosort
