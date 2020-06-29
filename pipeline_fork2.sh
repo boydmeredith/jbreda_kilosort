@@ -5,7 +5,7 @@ echo $stringinputfromuser
 lengthofstring=${#stringinputfromuser}
 echo $lengthofstring
 
-directorystring=$2
+# directorystring=$2 don't think this is needed for cluster
 
 session=${stringinputfromuser:0:lengthofstring-4}
 echo $session
@@ -14,7 +14,7 @@ echo $typeoffile
 
 echo "Processing Session $session"
 
-mv ${directorystring} /jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys
+# mv ${directorystring} /jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys don't think this is needed for cluster
 
 if ["$typeoffile" == ".dat"]; then
 	echo "Step 1: Creating rec file from dat file"
