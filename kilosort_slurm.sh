@@ -10,14 +10,19 @@
 
 
 
-# Step 1: hardcode input and output folders
-# Step 2: in input folder, look for files with .rec and .dat extension, add their names to a lis
-# cd into input folder
+# Step 1: hardcode input and output folders (this assumes you have copied necessary functions to input folder)
+# necessary fx: pipeline_fork2.sh, exportdio, exportmda, sdtorec, trodes.config, readmda, tetrode_32_mdatobin.m
+
+# input_folder="/jukebox/scratch/jbreda/ephys/data"
+# output_folder="/jukebox/brody/jbreda/ephys
+
+# Step 2: in input folder, look for files with .rec and .dat extension, add their names to a list & print to output
+# cd $input_folder
 # files=$( ls *{.dat,.rec})
 # echo $files
 
 # Step 3: iterate over the list and pass each file name as a string into pipeline_fork2.sh
-
+	
 
 # Step 4: now everything in current directory is an .mda folder, pass this directory into matlab fx
 # in theory, should run without having to pass in directory, but for the sake of being explicit:
