@@ -14,7 +14,7 @@
 # necessary fx: pipeline_fork2.sh, exportdio, exportmda, sdtorec, trodes.config, readmda, tetrode_32_mdatobin.m
 
 # input_folder="/jukebox/scratch/jbreda/ephys/data"
-# output_folder="/jukebox/brody/jbreda/ephys
+# output_folder="/jukebox/brody/jbreda/ephys"
 
 # Step 2: in input folder, look for files with .rec and .dat extension, add their names to a list & print to output
 # cd $input_folder
@@ -22,7 +22,8 @@
 # echo $files
 
 # Step 3: iterate over the list and pass each file name as a string into pipeline_fork2.sh
-	
+
+# for file in ${files[@]}; do bash pipeline_fork2.sh "$file"; done
 
 # Step 4: now everything in current directory is an .mda folder, pass this directory into matlab fx
 # in theory, should run without having to pass in directory, but for the sake of being explicit:
