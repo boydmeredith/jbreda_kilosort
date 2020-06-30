@@ -45,11 +45,23 @@ sfreq = 30000
 %         else
 %             figure(2); subplot(chan/2,1,z-16); plot(dataRAW(z,:))
 %         end
-    for z = 1:16
+    for z = 1:8
         figure(1); subplot(chan/2,1,z); plot(dataRAW(z,:));
         title(sprintf('Loop %d', x)); 
     end
+    
+  %chan 6 super noise
  
+  %plot the electrodes in two plots for ease of viewing
+%     for z = 1:chan
+%         if z < (chan/2) + 1
+%             figure(1); subplot(chan/2,1,z); plot(dataRAW(z,:));
+%             title(sprintf('Loop %d', x)); 
+%         else
+%             figure(2); subplot(chan/2,1,z-16); plot(dataRAW(z,:))
+%         end
+  
+  
   end
   
   fclose(fid)

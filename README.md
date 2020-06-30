@@ -16,6 +16,9 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 ---
 - determine 'protocol' for phy
 - Post-processing
+
+for val in ${files[@]}; do bash pipeline_fork2.sh "$val"; echo $val; done
+
 ------------------------------------
 
 # Analysis
