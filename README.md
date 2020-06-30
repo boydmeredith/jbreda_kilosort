@@ -11,13 +11,11 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 ----------------------------------
 # TODO
 - adjust kilosort parameters to 'good' data & then reassess on 'bad' data
-- fill in step 7 of "running on spock" with function information. what is this function doing/how. What is it calling?
+- fill in step 7 of "running on spock" with function information. what is this function doing/how. What is it calling? (see below in 'running locally' for info for now)
 - clone rep note from emily: instead of `./function` it'd be `./GitHubFolder/function`
 ---
 - determine 'protocol' for phy
 - Post-processing
-
-for val in ${files[@]}; do bash pipeline_fork2.sh "$val"; echo $val; done
 
 ------------------------------------
 
@@ -78,6 +76,8 @@ output_folder="/jukebox/wherever/you/store/your/processed/data"
 `sbatch bash kilosort_slurm.sh`
 
 8. (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
+
+9. Go to step 8 in local step by step and run `kilosort_preprocess.m` & `kilosort`
 
 -----------------------
 ### Local step by step:
@@ -178,34 +178,34 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 
 **Jess working here/cluster stops here**
 
-9. Run `kilosort_preprocess.m`
+8. Run `kilosort_preprocess.m`
 
-**for cluster: need to cd into `binfilesforkilsort2`**
+**TODO for cluster: need to cd into `binfilesforkilsort2`**
 
-**overall:** this function takes .bin files, identifies large noise artifacts & low frequency noise using a butterworth filter, and zeros them out in a new .bin file that can be passed into kilosort
+**overall:** this function takes .bin files, applies a butterworth filter and then creates a mask for large amplitude noise and zeros it out. Creates a new .bin file that can be passed into kilosort
 
 *this function optionally takes:*
 - directory containing .bin files(s) to process (cwd), number of channels (32), butterworth parameters (sample rate = 32000, highpass = 300)
   - for this example, you'd run from the directory `/jukebox/scratch/*your folder*/ephys/binfilesforkilsort2`
 
 *this function performs:*
-- loops over portions of the data, reads them in, applies the filter
-- finds the moving mean of the filtered data and zeros out voltages where filter is greater than 0.01
+- loops over portions of the data, reads them in, applies the high pass butterworth filter
+- finds the absolute means of the filtered data, (ie noise = large deviation from the mean), finds a rolling mean of the absolute means, creates binary mask for any mean voltage > 1, applies mask and zeros out noise
 - writes into a new file `{session}_Nbundle_forkilosort.bin`
 
 *this function returns:*
 - for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files in `binfilesforkilsort2` with the `_forkilsort` suffix
 
-**for cluster:
+**TODO for cluster:
 - how does kilosort handle a directory with many .bin files?
 - function to loop over file in a directory that have 'for kilosort in them, generate a new folder with {session} info, pass single bundle into kilosort, save file in {session} dir'**
-
 
 
 ### 2. kilosort
 
 - run pre-processed .bin files in Kilosort
 **fill in setting information**
+- currently playing with Ops.Th, Ops.lam, Ops.AUC split. Effectively lowering them to let signal in as templates are being consumed by noise
 
 ### 3. Phy Validation
 
