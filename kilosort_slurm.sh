@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #SBATCH --nodes=1                            # node count
-#SBATCH -o jukebox/scratch/jbreda/ephys/ephys_jess.out  # where to save the output files of the job
-#SBATCH -e jukebox/scratch/jbreda/ephys/ephys_jess.err  # where to save the error files of the job
+#SBATCH -o /jukebox/scratch/jbreda/ephys/ephys_jess.out  # where to save the output files of the job
+#SBATCH -e /jukebox/scratch/jbreda/ephys/ephys_jess.err  # where to save the error files of the job
 #SBATCH -t 840                               # 14 hour time limit
 #SBATCH --mem=32000 # 32GB of RAM
-#SBATCH --mail-type=all
+#SBATCH --mail-type=ALL
 #SBATCH --mail-user=jbreda@princeton.edu
 #SBATCH --cpus-per-task=11                   # 11 cores requested
 
