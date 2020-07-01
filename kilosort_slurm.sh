@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --nodes=1                            # node count
-#SBATCH -o jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys/ephys_jess.out  # where to save the output files of the job
-#SBATCH -e jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys/ephys_jess.err  # where to save the error files of the job
+#SBATCH -o jukebox/scratch/jbreda/ephys/ephys_jess.out  # where to save the output files of the job
+#SBATCH -e jukebox/scratch/jbreda/ephys/ephys_jess.err  # where to save the error files of the job
 #SBATCH -t 840                               # 14 hour time limit
 #SBATCH --mem=32000 # 32GB of RAM
 #SBATCH --mail-type=all
@@ -14,17 +14,17 @@
 # necessary fx: pipeline_fork2.sh, exportdio, exportmda, sdtorec, trodes.config, readmda, tetrode_32_mdatobin.m
 # input folder needs to have data & functions!!
 
-# input_folder="/jukebox/scratch/jbreda/ephys/data"
+input_folder="/jukebox/scratch/jbreda/ephys/kilosort_slurm_test"
 # output_folder="/jukebox/brody/jbreda/ephys"
 
 # Step 2: in input folder, look for files with .rec and .dat extension, add their names to a list & print to output
-# cd $input_folder
-# files=$( ls *{.dat,.rec})
-# echo $files
+cd $input_folder
+files=$( ls *{.dat,.rec})
+echo $files
 
 # Step 3: iterate over the list and pass each file name as a string into pipeline_fork2.sh
 
-# for file in ${files[@]}; do bash pipeline_fork2.sh "$file"; done
+for file in ${files[@]}; do ./Brody_Lab_Ephys/pipeline_fork2.sh "$file"; done
 
 # Step 4: now everything in current directory is an .mda folder, pass this directory into matlab fx
 # in theory, should run without having to pass in directory, but for the sake of being explicit:
