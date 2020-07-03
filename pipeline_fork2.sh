@@ -5,7 +5,7 @@ echo $stringinputfromuser
 lengthofstring=${#stringinputfromuser}
 echo $lengthofstring
 
-# directorystring=$2 don't think this is needed for cluster
+
 
 session=${stringinputfromuser:0:lengthofstring-4}
 echo $session
@@ -14,12 +14,12 @@ echo $typeoffile
 
 echo "Processing Session $session"
 
-# mv ${directorystring} /jukebox/scratch/jbreda/ephys/Brody_Lab_Ephys don't think this is needed for cluster
+
 
 if [ "$typeoffile" == ".dat" ]; then
 	echo "Step 1: Creating rec file from dat file"
-	./Brody_Lab_Ephys/sdtorec -sd $stringinputfromuser -numchan 128 -mergeconf /Brody_Lab_Ephys/128_Tetrodes_Sensors_CustomRF.trodesconf
-#	rm ${session}.dat
+	./Brody_Lab_Ephys/sdtorec -sd $stringinputfromuser -numchan 128 -mergeconf 128_Tetrodes_Sensors_CustomRF.trodesconf
+
 # the above step appends a _fromSD to the filename
 	 
 
@@ -31,6 +31,4 @@ fi
 	echo "Step 2: Creating mda files from rec file"
 	./Brody_Lab_Ephys/exportdio -rec $stringinputfromuser
 	./Brody_Lab_Ephys/exportmda -rec $stringinputfromuser
-#	mv ${session}.rec recs
-#	mv ${session}.DIO/* ${session}.mda
-#	rmdir ${session}.DIO
+
