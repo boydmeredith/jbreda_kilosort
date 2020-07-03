@@ -7,7 +7,7 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jbreda@princeton.edu
 #SBATCH --cpus-per-task=11                   # 11 cores requested
-
+#SBATCH --partition=Brody                    # run on brodylab parition
 
 
 # Step 1: hardcode input and output folders (this assumes you have copied necessary functions to input folder)
