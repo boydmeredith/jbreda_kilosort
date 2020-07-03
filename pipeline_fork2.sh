@@ -18,7 +18,7 @@ echo "Processing Session $session"
 
 if [ "$typeoffile" == ".dat" ]; then
 	echo "Step 1: Creating rec file from dat file"
-	./Brody_Lab_Ephys/sdtorec -sd $stringinputfromuser -numchan 128 -mergeconf 128_Tetrodes_Sensors_CustomRF.trodesconf
+	./Brody_Lab_Ephys/sdtorec -sd $stringinputfromuser -numchan 128 -mergeconf /Brody_Lab_Ephys/128_Tetrodes_Sensors_CustomRF.trodesconf
 #	rm ${session}.dat
 # the above step appends a _fromSD to the filename
 	 
