@@ -10,9 +10,10 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ----------------------------------
 # TODO
-- adjust kilosort parameters to 'good' data & then reassess on 'bad' data
+- adjust kilosort parameters to 'good' data & then reassess on 'bad' data using data_screen.m
 - fill in step 7 of "running on spock" with function information. what is this function doing/how. What is it calling? (see below in 'running locally' for info for now)
-- clone rep note from emily: instead of `./function` it'd be `./GitHubFolder/function`
+- check what happens if there is already a trodes conf file in the directory- make a statement in fx if needed
+- add `tetrode_32_mdatobin.m` to kilosort_slurm
 ---
 - determine 'protocol' for phy
 - Post-processing
@@ -32,52 +33,68 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 ssh yourid@spock
 password
 ```
-2. In scratch make sure there is a folder with your name and subfolder with ephys info. This is where you will clone the repo to, add unprocessed data into & use as input_folder for SLURM script
+2. In scratch make sure there is a folder with your name and subfolder(s) with ephys/rat info. This is where you will clone the repo to, add unprocessed data into & use as input_folder for SLURM script
 
 ```
-/jukebox/scratch/*your folder*/ephys
+/jukebox/scratch/*your folder*/ephys/*folder for raw data*
 ```
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
-3. Clone Brody_lab_ephys git hub repo to your scratch folder, or copy it over from other directory if you already have it. Just note: repo & data files to be processed need to be in the same directory.
+3. Move files you want to process into `/jukebox/scratch/*your folder*/ephys/*folder for raw data*` (**do this on globus!**)
+
+4. Clone Brody_lab_ephys git hub repo to your scratch folder, or copy it over from other directory if you already have it. Just note: repo & data files to be processed need to be in the same directory.
 
 ```
-cd /jukebox/scratch/*your folder*/ephys
+cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
 or
  ```
- cp </path/to/cloned/repo> /jukebox/scratch/*your folder*/ephys
+ cp </path/to/cloned/repo> /jukebox/scratch/*your folder*/ephys/*folder with raw data*
  ```
-
-4. Move files you want to process into `/jukebox/scratch/*your folder*/ephys` (**do this on globus!**)
-
-5. Open & interactive screen & grab a Brody lab node
-
+5. Open kilosort_slurm.sh & edit input & output folders. Additionally, adjust paths in the header for job output/errors & email for job updates.
 ```
-tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash
-```
-- Creates a new shell on the node  with 11 cores & reserves for 11 hours
-- To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
-
-6. Open kilosort_slurm.sh & edit input & output folders. Additionally, adjust paths in the header for job output/errors & email for job updates.
-```
-cd /jukebox/scratch/*your folder*/ephys
+cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
 nano kilosort_slurm.sh
  --- in nano ---
-input_folder="/jukebox/scratch/*your folder*/ephys"
+input_folder="/jukebox/scratch/*your folder*/ephys/*folder with raw data*"
 output_folder="/jukebox/wherever/you/store/your/processed/data"
 
 !!!also adjust header for your ID!!!
 ```
 
-7. Run kilosort_slurm.sh to convert any .dat, .rec and .mda files into .bin files for kilosort
+slurm notes:
+- 1. this is set to run on a Brody lab partition, remove the --partition line if this does not apply to you
+- 2. rather than running on slurm via sbatch (step 7 below), if the job is small enough, you can allocate a node instead:
+```
+tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash
+```
+  - Creates a new shell on the node  with 11 cores & reserves for 11 hours
+  - To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
-`sbatch bash kilosort_slurm.sh`
+
+7. Run `kilosort_slurm.sh` to convert any .dat, .rec and .mda files into .bin files for kilosort
+
+```
+cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
+sbatch ./kilosort_slurm.sh
+```
+
+Function highlights:
+- 1. cds into input_folder directory and makes an array of file names with .rec or .dat extension
+- 2. Loops over file names and passes each into `pipeline_fork2` to create .mda files
+  - a. this function converts .dat and .rec files into .mda files
+
+---
+- 3. (not yet set up!) takes directory of .mda folders a passes into `tetrode_32_mdatobin.m`
+  - a. this function convers .mda files into .bin files and split into 4 groups of 8 tetrodes for each session
+
+
+
 
 8. (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
 
-9. Go to step 8 in local step by step and run `kilosort_preprocess.m` & `kilosort`
+9. Go to step 7 in local step by step and run `tetrode_32_mdatobin.m`,`kilosort_preprocess.m` & `kilosort`
 
 -----------------------
 ### Local step by step:
@@ -86,18 +103,27 @@ output_folder="/jukebox/wherever/you/store/your/processed/data"
 
 Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions). 1-2 only needed for first time use
 
-1. In scratch make sure there is a folder with your name and subfolder with ephys info. This is where you will run and save your data from/to
+1. In scratch make sure there is a folder with your name and subfolder with ephys/rat info. This is where you will run and save your data from/to
 
-`/jukebox/scratch/*your folder*/ephys`
+`/jukebox/scratch/*your folder*/ephys/*folder for raw data*`
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
 **this might need to be done into the Brody_Lab_Ephys repo, update once pipeline is completed**
 
-2. Clone brody_lab_ephys git hub repo to your scratch folder
+2. Clone Brody_Lab_Ephys github repo into your scratch data folder
 
-`git clone https://github.com/jess-breda/Brody_Lab_Ephys`
+```
+cd /jukebox/scratch/*your folder*/ephys/*folder for raw data*
+git clone https://github.com/jess-breda/Brody_Lab_Ephys
+```
 
-Function highlights:
+Then, copy the trodes config file up out of the repo and into the folder so it is on the same level as the data (this is automatically done if running `kilosort_slurm.sh`)
+```
+cd /jukebox/scratch/*your folder*/ephys/*folder for raw data*
+cp Brody_Lab_Ephys/128_Tetrodes_Sensors_CustomRF.trodesconf .  
+```
+
+Repo function highlights:
 - `pipeline_fork2.sh` converts .dat or .rec files to .mda files
 - `tetrode_32_mdatobin` converts .mda files into .bin files and splits 32 tetrodes into groups of 8 to reduce processing time
 - `kilosort_preprocess` removes large noise artifacts & persistent noise from .bin files so they don't eat up templates in kilosort
@@ -106,12 +132,12 @@ Function highlights:
 3. In globus, take a .dat or .rec file(s) from archive and copy it into your scratch folder
 
 Stored in: `/jukebox/archive/brody/RATTER/PhysData/Raw/*your folder*/*your rat*/*session file*`
-Move to: `/jukebox/scratch/*your folder*/ephys`
+Move to: `/jukebox/scratch/*your folder*/ephys/*folder for raw data*`
 
 File format:
 - previous pipeline.sh versions needed file in specific naming format (see wiki for more info)
 - this is no longer the case, just needs to be `.dat` or `.rec`
-- Brody lab naming conventions = `{session}.dat` or `{session}.rec` where `{session}` = `data_sdX_date_tetrodenums.dat` or `data_sdX_date_tetrodenums_fromSD.rec` where `X = c or b`
+- Brody lab naming conventions = `{session}.dat` or `{session}.rec` where `{session}` = any string with data/tetrode/rat information
 
 4. Sign into spock and create a new tmux screen in the repo.
 
@@ -119,9 +145,9 @@ File format:
 ssh yourid@spock
 password
 
-cd  /jukebox/scratch/*your folder*/ephys/Brody_Lab_Ephys
+cd  /jukebox/scratch/*your folder*/ephys/*folder with raw data*
 
-tmux new -s pipeline
+tmux new -s <DescriptiveSessionName>
 ```
 To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
@@ -147,7 +173,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
   - Using exportdio and export from [trodes & ,mountainlab](https://bitbucket.org/mkarlsso/trodes/wiki/ExportFunctions/)
 
 *this function returns:*
-- In `/jukebox/scratch/*your folder*/ephys/Brody_Lab_Ephys` there will be a directory named `{session}.mda`
+- In `/jukebox/scratch/*your folder*/ephys/*folder with raw data*` there will be a directory named `{session}.mda`
 - `{session}.mda` will contain .mda files, .matlab files and results files
 - we only care about the .mda files that have the naming convention:
   - `{session}.ntX.referenced` where `X = channel number`
