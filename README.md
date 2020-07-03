@@ -188,8 +188,8 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 *this function optionally takes:*
 - a directory containing output(s) from pipeline function above, or current working directory with no argument
   - multiple mda output folders can be in directory (ie multiple sessions can be run at the same time)
-      - mda folder format: `/jukebox/scratch/*your folder*/ephys/{session}.mda/*32_mda_files_here*`
-        - for this example, you'd want to run the function from the directory `/jukebox/scratch/*your folder*/ephys`
+      - mda folder format: `/jukebox/scratch/*your folder*/ephys/*folder with raw data*/{session}.mda/*32_mda_files_here*`
+        - for this example, you'd want to run the function from the directory `/jukebox/scratch/*your folder*/ephys/*folder with raw data*`
   - note: the .mda files **must** all be the same size for this function to properly work/for you to be running it on the correct files
   - directory is flexible for mac or pc
 
@@ -198,7 +198,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 - uses base functions to bundle tetrodes in groups of 8
 
 *this function returns:*
-- a folder with `binfilesforkilsort2` located in `/jukebox/scratch/*your folder*/ephys`
+- a folder with `binfilesforkilsort2` located in `/jukebox/scratch/*your folder*/ephys/*folder with raw data*`
 - for each session, 4 .bin files in groups of 8 tetrodes will be created with the naming scheme `{session}_Nbundle.bin`
 - returns to the directory is starts in
 
@@ -212,7 +212,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 
 *this function optionally takes:*
 - directory containing .bin files(s) to process (cwd), number of channels (32), butterworth parameters (sample rate = 32000, highpass = 300)
-  - for this example, you'd run from the directory `/jukebox/scratch/*your folder*/ephys/binfilesforkilsort2`
+  - for this example, you'd run from the directory `/jukebox/scratch/*your folder*/ephys/*folder with raw data*/binfilesforkilsort2`
 
 *this function performs:*
 - loops over portions of the data, reads them in, applies the high pass butterworth filter

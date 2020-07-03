@@ -16,8 +16,7 @@
 % in debugger
 % 
 % = EXAMPLE CALLS:
-% -
-% data_screen('data_sdb_20190609_123456_fromSD_secondbundle.bin')
+% - data_screen('data_sdb_20190609_123456_fromSD_secondbundle.bin')
 % ---------------------
 function data_screen(fname)
 
@@ -28,45 +27,39 @@ fid=fopen(fname,'r');
 chan = 32
 sfreq = 30000
 
-  for x = 1:100 %randomly picked 100, might break if it runs through (?)
+  for x = 1:100 %randomly picked big number
     
     % now, read in data
     % format it as a matrix with chan rows and X samples of time
     
     ten_min = (10 * 60) * sfreq
 
-    dataRAW = fread(fid, [chan ten_min/2], 'int16');
+    dataRAW = fread(fid, [chan ten_min], 'int16');
     
-    %plot the electrodes in two plots for ease of viewing
-%     for z = 1:chan
-%         if z < (chan/2) + 1
-%             figure(1); subplot(chan/2,1,z); plot(dataRAW(z,:));
-%             title(sprintf('Loop %d', x)); 
-%         else
-%             figure(2); subplot(chan/2,1,z-16); plot(dataRAW(z,:))
-%         end
     for z = 1:8
-        figure(1); subplot(chan/2,1,z); plot(dataRAW(z,:));
-        title(sprintf('Loop %d', x)); 
+        figure(1); subplot(chan/4,1,z); plot(dataRAW(z,:));
+        ylim([-25000 25000])
+        title(sprintf('Loop %d', x));
+        
     end
     
-  %chan 6 super noise
- 
-  %plot the electrodes in two plots for ease of viewing
+  %chan 6,17,19,20 = super noise
+ pwd
+ % use this to plot all the electrodes in the debugger
 %     for z = 1:chan
 %         if z < (chan/2) + 1
 %             figure(1); subplot(chan/2,1,z); plot(dataRAW(z,:));
 %             title(sprintf('Loop %d', x)); 
 %         else
 %             figure(2); subplot(chan/2,1,z-16); plot(dataRAW(z,:))
-%         end
+%     end
   
   
   end
   
   fclose(fid)
   
-  % binary file to write to
+  % binary file to write to in debugger terminal when the time comes
 %   fidw = fopen(sprintf('%s_good.bin',fname(1:end-4)), 'w');
 %   fidw = fopen(sprintf('%s_bad.bin',fname(1:end-4)), 'w');
 %   fwrite(fidw, datRAW, 'int16')
