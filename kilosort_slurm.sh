@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --nodes=1                            # node count
-#SBATCH -o /jukebox/scratch/jbreda/ephys/ephys.out  # where to save the output files of the job
-#SBATCH -e /jukebox/scratch/jbreda/ephys/ephys.err  # where to save the error files of the job
+#SBATCH -o /jukebox/scratch/jbreda/ephys/ephys_W122.out  # where to save the output files of the job
+#SBATCH -e /jukebox/scratch/jbreda/ephys/ephys_W122.err  # where to save the error files of the job
 #SBATCH -t 840                               # 14 hour time limit
 #SBATCH --mem=32000 # 32GB of RAM
 #SBATCH --mail-type=ALL
@@ -14,7 +14,7 @@
 # necessary fx: pipeline_fork2.sh, exportdio, exportmda, sdtorec, trodes.config, readmda, tetrode_32_mdatobin.m
 # input folder needs to have data & functions!!
 
-input_folder="/jukebox/scratch/jbreda/ephys/kilosort_slurm_test"
+input_folder="/jukebox/scratch/jbreda/ephys/W122"
 # output_folder="/jukebox/brody/jbreda/ephys"
 
 # Step 2: in input folder, look for files with .rec and .dat extension, add their names to a list & print to output
