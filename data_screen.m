@@ -1,7 +1,7 @@
 % ---------------------
 % written by Jess Breda 20200627
 % purpose is to screen through channels in a .bin file, plot them and
-% then extract for further kilosort testing. Put break point on line 48 to
+% then extract for further kilosort testing. Put break point on line 47 to
 % step through plots.
 %
 % TODO:
@@ -34,7 +34,7 @@ sfreq = 30000
     
     ten_min = (10 * 60) * sfreq
 
-    dataRAW = fread(fid, [chan ten_min], 'int16');
+    dataRAW = fread(fid, [chan ten_min/1.3], 'int16');
     
     for z = 1:8
         figure(1); subplot(chan/4,1,z); plot(dataRAW(z,:));

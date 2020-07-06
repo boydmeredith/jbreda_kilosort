@@ -12,8 +12,9 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 # TODO
 - adjust kilosort parameters to 'good' data & then reassess on 'bad' data using data_screen.m
 - fill in step 7 of "running on spock" with function information. what is this function doing/how. What is it calling? (see below in 'running locally' for info for now)
-- check what happens if there is already a trodes conf file in the directory- make a statement in fx if needed
 - add `tetrode_32_mdatobin.m` to kilosort_slurm
+  - you'll probably want to make 'binfilesforkilosort2' folder have an extra string somewhere (like for job id 1234 binfilesforkilosort2_1234) so you don't accidentally overwrite another binfilesforkilosort2 folder
+  - take jobid as an argument
 ---
 - determine 'protocol' for phy
 - Post-processing
@@ -117,7 +118,7 @@ cd /jukebox/scratch/*your folder*/ephys/*folder for raw data*
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
 
-Then, copy the trodes config file up out of the repo and into the folder so it is on the same level as the data (this is automatically done if running `kilosort_slurm.sh`)
+Then, copy the trodes config file up out of the repo and into the folder so it is on the same level as the data (this is automatically done if running `kilosort_slurm.sh`). It's okay if it is already there, it will be copied over.
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder for raw data*
 cp Brody_Lab_Ephys/128_Tetrodes_Sensors_CustomRF.trodesconf .  
