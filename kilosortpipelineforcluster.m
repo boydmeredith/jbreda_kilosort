@@ -23,7 +23,7 @@
 % ---------------------
 %
 %%
-function kilosortpipelineforcluster(foldername,inscratch)
+function kilosortpipelineforcluster(input_folder, repo_name, jobid)
 
 % --- add paths
 % need a path for the data
@@ -47,6 +47,29 @@ function kilosortpipelineforcluster(foldername,inscratch)
 % fname_forkilsort.bin
 % TODO: add all the 'X_forkilosort.bin' files into a folder to keep things
 % organized
+%----
+
+
+
+addpath(input_folder);
+addpath(fullfile(input_folder, sprintf('/%s', repo_name))
+
+cd(input_folder) %not necessary, but just being explicit
+
+% if ~exist(input_folder,'dir')
+%     error('no cscope folder')
+% end
+% if ~exist('/mnt/sink/scratch/ejdennis/W128/NoRMCorre','dir')
+%     error('no normcorre folder')
+% end
+
+fprintf(jobid)
+fprintf(input_folder)
+fullfile(input_folder, sprintf('/%s', repo_name))
+
+
+tetrode_32_mdatobin_forcluster(input_folder, jobid)
+
 
 disp('completed succesffully')
 

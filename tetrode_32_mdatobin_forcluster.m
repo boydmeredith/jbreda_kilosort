@@ -43,6 +43,9 @@
 % - tetrode_32_mdatobin_forcluster('C:\Users\jbred\Github\Brody_Lab_Ephys\data', '20002')
 % ---------------------
 
+%2020707- all this function does right now is return the mda folder names
+%in the directory. this is just for testing on cluster
+
 function [allfoldernames] = tetrode_32_mdatobin_forcluster(varargin)
 
 
