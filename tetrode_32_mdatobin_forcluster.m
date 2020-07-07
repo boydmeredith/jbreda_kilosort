@@ -129,7 +129,7 @@ for i = 1:length(allfoldernames)
         % genericfilename{i} was here before. may
         % need to return if running with more than one folder?
         
-        thisfilename = [genericfilename sprintf('.nt%d.referenced.mda',j)];
+        thisfilename = [genericfilename sprintf('.nt%d.mda',j)]; %taking the .referenced out
         if j < 9
             firstbundle = [firstbundle;int16(readmda(thisfilename))];
         elseif j > 24
