@@ -22,23 +22,25 @@
 % OPTIONAL PARAMETERS:
 % - workspace: directory in which your .mda files are, if no
 % argument is entered, will use current working directory.
+%- jobid: job number from slurm submission, if no argument is entered, will
+% attach 'nojobid' to directory name
 %
 % assumed working directory format is from pipe_fork2.sh function. 
 % Ex: your/data/directory/dir_w_mda_folders_for_N_sessions
 % where N is >= 1
 %
-% in each mda session folder, there should be N .mda files all of the same
-% size
+% in each mda session folder, there should be X .mda files all of the same
+% size where X = number of channels
 % Ex: your/data/directory/dir_w_mda_files_for_1_session/*files here*
 % 
 % RETURNS:
 % - creates a folder in working directory with .mda files called
-% 'binfilesforkilosort2'. Four .bin files will be created corresponding to
+% 'binfilesforkilosort2_jobid'. Four .bin files will be created corresponding to
 % groups of 8 tetrodes for each sesssion. 
 
 % 
 % = EXAMPLE CALLS:
-% - 
+% - tetrode_32_mdatobin_forcluster('C:\Users\jbred\Github\Brody_Lab_Ephys\data', '20002')
 % ---------------------
 
 function [allfoldernames] = tetrode_32_mdatobin_forcluster(varargin)
