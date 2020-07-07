@@ -64,10 +64,11 @@ function kilosortpipelineforcluster(input_folder, repo_name, jobid)
 %     error('no normcorre folder')
 % end
 
-fprintf('jobid')
-fprintf('input_folder')
+fprintf(jobid)
+fprintf(input_folder)
 repo_path = fullfile(input_folder, sprintf('/%s', repo_name))
 addpath(repo_path)
+addpath(input_folder)
 
 % tetrode_32_mdatobin_forcluster(input_folder, jobid)
 % 
