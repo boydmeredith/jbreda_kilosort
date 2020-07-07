@@ -100,84 +100,84 @@ allfoldernames = {thefolders.name};
 N_channels = 32
 % N_folders = 1  % so I can run debug and only run one folder at a time
 
-% for i = 1:length(allfoldernames)
-% % for i = 1:length(N_folders) % debugging
-% 
-% 
-%     % datafolder = [allfoldernames{i} '/results']; this wasn't working
-%     % because the way the data is stored, the result file does not actually
-%     % contain the .mda files we want. They are all different sizes and
-%     % break the function.
-%     
-%     datafolder = [allfoldernames{i}]
-%     cd(datafolder)
-%     
-%     % note this makes a 1 X 2 array with the second being empty, so we grab
-%     % the first, otherwise this will break the fopen function below
-%     genericfilename = strsplit(allfoldernames{i},'.mda');
-%     genericfilename = genericfilename{1}
-%     
-%     firstbundle=[];
-%     secondbundle=[];
-%     thirdbundle=[];
-%     fourthbundle=[];
-%     
-%     %load the first bundle of tetrodes
-%     for j = 1:N_channels
-%         % If you get readmda errors here, check to make sure the file
-%         % suffix is correct (JB).
-%         % genericfilename{i} was here before. may
-%         % need to return if running with more than one folder?
-%         
-%         thisfilename = [genericfilename sprintf('.nt%d.referenced.mda',j)];
-%         if j < 9
-%             firstbundle = [firstbundle;int16(readmda(thisfilename))];
-%         elseif j > 24
-%             fourthbundle = [fourthbundle;int16(readmda(thisfilename))];
-%         elseif j < 17
-%             secondbundle = [secondbundle;int16(readmda(thisfilename))];
-%         else
-%             thirdbundle = [thirdbundle;int16(readmda(thisfilename))];
-%         end
-%     end
-%    
-% 
-%     sprintf('folder %n of %d is now saving...',i,length(allfoldernames))
-%     
-%     
-%     
-%     fname = [binfolder, delim genericfilename, '_firstbundle.bin']
-%     fid = fopen(fname,'w');
-%     fwrite(fid,firstbundle,'int16');
-%     fclose(fid);
-%     sprintf('bundle 1 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
-%     
-%     fname = [binfolder, '\', genericfilename, '_secondbundle.bin']
-%     fid = fopen(fname,'w');
-%     fwrite(fid,secondbundle,'int16');
-%     fclose(fid);
-%     sprintf('bundle 2 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
-%    
-%     fname = [binfolder, '\', genericfilename, '_thirdbundle.bin']
-%     fid = fopen(fname,'w');
-%     fwrite(fid,thirdbundle,'int16');
-%     fclose(fid);
-%     sprintf('bundle 3 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
-% 
-%     fname = [binfolder, '\', genericfilename, '_fourthbundle.bin']
-%     fid = fopen(fname,'w');
-%     fwrite(fid,fourthbundle,'int16');
-%     fclose(fid);
-%     sprintf('bundle 4 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
-%     
-%     pwd
-%     % head back to the parent folder so we can tackle the next recording
-%     cd ..
-%     pwd
-%     % cd myparent folder %% this does not work, just need to step back one
-%     % directory
-%     %tell the user something is happening
-%     sprintf('folder %n of %d done processing',i,length(allfoldernames))
-% 
-% end
-% end
+for i = 1:length(allfoldernames)
+% for i = 1:length(N_folders) % debugging
+
+
+    % datafolder = [allfoldernames{i} '/results']; this wasn't working
+    % because the way the data is stored, the result file does not actually
+    % contain the .mda files we want. They are all different sizes and
+    % break the function.
+    
+    datafolder = [allfoldernames{i}]
+    cd(datafolder)
+    
+    % note this makes a 1 X 2 array with the second being empty, so we grab
+    % the first, otherwise this will break the fopen function below
+    genericfilename = strsplit(allfoldernames{i},'.mda');
+    genericfilename = genericfilename{1}
+    
+    firstbundle=[];
+    secondbundle=[];
+    thirdbundle=[];
+    fourthbundle=[];
+    
+    %load the first bundle of tetrodes
+    for j = 1:N_channels
+        % If you get readmda errors here, check to make sure the file
+        % suffix is correct (JB).
+        % genericfilename{i} was here before. may
+        % need to return if running with more than one folder?
+        
+        thisfilename = [genericfilename sprintf('.nt%d.referenced.mda',j)];
+        if j < 9
+            firstbundle = [firstbundle;int16(readmda(thisfilename))];
+        elseif j > 24
+            fourthbundle = [fourthbundle;int16(readmda(thisfilename))];
+        elseif j < 17
+            secondbundle = [secondbundle;int16(readmda(thisfilename))];
+        else
+            thirdbundle = [thirdbundle;int16(readmda(thisfilename))];
+        end
+    end
+   
+
+    sprintf('folder %n of %d is now saving...',i,length(allfoldernames))
+    
+    
+    
+    fname = [binfolder, delim genericfilename, '_firstbundle.bin']
+    fid = fopen(fname,'w');
+    fwrite(fid,firstbundle,'int16');
+    fclose(fid);
+    sprintf('bundle 1 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
+    
+    fname = [binfolder, '\', genericfilename, '_secondbundle.bin']
+    fid = fopen(fname,'w');
+    fwrite(fid,secondbundle,'int16');
+    fclose(fid);
+    sprintf('bundle 2 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
+   
+    fname = [binfolder, '\', genericfilename, '_thirdbundle.bin']
+    fid = fopen(fname,'w');
+    fwrite(fid,thirdbundle,'int16');
+    fclose(fid);
+    sprintf('bundle 3 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
+
+    fname = [binfolder, '\', genericfilename, '_fourthbundle.bin']
+    fid = fopen(fname,'w');
+    fwrite(fid,fourthbundle,'int16');
+    fclose(fid);
+    sprintf('bundle 4 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
+    
+    pwd
+    % head back to the parent folder so we can tackle the next recording
+    cd ..
+    pwd
+    % cd myparent folder %% this does not work, just need to step back one
+    % directory
+    %tell the user something is happening
+    sprintf('folder %n of %d done processing',i,length(allfoldernames))
+
+end
+end
