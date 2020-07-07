@@ -51,10 +51,11 @@ function kilosortpipelineforcluster(input_folder, repo_name, jobid)
 
 
 
-addpath(input_folder);
-addpath(fullfile(input_folder, sprintf('/%s', repo_name))
-
-cd(input_folder) %not necessary, but just being explicit
+% addpath(input_folder);
+% 
+% addpath(fullfile(input_folder, sprintf('/%s', repo_name))
+% 
+% cd(input_folder) %not necessary, but just being explicit
 
 % if ~exist(input_folder,'dir')
 %     error('no cscope folder')
@@ -68,8 +69,8 @@ fprintf(input_folder)
 fullfile(input_folder, sprintf('/%s', repo_name))
 
 
-tetrode_32_mdatobin_forcluster(input_folder, jobid)
-
+% tetrode_32_mdatobin_forcluster(input_folder, jobid)
+% 
 
 disp('completed succesffully')
 
