@@ -70,8 +70,8 @@ repo_path = fullfile(input_folder, sprintf('/%s', repo_name))
 addpath(repo_path)
 addpath(input_folder)
 
-% tetrode_32_mdatobin_forcluster(input_folder, jobid)
-% 
+tetrode_32_mdatobin_forcluster(input_folder, jobid)
+
 
 disp('completed succesffully')
 
