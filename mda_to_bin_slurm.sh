@@ -24,7 +24,7 @@ echo $jobid
 module load matlab/R2019b5
 
 # call kilosortpipelineforcluster
-	matlab -nosplash -nodisplay -nodesktop -r "kilosortpipelineforcluster('${input_folder}','${repo}','${job_id}');exit"
+	matlab -nosplash -nodisplay -nodesktop -r "kilosortpipelineforcluster('${input_folder}','${repo}','${jobid}');exit"
 
 
 # echo "matlab worked"
