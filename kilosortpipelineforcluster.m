@@ -64,7 +64,7 @@ function kilosortpipelineforcluster(input_folder, repo_name, jobid)
 %     error('no normcorre folder')
 % end
 
-fprintf(jobid)
+fprintf('jobid')
 fprintf('input_folder')
 repo_path = fullfile(input_folder, sprintf('/%s', repo_name))
 addpath(repo_path)
