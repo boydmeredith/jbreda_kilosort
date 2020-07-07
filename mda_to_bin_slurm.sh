@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --nodes=1                            # node count
-#SBATCH -o /jukebox/scratch/jbreda/ephys/ephys_W122.out  # where to save the output files of the job
-#SBATCH -e /jukebox/scratch/jbreda/ephys/ephys_W122.err  # where to save the error files of the job
+#SBATCH -o /jukebox/scratch/jbreda/ephys/mdatobin.out  # where to save the output files of the job
+#SBATCH -e /jukebox/scratch/jbreda/ephys/mdatobin.err  # where to save the error files of the job
 #SBATCH -t 840                               # 14 hour time limit
 #SBATCH --mem=32000 # 32GB of RAM
 #SBATCH --mail-type=ALL
@@ -14,6 +14,7 @@ input_folder="/jukebox/scratch/jbreda/ephys/data_sdc_20190902_145505_pipeline"
 cd $input_folder
 repo="Brody_Lab_Ephys"
 cd $repo
+pwd
 
 # grab the current jobid and print it
 jobid=$SLURM_JOB_ID
