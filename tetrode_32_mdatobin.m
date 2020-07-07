@@ -50,7 +50,7 @@ function tetrode_32_mdatobin(workspace)
 
     if nargin > 0
         if isdir(workspace)
-            cd workspace
+            cd(workspace)
             myparentfolder = pwd;
         else
             error('input should be empty or contain a valid directory')

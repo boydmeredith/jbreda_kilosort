@@ -53,15 +53,15 @@ sfreq = 30000
 %         else
 %             figure(2); subplot(chan/2,1,z-16); plot(dataRAW(z,:))
 %     end
-  
-  
-  end
-  
-  fclose(fid)
+%   
+%   
+    end
+%   
+    fclose(fid)
   
   % binary file to write to in debugger terminal when the time comes
 %   fidw = fopen(sprintf('%s_good.bin',fname(1:end-4)), 'w');
 %   fidw = fopen(sprintf('%s_bad.bin',fname(1:end-4)), 'w');
-%   fwrite(fidw, datRAW, 'int16')
+%   fwrite(fidw, dataRAW, 'int16')
 
 end
