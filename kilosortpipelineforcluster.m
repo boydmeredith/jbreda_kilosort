@@ -65,9 +65,9 @@ function kilosortpipelineforcluster(input_folder, repo_name, jobid)
 % end
 
 fprintf(jobid)
-fprintf(input_folder)
-fullfile(input_folder, sprintf('/%s', repo_name))
-
+fprintf('input_folder')
+repo_path = fullfile(input_folder, sprintf('/%s', repo_name))
+addpath(repo_path)
 
 % tetrode_32_mdatobin_forcluster(input_folder, jobid)
 % 
