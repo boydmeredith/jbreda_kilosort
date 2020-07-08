@@ -1,0 +1,3 @@
+[submodule "utils/Kilosort2"]
+	path = utils/Kilosort2
+	url = https://github.com/MouseLand/Kilosort2.git
