@@ -10,7 +10,7 @@
 #SBATCH --partition=Brody                    # run on brodylab parition
 
 # pick up from where you left of in previous script & move into repo
-input_folder="/jukebox/scratch/jbreda/ephys/data_sdc_20190902_145505_pipeline"
+input_folder="/jukebox/scratch/jbreda/ephys/kilosort_slurm_test"
 cd $input_folder
 repo="Brody_Lab_Ephys"
 cd $repo
