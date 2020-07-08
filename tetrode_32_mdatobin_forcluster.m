@@ -152,19 +152,19 @@ for i = 1:length(allfoldernames)
     fclose(fid);
     sprintf('bundle 1 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
     
-    fname = [binfolder, '\', genericfilename, '_secondbundle.bin']
+    fname = [binfolder, delim genericfilename, '_secondbundle.bin']
     fid = fopen(fname,'w');
     fwrite(fid,secondbundle,'int16');
     fclose(fid);
     sprintf('bundle 2 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
    
-    fname = [binfolder, '\', genericfilename, '_thirdbundle.bin']
+    fname = [binfolder, delim genericfilename, '_thirdbundle.bin']
     fid = fopen(fname,'w');
     fwrite(fid,thirdbundle,'int16');
     fclose(fid);
     sprintf('bundle 3 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
 
-    fname = [binfolder, '\', genericfilename, '_fourthbundle.bin']
+    fname = [binfolder, delim genericfilename, '_fourthbundle.bin']
     fid = fopen(fname,'w');
     fwrite(fid,fourthbundle,'int16');
     fclose(fid);
