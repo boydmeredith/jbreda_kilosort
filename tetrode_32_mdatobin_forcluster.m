@@ -1,30 +1,27 @@
-%% 
-% goal: to become a function for taking 32 tetrode wireless ephys data from
-% spikegadgets and turn it into binary files formatted for kilosort2
 %%
 % ---------------------
 % created by EJ Dennis 20190823 & modified by J Breda 20200707
 %
 % purpose is to take a folder(s) of .mda files corresponding to a 32 tetrode
 % recording session, convert them to .bin files for kilsort and separate
-% them into four bundles of 8 tetrodes.
+% them into four bundles of 8 tetrodes & perform this on the SLURM
+% cluster
 % 
 % TODO:
-% - 
 % - add an option to have a file with bad tetrodes (EJD)
 % - ideally make something that allows for easy in/out from EIB testing
 % (EJD)
-% - example calls
 %
 % INPUT PARAMETERS:
-% - none
+% - nones
 % 
 % OPTIONAL PARAMETERS:
-% - workspace: directory in which your .mda files are, if no
+% - myparentfolder: directory in which your .mda folders are, if no
 % argument is entered, will use current working directory.
-%- jobid: job number from slurm submission, if no argument is entered, will
+%- jobid: job number from SLURM submission, if no argument is entered, will
 % attach 'nojobid' to directory name
 %
+% NOTES:
 % assumed working directory format is from pipe_fork2.sh function. 
 % Ex: your/data/directory/dir_w_mda_folders_for_N_sessions
 % where N is >= 1
@@ -41,18 +38,18 @@
 % 
 % = EXAMPLE CALLS:
 % - tetrode_32_mdatobin_forcluster('C:\Users\jbred\Github\Brody_Lab_Ephys\data', '20002')
+% - tetrode_32_mdatobin_forcluster(input_folder, jobid) (in
+% kilosortpipelineforcluster.m wrapper)
 % ---------------------
 
-%2020707- all this function does right now is return the mda folder names
-%in the directory. this is just for testing on cluster
 
-function [allfoldernames] = tetrode_32_mdatobin_forcluster(varargin)
+function tetrode_32_mdatobin_forcluster(varargin)
 
-
+% if/else parameter settings
 if isempty(varargin)
     myparentfolder=pwd;
-    jobid = 'nojobid' % will name binfileforkilosort2_noid
-    
+    jobid = 'nojobid' % will name binfileforkilosort2_nojobid
+ 
 elseif length(varargin)==1
     if isdir(varargin{1})
             cd(varargin{1})
@@ -79,8 +76,7 @@ else
     delim='/';
 end
 
-% make a new folder for the bin files we will make today and add it to your
-% path 
+% make a new folder for the bin files to be made in this job and add it to your path 
 mkdir(fullfile(myparentfolder, delim, sprintf('binfilesforkilosort2_%s',jobid)))
 binfolder = [myparentfolder, delim, sprintf('binfilesforkilosort2_%s',jobid)]
 addpath(binfolder)
@@ -102,13 +98,8 @@ N_channels = 32
 
 for i = 1:length(allfoldernames)
 % for i = 1:length(N_folders) % debugging
-
-
-    % datafolder = [allfoldernames{i} '/results']; this wasn't working
-    % because the way the data is stored, the result file does not actually
-    % contain the .mda files we want. They are all different sizes and
-    % break the function.
     
+    % iterate over ith mda folder
     datafolder = [allfoldernames{i}]
     cd(datafolder)
     
@@ -126,10 +117,11 @@ for i = 1:length(allfoldernames)
     for j = 1:N_channels
         % If you get readmda errors here, check to make sure the file
         % suffix is correct (JB).
+        
         % genericfilename{i} was here before. may
         % need to return if running with more than one folder?
         
-        thisfilename = [genericfilename sprintf('.nt%d.mda',j)]; %taking the .referenced out
+        thisfilename = [genericfilename sprintf('.nt%d.mda',j)]; %taking the .referenced out 20200707
         if j < 9
             firstbundle = [firstbundle;int16(readmda(thisfilename))];
         elseif j > 24
@@ -170,12 +162,9 @@ for i = 1:length(allfoldernames)
     fclose(fid);
     sprintf('bundle 4 of 4 of folder %n of %d is now saving...',i,length(allfoldernames))
     
-    pwd
     % head back to the parent folder so we can tackle the next recording
     cd ..
-    pwd
-    % cd myparent folder %% this does not work, just need to step back one
-    % directory
+    
     %tell the user something is happening
     sprintf('folder %n of %d done processing',i,length(allfoldernames))
 

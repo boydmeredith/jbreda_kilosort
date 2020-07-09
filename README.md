@@ -13,7 +13,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 - adjust kilosort parameters to 'good' data & then reassess on 'bad' data using data_screen.m
 - integrate kilosort into repo
 - turn main kilosort into function
-- write a config file wrapper function to iterate over differnt configurations
+- write a config file wrapper function to iterate over different configurations
 ---
 - determine 'protocol' for phy
 - Post-processing
@@ -55,7 +55,6 @@ cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
 nano kilosort_slurm.sh
  --- in nano ---
 input_folder="/jukebox/scratch/*your folder*/ephys/*folder with raw data*"
-output_folder="/jukebox/wherever/you/store/your/processed/data"
 
 !!!also adjust header for your ID!!!
 ```
@@ -94,10 +93,9 @@ To break up conversion process you can run:
 
 **TODO make kilosort_slurm take an argument that stop and start at different parts of conversion**
 
-
 8. (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
 
-9. Go to step 7 in local step by step and run `tetrode_32_mdatobin.m`,`kilosort_preprocess.m` & `kilosort`
+9. Go to step 8 in local step by step and run `kilosort_preprocess.m` & `kilosort`
 
 -----------------------
 ### Local step by step:
@@ -111,7 +109,6 @@ Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?tit
 `/jukebox/scratch/*your folder*/ephys/*folder for raw data*`
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
-**this might need to be done into the Brody_Lab_Ephys repo, update once pipeline is completed**
 
 2. Clone Brody_Lab_Ephys github repo into your scratch data folder
 

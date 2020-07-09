@@ -112,7 +112,7 @@ for i = 1:length(listofbinaryfiles)
         ff = mean(datr.^2, 2).^.5; 
             % for the rows where ff > 1 (ie, good channels), use a window of every 2000 data
             % points and if the moving average is above 1
-        ff1 = movmean(double(ff>1), 3000);
+        ff1 = movmean(double(ff>1), 2000);
         %ff0 = double(ff>1)
         %yaxis is fraction of values in that window greater than 1
         ff2=ff1<.01;

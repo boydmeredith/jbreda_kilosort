@@ -1,79 +1,69 @@
 
 % ---------------------
 % written by Jess Breda
-% purpose is to run pre-kilosort function on cluster
+% purpose is to run pre-kilosort function on SLURM cluster. Currently used
+% as a wrapper for a fx to convert .mda files to .bin bundles. To be run
+% with kilosort_slurm.sh or mda_to_bin.sh
 %
 %
 % TODO:
-% - 
+% - add preproccessing fx when ready
 %
 % INPUT PARAMETERS:
-% - foldername:
-% - inscratch:
-%
+% all predefined in SLURM script
+% - input_folder = folder where data to be converted/analyzed and github repo
+% folder are located
+% - repo_name = name of the github repo
+% - jobid = SLURM job id
 %
 % OPTIONAL PARAMETERS:
 % - none
 % 
 % RETURNS:
-% - none but creates folders
+% - none
 % 
 % = EXAMPLE CALLS:
-% - 
+% (in SLURM script)
+% matlab -nosplash -nodisplay -nodesktop -r "kilosortpipelineforcluster('${input_folder}','${repo}','${jobid}');exit"
 % ---------------------
 %
 %%
 function kilosortpipelineforcluster(input_folder, repo_name, jobid)
 
-% --- add paths
-% need a path for the data
-% need a path for the repo with the other mat functions
-
-% --- get into proper directory
-% assuming this is written once .mda files are made..?
-% get into directory with .mda folders
-
-% --- makke sure github is there, display error messages if not
-
-% --- run tetrode_32_mdatobin.m
-% take the directory wtih .mda folders, convert to .bin and bundle them
-% this will create a folder in dir with .mda folders 'binfilesforkilosort2'
-% TODO: need to figure out where tetrode_32_mdatobin.m puts you when run on
-% multiple folders
-
-% --- run kilosortpreprocess.m
-% cd into 'binfilesforkilsort2'
-% iterates over each .bin file, preprocess it and then makes
-% fname_forkilsort.bin
-% TODO: add all the 'X_forkilosort.bin' files into a folder to keep things
-% organized
-%----
-
-
-
-% addpath(input_folder);
-% 
-% addpath(fullfile(input_folder, sprintf('/%s', repo_name))
-% 
-% cd(input_folder) %not necessary, but just being explicit
-
-% if ~exist(input_folder,'dir')
-%     error('no cscope folder')
-% end
-% if ~exist('/mnt/sink/scratch/ejdennis/W128/NoRMCorre','dir')
-%     error('no normcorre folder')
-% end
-
+% print things to verify what is being passed into the function
 fprintf(jobid)
 fprintf(input_folder)
+
+% add paths
 repo_path = fullfile(input_folder, sprintf('/%s', repo_name))
 addpath(repo_path)
 addpath(input_folder)
 
+% if paths aren't there, tell me
+if ~exist(repo_path,'dir')
+    error('no github repo')
+end
+
+if ~exist(input_folder,'dir')
+    error('no input folder')
+
+% call mda to bin funcion
 tetrode_32_mdatobin_forcluster(input_folder, jobid)
 
 
+% --- run kilosortpreprocess.m
+% cd into 'binfilesforkilsort2_jobid'
+% iterates over each .bin file, preprocess it and then makes
+% fname_forkilsort.bin
+% TODO: add all the 'X_forkilosort.bin' files into a folder to keep things
+% organized by session
+%----
+
+% message complete
 disp('completed succesffully')
 
 
 end
+
+
+
