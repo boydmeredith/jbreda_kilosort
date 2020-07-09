@@ -11,8 +11,9 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 ----------------------------------
 # TODO
 - adjust kilosort parameters to 'good' data & then reassess on 'bad' data using data_screen.m
-- fill in step 7 of "running on spock" with function information. what is this function doing/how. What is it calling? (see below in 'running locally' for info for now)
-- document `kilosortforcluster.m`, `tetrode_32_mdatobin_forcluster.m` and `mda_to_bin_slurm.sh`
+- integrate kilosort into repo
+- turn main kilosort into function
+- write a config file wrapper function to iterate over differnt configurations
 ---
 - determine 'protocol' for phy
 - Post-processing
