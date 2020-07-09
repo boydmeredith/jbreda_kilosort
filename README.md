@@ -12,7 +12,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 # TODO
 - adjust kilosort parameters to 'good' data & then reassess on 'bad' data using data_screen.m
 - fill in step 7 of "running on spock" with function information. what is this function doing/how. What is it calling? (see below in 'running locally' for info for now)
-- document `tetrode_32_mdatobin_forcluster.m` and `mda_to_bin_slurm.sh`
+- document `kilosortforcluster.m`, `tetrode_32_mdatobin_forcluster.m` and `mda_to_bin_slurm.sh`
 ---
 - determine 'protocol' for phy
 - Post-processing
@@ -41,16 +41,13 @@ password
 
 3. Move files you want to process into `/jukebox/scratch/*your folder*/ephys/*folder for raw data*` (**do this on globus!**)
 
-4. Clone Brody_lab_ephys git hub repo to your scratch folder, or copy it over from other directory if you already have it. Just note: repo & data files to be processed need to be in the same directory.
+4. Clone Brody_lab_ephys git hub repo to your scratch folder
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
-or
- ```
- cp </path/to/cloned/repo> /jukebox/scratch/*your folder*/ephys/*folder with raw data*
- ```
+
 5. Open kilosort_slurm.sh & edit input & output folders. Additionally, adjust paths in the header for job output/errors & email for job updates.
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
@@ -72,7 +69,7 @@ tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <De
   - To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
 
-7. Run `kilosort_slurm.sh` to convert any .dat, .rec and .mda files into .bin files for kilosort
+7. Run `kilosort_slurm.sh` to convert any .dat, .rec files --> .mda files --> .bin bundles for kilosort
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
@@ -83,12 +80,18 @@ Function highlights:
 - 1. cds into input_folder directory and makes an array of file names with .rec or .dat extension
 - 2. Loops over file names and passes each into `pipeline_fork2` to create .mda files
   - a. this function converts .dat and .rec files into .mda files
+- 3. in input_folder with new .mda folders, passes them into `kilosortpipelineforcluster.m` along with the repo name and jobid
+  - a. This function adds all needed paths & cds into correct directory before passing .mda folders into `tetrode_32_mdatobin_forcluster.m`
+  - b. `tetrode_32_mdatobin_forcluster.m` takes directory of .mda folders, makes a new directory with jobid appended and converts each recording session into .bin files split into 4 groups of 8 tetrodes for each session
 
----
-- 3. (not yet set up!) takes directory of .mda folders a passes into `tetrode_32_mdatobin.m`
-  - a. this function convers .mda files into .bin files and split into 4 groups of 8 tetrodes for each session
 
+8. OPTIONAL .dat and .rec --> .mda or .mda --> .bin bundles
 
+To break up conversion process you can run:
+
+`datrec_to_mda.sh` and `mda_to_bin.sh`
+
+**TODO make kilosort_slurm take an argument that stop and start at different parts of conversion**
 
 
 8. (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
