@@ -2,8 +2,8 @@
 
 addpath(genpath('C:\Users\jbred\Github\Brody_Lab_Ephys\utils\Kilosort2')) % path to kilosort folder
 addpath('C:\Users\jbred\npy-matlab-master') % for converting to Phy
-rootZ = 'ENTER'; % the raw data binary file is in this folder
-rootH = 'SAME AS ROOTZ'; % path to temporary binary file (same size as data, should be on fast SSD)
+rootZ = 'C:\Users\jbred\Github\Brody_Lab_Ephys\data\binfilesforkilosort2\preprocessing_files\kilosort_test'; % the raw data binary file is in this folder
+rootH = 'C:\Users\jbred\Github\Brody_Lab_Ephys\data\binfilesforkilosort2\preprocessing_files\kilosort_test'; % path to temporary binary file (same size as data, should be on fast SSD)
 pathToYourConfigFile = 'C:\Users\jbred\Github\Brody_Lab_Ephys\utils\local_kilosort'; % take from Github folder and put it somewhere else (together with the main_file)
 chanMapFile = '8tetrodes_channelmap.mat';
 

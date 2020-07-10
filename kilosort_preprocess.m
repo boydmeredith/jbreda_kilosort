@@ -91,7 +91,7 @@ for i = 1:length(listofbinaryfiles)
     % now, read in a PORTION of the data. Format it as a matrix with chan rows and
     % 1e5 values - we will loop through this for each file until all data is
     % read in
-        dataRAW = fread(fid, [chan 1e5], 'int16');
+        dataRAW = fread(fid, [chan 1e6], 'int16');
         sizeofdata=size(dataRAW);
         if sizeofdata(2) == 0
             break %breaks the while loop
@@ -164,7 +164,57 @@ fclose(fidw);
 %         title('saved data')
 %     saveas(gcf,[homedirectory,delim,fname, '_exampleplot'],'epsc')
 %     close gcf
-    
+
+
+% see what is happening on 8 channels
+% figure(1); 
+% for z = 1:8
+% subplot(8,1,z); plot(dataRAW(:,z));
+% end
+
+% post filter plot
+% figure(2); 
+% for z = 1:8
+% subplot(8,1,z); plot(datr(:,z)); ylim
+% end
+
+
+% comparing absolute value & filtered data
+test_chan = 6
+clf;
+figure(1); plot(datr(:,test_chan));
+hold on
+plot(ff); ylim([0, 1]);
+legend('butter data', 'abs val data'); title(test_chan);
+
+% playing with window sizes
+% ff_1000 = movmean(double(ff>1), 1000);
+% ff_2000 = movmean(double(ff>1), 2000);
+% ff_3000 = movmean(double(ff>1), 3000);
+% ff_4000 = movmean(double(ff>1), 4000);
+% ff_10000 = movmean(double(ff>1), 10000);
+% figure(3); subplot(5,1,1); plot(ff_1000); title('window: 1000'); ylim([0, 0.6]);
+% subplot(5,1,2); plot(ff_2000); title('window: 2000');ylim([0, 0.6]);
+% subplot(5,1,3); plot(ff_3000); title('window: 3000');ylim([0, 0.6]);
+% subplot(5,1,4); plot(ff_4000); title('window: 4000');ylim([0, 0.6]);
+% subplot(5,1,5); plot(ff_10000); title('window: 10000');ylim([0, 0.6]);
+
+
+% playing with threshold
+
+ff_10 = movmean(double(ff>1), 2000); % should be 10 but 
+ff_5 = movmean(double(ff>0.5), 2000);
+ff_7 = movmean(double(ff>0.75), 2000);
+ff_4 = movmean(double(ff>0.4), 2000);
+ff_3 = movmean(double(ff>0.3), 2000);
+ff_2 = movmean(double(ff>0.2), 2000);
+
+ffs = [ff_10, ff_5, ff_7, ff_4, ff_3, ff_2];
+
+% want to iterate over ffs, calculate ff2, then apply mask to data and plot
+
+
+
 sprintf('finished file %d of %d files to process',i,length(listofbinaryfiles))
 
 end
