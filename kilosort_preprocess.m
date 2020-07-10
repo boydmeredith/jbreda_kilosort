@@ -104,17 +104,18 @@ for i = 1:length(listofbinaryfiles)
 
         % apply the filter
         datr = filtfilt(b1, a1, dataRAW);
+        dataFILT = datr; %renaming now so I can plot later without overwriting
 
         % make a binary 'mask' for the data, looking for big changes to
         % remove
             % first we want absolute values, so we square datr, take the means of each
             % row (channel), and then take the square root
         ff = mean(datr.^2, 2).^.5; 
-            % for the rows where ff > 1 (ie, good channels), use a window of every 2000 data
-            % points and if the moving average is above 1
-        ff1 = movmean(double(ff>1), 2000);
+            % for the rows where ff > 0.5 (ie, good channels), use a window of every 2000 data
+            % points and if the moving average is above 0.5
+        ff1 = movmean(double(ff>0.5), 2000);
         %ff0 = double(ff>1)
-        %yaxis is fraction of values in that window greater than 1
+        % binary mask 'signal' = 1, 'noise' = 0
         ff2=ff1<.01;
         
         % TODO add if statement once we have a favorite output for default
@@ -125,8 +126,12 @@ for i = 1:length(listofbinaryfiles)
 %         newff=~ff2;
 %         fftosave=[fftosave newff];
 
-        %save with zeroed out
-       datr(~ff2, :) = 0;
+%         save with zeroed out
+%        datr(~ff2, :) = 0;
+        
+
+        % using matrix multiplication because it makes more sense to me (JB)
+        dataMASK = datr .* ff2;
         
         %save as interp'd
 %        TODO pull out good/bad times, interp end of good blocks to start
@@ -180,12 +185,12 @@ fclose(fidw);
 
 
 % comparing absolute value & filtered data
-test_chan = 6
-clf;
-figure(1); plot(datr(:,test_chan));
-hold on
-plot(ff); ylim([0, 1]);
-legend('butter data', 'abs val data'); title(test_chan);
+% test_chan = 6
+% clf;
+% figure(1); plot(datr(:,test_chan));
+% hold on
+% plot(ff); ylim([0, 1]);
+% legend('butter data', 'abs val data'); title(test_chan);
 
 % playing with window sizes
 % ff_1000 = movmean(double(ff>1), 1000);
@@ -202,16 +207,27 @@ legend('butter data', 'abs val data'); title(test_chan);
 
 % playing with threshold
 
-ff_10 = movmean(double(ff>1), 2000); % should be 10 but 
-ff_5 = movmean(double(ff>0.5), 2000);
-ff_7 = movmean(double(ff>0.75), 2000);
-ff_4 = movmean(double(ff>0.4), 2000);
-ff_3 = movmean(double(ff>0.3), 2000);
-ff_2 = movmean(double(ff>0.2), 2000);
+% ff_10 = movmean(double(ff>1), 2000); % should be 10 but 
+% ff_5 = movmean(double(ff>0.5), 2000);
+% ff_7 = movmean(double(ff>0.75), 2000);
+% ff_4 = movmean(double(ff>0.4), 2000);
+% ff_3 = movmean(double(ff>0.3), 2000);
+% ff_2 = movmean(double(ff>0.2), 2000);
+% 
+% ffs = [ff_10, ff_5, ff_7, ff_4, ff_3, ff_2];
+% ff2s = ffs < 0.01;
+% not sure how to pass this into 
 
-ffs = [ff_10, ff_5, ff_7, ff_4, ff_3, ff_2];
 
-% want to iterate over ffs, calculate ff2, then apply mask to data and plot
+% overall
+% clf;
+% figure(3);subplot(5,1,1); plot(datr(:,6)); title('raw data');
+% subplot(5,1,2);plot(ff); title('abs value');
+% subplot(5,1,3); plot(ff1); title('rolling mean');
+% subplot(5,1,4); plot(ff2); title('mask');
+% subplot(5,1,5); plot(dataMASK(:,6)); title('masked data');
+
+
 
 
 
