@@ -2,14 +2,14 @@
 
 addpath(genpath('C:\Users\jbred\Github\Brody_Lab_Ephys\utils\Kilosort2')) % path to kilosort folder
 addpath('C:\Users\jbred\npy-matlab-master') % for converting to Phy
-rootZ = 'C:\Users\jbred\Github\Brody_Lab_Ephys\data\binfilesforkilosort2\preprocessing_files\kilosort_test'; % the raw data binary file is in this folder
-rootH = 'C:\Users\jbred\Github\Brody_Lab_Ephys\data\binfilesforkilosort2\preprocessing_files\kilosort_test'; % path to temporary binary file (same size as data, should be on fast SSD)
+rootZ = 'C:\Users\jbred\Github\Brody_Lab_Ephys\data\binfilesforkilosort2\preprocessing_files\kilosort_test_T5_W5000'; % the raw data binary file is in this folder
+rootH = 'C:\Users\jbred\Github\Brody_Lab_Ephys\data\binfilesforkilosort2\preprocessing_files\kilosort_test_T5_W5000'; % path to temporary binary file (same size as data, should be on fast SSD)
 pathToYourConfigFile = 'C:\Users\jbred\Github\Brody_Lab_Ephys\utils\local_kilosort'; % take from Github folder and put it somewhere else (together with the main_file)
 chanMapFile = '8tetrodes_channelmap.mat';
 
 
 ops.trange = [0 Inf]; % time range to sort
-ops.NchanTOT    = 384; % total number of channels in your recording
+ops.NchanTOT    = 128; % total number of channels in your recording
 
 run(fullfile(pathToYourConfigFile, 'StandardConfig_8tetrodes.m'))
 ops.fproc       = fullfile(rootH, 'temp_wh.dat'); % proc file on a fast SSD

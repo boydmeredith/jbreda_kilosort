@@ -15,6 +15,7 @@ function kilosort_preprocess(varargin)
 % - come back after some kilosort testing and add a if/else statement for
 % if we should be saving the new binary files with the bad sections
 % removed, zerod, or interpd
+% - put each file into a folder with it's name (kilosort takes single .bin)
 %
 % INPUT PARAMETERS:
 % - none needed - it should be able to be run from a local folder
@@ -85,7 +86,7 @@ for i = 1:length(listofbinaryfiles)
     fid=fopen(fname,'r');
 
     % next, name and open a new binary file to write to
-    fidw = fopen(sprintf('%s_forkilosort.bin',fname(1:end-4)), 'w');
+    fidw = fopen(sprintf('%s_T3_W5000_forkilosort.bin',fname(1:end-4)), 'w');
 
     while 1
     % now, read in a PORTION of the data. Format it as a matrix with chan rows and
@@ -113,7 +114,7 @@ for i = 1:length(listofbinaryfiles)
         ff = mean(datr.^2, 2).^.5; 
             % for the rows where ff > 0.5 (ie, good channels), use a window of every 2000 data
             % points and if the moving average is above 0.5
-        ff1 = movmean(double(ff>0.5), 2000);
+        ff1 = movmean(double(ff>0.5), 5000);
         %ff0 = double(ff>1)
         % binary mask 'signal' = 1, 'noise' = 0
         ff2=ff1<.01;
@@ -140,10 +141,10 @@ for i = 1:length(listofbinaryfiles)
         %TODO end if statement
         
         % save
-        dat16 = int16(1000*datr');
+        dat16 = int16(1000*dataMASK');
         fwrite(fidw, dat16, 'int16');
     end
-    %%
+   
 
 if ispc
     delim='\';
@@ -154,6 +155,7 @@ end
 fclose(fid);
 fclose(fidw);
 
+%% plots
 %if running as 'remove noise' mode
 %save([homedirectory,delim,fname, '_timemask.mat'],fftosave)
 
@@ -174,7 +176,7 @@ fclose(fidw);
 % see what is happening on 8 channels
 % figure(1); 
 % for z = 1:8
-% subplot(8,1,z); plot(dataRAW(:,z));
+% subplot(8,1,z); plot(dataMASK(:,z)); ylim([-1,1])
 % end
 
 % post filter plot
@@ -226,7 +228,7 @@ fclose(fidw);
 % subplot(5,1,3); plot(ff1); title('rolling mean');
 % subplot(5,1,4); plot(ff2); title('mask');
 % subplot(5,1,5); plot(dataMASK(:,6)); title('masked data');
-
+%%
 
 
 
