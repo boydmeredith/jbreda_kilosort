@@ -33,7 +33,7 @@ function kilosort_preprocess(varargin)
 % = EXAMPLE CALLS:
 % - 
 % ---------------------
-
+%%
 if isempty(varargin)
     homedirectory=pwd;
     chan=32;
@@ -79,9 +79,18 @@ listofbinaryfiles=dir('*.bin');
 %make empty fftosave
 fftosave=[];
 
+%determine computer type
+if ispc
+    delim='\';
+else
+    delim='/';
+end
+
 % for optimizing filter
-threshold = .5
-window = 5000
+threshold = .3
+window = 10000
+
+
 
 for i = 1:length(listofbinaryfiles)
 
@@ -89,8 +98,14 @@ for i = 1:length(listofbinaryfiles)
     fname = listofbinaryfiles(i).name;
     fid=fopen(fname,'r');
 
-    % next, name and open a new binary file to write to
-    fidw = fopen(sprintf('%s_T%s_W%s_forkilosort.bin',fname(1:end-4)), num2str(threshold*10), num2str(window), 'w');
+    
+    % next, name and open a new binary file to write to, and put it in it's
+    % own folder
+    mkdir(fullfile(homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort',fname(1:end-4), num2str(threshold*10), num2str(window))))
+    kilosortbinfolder = [homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort',fname(1:end-4), num2str(threshold*10), num2str(window))]
+    addpath(kilosortbinfolder)
+    cd(kilosortbinfolder)
+    fidw = fopen(sprintf('%s_T%s_W%s_forkilosort.bin',fname(1:end-4), num2str(threshold*10), num2str(window)), 'w');
 
     while 1
     % now, read in a PORTION of the data. Format it as a matrix with chan rows and
@@ -106,7 +121,20 @@ for i = 1:length(listofbinaryfiles)
         dataRAW = dataRAW';
         % divide by 1000 because the filter prefers that
         dataRAW = double(dataRAW)/1000;
-
+        
+        
+%         % CAR FILTER
+%         % mean center and add CAR filter- from GPUfilter.m
+%         % subtract the mean from each channel
+%         dataRAW_mean = dataRAW - mean(dataRAW, 1); % subtract mean of each channel
+% 
+%         % CAR, common average referencing by median
+%        
+%         dataRAW_CAR = dataRAW_mean - median(dataRAW_mean, 2); % subtract median across channels
+      
+        
+       
+        
         % apply the filter
         datr = filtfilt(b1, a1, dataRAW);
         dataFILT = datr; %renaming now so I can plot later without overwriting
@@ -150,11 +178,7 @@ for i = 1:length(listofbinaryfiles)
     end
    
 
-if ispc
-    delim='\';
-else
-    delim='/';
-end
+
 
 fclose(fid);
 fclose(fidw);
@@ -238,11 +262,10 @@ fclose(fidw);
 
 
 sprintf('finished file %d of %d files to process',i,length(listofbinaryfiles))
+cd .. %return to directory with other binary files
 
 end
 
-
-%%
 
 
 
