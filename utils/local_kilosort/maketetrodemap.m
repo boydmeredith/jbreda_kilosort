@@ -26,7 +26,7 @@ end
 Nchannels=(numberoftetrodes*4);
 chanMap=(1:Nchannels);
 chanMap0ind=(0:(Nchannels-1));
-connected=ones(numberoftetrodes,1);
+connected=ones(Nchannels,1);
 fs=samplingrate;
 kcoords=repelem(1:numberoftetrodes,4)';
 xcoords=repmat(1:4,1,numberoftetrodes);
