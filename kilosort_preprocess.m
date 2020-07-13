@@ -79,6 +79,10 @@ listofbinaryfiles=dir('*.bin');
 %make empty fftosave
 fftosave=[];
 
+% for optimizing filter
+threshold = .5
+window = 5000
+
 for i = 1:length(listofbinaryfiles)
 
     % first, open the binary file to read
@@ -86,7 +90,7 @@ for i = 1:length(listofbinaryfiles)
     fid=fopen(fname,'r');
 
     % next, name and open a new binary file to write to
-    fidw = fopen(sprintf('%s_T3_W5000_forkilosort.bin',fname(1:end-4)), 'w');
+    fidw = fopen(sprintf('%s_T%s_W%s_forkilosort.bin',fname(1:end-4)), num2str(threshold*10), num2str(window), 'w');
 
     while 1
     % now, read in a PORTION of the data. Format it as a matrix with chan rows and
@@ -114,7 +118,7 @@ for i = 1:length(listofbinaryfiles)
         ff = mean(datr.^2, 2).^.5; 
             % for the rows where ff > 0.5 (ie, good channels), use a window of every 2000 data
             % points and if the moving average is above 0.5
-        ff1 = movmean(double(ff>0.5), 5000);
+        ff1 = movmean(double(ff>threshold), window);
         %ff0 = double(ff>1)
         % binary mask 'signal' = 1, 'noise' = 0
         ff2=ff1<.01;
