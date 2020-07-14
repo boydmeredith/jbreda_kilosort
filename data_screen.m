@@ -34,17 +34,17 @@ sfreq = 30000
     
     ten_min = (10 * 60) * sfreq
 
-    dataRAW = fread(fid, [chan ten_min/1.3], 'int16');
+    dataRAW = fread(fid, [chan 1e6], 'int16');
     
     for z = 1:8
         figure(1); subplot(chan/4,1,z); plot(dataRAW(z,:));
-        ylim([-25000 25000])
+%         ylim([-25000 25000])
         title(sprintf('Loop %d', x));
         
     end
     
   %chan 6,17,19,20 = super noise
- pwd
+pwd
  % use this to plot all the electrodes in the debugger
 %     for z = 1:chan
 %         if z < (chan/2) + 1
