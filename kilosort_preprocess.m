@@ -87,7 +87,7 @@ else
 end
 
 % for optimizing filter
-threshold = .3
+threshold = 0.5
 window = 10000
 
 
@@ -149,7 +149,7 @@ for i = 1:length(listofbinaryfiles)
         ff1 = movmean(double(ff>threshold), window);
         %ff0 = double(ff>1)
         % binary mask 'signal' = 1, 'noise' = 0
-        ff2=ff1<.01;
+        ff2=ff1<.00001;
         
         % TODO add if statement once we have a favorite output for default
 
@@ -246,8 +246,12 @@ fclose(fidw);
 % 
 % ffs = [ff_10, ff_5, ff_7, ff_4, ff_3, ff_2];
 % ff2s = ffs < 0.01;
-% not sure how to pass this into 
+% not sure how to pass this into later
+% set(gcf,'color','w');
 
+% ff5 = movmean(double(ff>0.5), window);
+% ff5_2 = ff1 <.01;
+% dataMASK_5 = datr .* ff5_2;
 
 % overall
 % clf;
