@@ -72,6 +72,10 @@ end
     % sample rate
     % high means it's a highpass filter
     
+    % bessel filter options
+    
+    %[b1, a1] = besself(1, [600 6000], 'bandpass')
+    
     %outputs filter coefficients b1 (numerator) and a1 (denominator)
    
 % make list of files to process
@@ -89,6 +93,7 @@ end
 % for optimizing filter
 threshold = 0.5
 window = 10000
+jobid = randi(100)
 
 
 
@@ -101,8 +106,8 @@ for i = 1:length(listofbinaryfiles)
     
     % next, name and open a new binary file to write to, and put it in it's
     % own folder
-    mkdir(fullfile(homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort',fname(1:end-4), num2str(threshold*10), num2str(window))))
-    kilosortbinfolder = [homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort',fname(1:end-4), num2str(threshold*10), num2str(window))]
+    mkdir(fullfile(homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort_%s',fname(1:end-4), num2str(threshold*10), num2str(window), num2str(jobid))))
+    kilosortbinfolder = [homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort_%s',fname(1:end-4), num2str(threshold*10), num2str(window), num2str(jobid))]
     addpath(kilosortbinfolder)
     cd(kilosortbinfolder)
     fidw = fopen(sprintf('%s_T%s_W%s_forkilosort.bin',fname(1:end-4), num2str(threshold*10), num2str(window)), 'w');
