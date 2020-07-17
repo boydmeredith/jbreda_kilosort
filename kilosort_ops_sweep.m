@@ -1,3 +1,4 @@
+function kilosort_ops_sweep(varargin)
 %---------------------
 % written by Jess Breda 20200717
 % purpose is to run kilosort on single file with multiple different ops
@@ -27,7 +28,19 @@
 % = EXAMPLE CALLS:
 % - kilosort_ops_sweep('directory/with/config/folders/here')
 % ---------------------
-%%
+%% inputs
+if isempty(varargin)
+    homedirectory = pwd;
+else
+    if isfolder(varargin{1})
+        homedirectory = pwd;
+        directorywithbinarys =varargin{1}
+        cd directorywithbindaries
+    else
+        error('input must be in the format of a string leading to a dir')
+    end
+end
+%% initialize
 %determine computer type
 if ispc
     delim='\';
@@ -35,7 +48,39 @@ else
     delim='/';
 end
 
+% make list of folders to processs
+listoffolders = dir()
+listoffolders(ismember( {listoffolders.name}, {'.', '..'})) = []; %remove . and ..
 
+num_folders = length(listoffolders)
+sprintf('There are %d folders to process', num_folders)
 
+%% loop over folders
 
+for i=1:num_folders
+    % cd into ith sweep folder, there should be two config files and a .bin
+    % file in here, grab the directory string
+    cd(listoffolders(i).name)
+    pathtobin = pwd
+   
+    % grab the name of the .bin file to use it later
+    bininfo = dir('*.bin')
+ 
+    % run kilosort (assumes same path for config and .bin file)
+    sprintf('passing file %d of %d into kilosort',i,num_folders)
+    main_kilosort_fx(pathtobin)
+    sprintf('file %d of %d processed inkilosort',i,num_folders)
+    
+    %move bin file into next folder (except for on last loop)
+    pathtonextfolder = fullfile(folderlist(i+1).folder, folderlist(i+1).name)
+
+    if i < num_folders:
+        movefile(bininfo.name, pathtonextfolder)
+    else
+        sprintf('.bin located in final folder')
+    end    
+    
+end
+
+end
 
