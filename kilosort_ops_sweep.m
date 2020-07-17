@@ -66,10 +66,10 @@ for i=1:num_folders
     % grab the name of the .bin file to use it later
     bininfo = dir('*.bin')
  
-%     % run kilosort (assumes same path for config and .bin file)
-%     sprintf('passing file %d of %d into kilosort',i,num_folders)
-%     main_kilosort_fx(pathtobin)
-%     sprintf('file %d of %d processed inkilosort',i,num_folders)
+    % run kilosort (assumes same path for config and .bin file)
+    sprintf('passing file %d of %d into kilosort',i,num_folders)
+    main_kilosort_fx(pathtobin)
+    sprintf('file %d of %d processed inkilosort',i,num_folders)
     
     %move bin file into next folder (except for on last loop)
 

@@ -4,16 +4,16 @@ function main_kilosort_fx(pathtobin)
 
 addpath(genpath('C:\Users\jbred\Github\Brody_Lab_Ephys\utils\Kilosort2')) % path to kilosort folder
 addpath('C:\Users\jbred\npy-matlab-master') % for converting to Phy
-rootZ = pathtobin'; % the raw data binary file is in this folder
+rootZ = pathtobin; % the raw data binary file is in this folder
 rootH = rootZ; % path to temporary binary file (same size as data, should be on fast SSD)
 pathToYourConfigFile = pathtobin; % take from Github folder and put it somewhere else (together with the main_file)
 chanMapFile = '8tetrodes_channelmap.mat';
 
 
 ops.trange = [0 Inf]; % time range to sort (in seconds)
-ops.NchanTOT    = 128; % total number of channels in your recording
+ops.NchanTOT    = 32; % total number of channels in your recording
 
-run(fullfile(pathToYourConfigFile, 'StandardConfig_8tetrodes_98.m'))
+run(fullfile(pathToYourConfigFile, 'StandardConfig_8tetrodes_ParamSweeps.m'))
 ops.fproc       = fullfile(rootH, 'temp_wh.dat'); % proc file on a fast SSD
 ops.chanMap = fullfile(pathToYourConfigFile, chanMapFile);
 

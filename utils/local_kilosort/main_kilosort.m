@@ -9,7 +9,7 @@ chanMapFile = '8tetrodes_channelmap.mat';
 
 
 ops.trange = [0 Inf]; % time range to sort (in seconds)
-ops.NchanTOT    = 128; % total number of channels in your recording
+ops.NchanTOT    = 32; % total number of channels in your recording
 
 run(fullfile(pathToYourConfigFile, 'StandardConfig_8tetrodes_98.m'))
 ops.fproc       = fullfile(rootH, 'temp_wh.dat'); % proc file on a fast SSD
