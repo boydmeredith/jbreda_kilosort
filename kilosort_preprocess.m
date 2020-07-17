@@ -130,11 +130,8 @@ for i = 1:length(listofbinaryfiles)
     
     % next, name and open a new binary file to write to, and put it in it's
     % own folder
-    mkdir(fullfile(homedirectory, delim, sprintf('%s_%s_T%s_W%s_forkilosort%s',num2str(jobid),
-    fname(1:end-4), num2str(threshold*10), num2str(window))))
-    
-    kilosortbinfolder = [homedirectory, delim, sprintf('%s_%s_T%s_W%s_forkilosort',num2str(jobid),
-    fname(1:end-4), num2str(threshold*10), num2str(window))]
+    mkdir(fullfile(homedirectory, delim, sprintf('%s_%s_T%s_W%s_forkilosort%s',num2str(jobid),fname(1:end-4), num2str(threshold*10), num2str(window))))
+    kilosortbinfolder = [homedirectory, delim, sprintf('%s_%s_T%s_W%s_forkilosort',num2str(jobid),fname(1:end-4), num2str(threshold*10), num2str(window))]
     
     addpath(kilosortbinfolder)
     cd(kilosortbinfolder)
@@ -154,7 +151,7 @@ for i = 1:length(listofbinaryfiles)
         % transpose
         dataRAW = dataRAW';
         % divide by 1000 because the filter prefers that
-        dataRAW = double(dataRAW)/1000
+        dataRAW = double(dataRAW)/1000;
                
         % apply the filter
         datr = filtfilt(b1, a1, dataRAW);
@@ -173,7 +170,7 @@ for i = 1:length(listofbinaryfiles)
         mask2= mask1MEAN < 0.00001;
         
         % mask data & set noise to 0
-        dataMASK = datr .* ff2;
+        dataMASK = datr .* mask2;
         
         % TODO add if statement once we have a favorite output for default
 
