@@ -1,32 +1,34 @@
 function kilosort_ops_sweep(varargin)
 %---------------------
-% written by Jess Breda 20200717
+% written by Jess Breda 20200720
 % purpose is to run kilosort on single file with multiple different ops
 % configurations
 %
 % TODO:
-% - adjust kilosort main into fx
-% 
+% - update input parameters 
+% - update README
 %
 % INPUT PARAMETERS:
-% none
+% Ths =
+% lams = 
+% spkThs = 
 %
 % OPTIONAL PARAMETERS:
-% - string directing us to a folder with subfolders containing config files
-% to sweep over
-% note: .bin file should be in the first folder in the directory with
-% config files
-% note: config files = StandardConfig_8tetrodes_ParamSweeps.m (edit ops in this) and
-% 8tetrode_channelmap.mat (just leave this along)
+% - homedirectory = string directing us to a folder that contains:
+% 1) preprocessed .bin file
+% 2) channel_map.mat
+% 3) Standard_config.m with ops that are not being changed
 %
 % RETURNS:
 % - none, but calls kilosort & runs on file of interest with associted
-% configurations
-%
-% 
+% configurations & creates a folder for each sweep. Need to document sweeps
+% in other source to track
 %
 % = EXAMPLE CALLS:
-% - kilosort_ops_sweep(Thlist, lamlist, spkTh, 'directory/with/config/folders/here')
+% - kilosort_ops_sweep(Ths, lams, spkThs, 'directory/with/config/folders/here')
+% Ths= {[2 2 2] [3 6 6]}
+% lams = ][20 25 35 40]
+% spkThs = {[-0.5 -0.75 -1 -2 -4]}
 % ---------------------
 %% inputs (new code)
 if length(varargin) == 3
@@ -60,21 +62,11 @@ else
 end
 
 % grab the name of the .bin file to use it later
-bininfo = dir('*.bin')
+bininfo = dir('*.bin');
 
 % for updating purposes
-cur_sweep = 0
-Nsweeps = length(Ths) * length(lams) * length(spkThs)
-% movefile(bininfo.name, pathtonextfolder)
-%%% Should pass in a directory that is empty except for .bin file and
-%%% standard configs/channel map. In this directory, I want to generate a
-%%% folder for the ith sweep. Then, I want to put the .bin file in that
-%%% folder. Then, I want to run kilosort with the i,j,kth parameters. For
-%%% kilosort function, I will need to pass in the home directory (config
-%%% dir), and the current directory (.bin dir) as well as the Th, lam and
-%%% spk.th I want. After kilosort has run, I want to move the .bin file
-%%% back to the home directory (because the next folder isn't generated
-%%% yet).
+cur_sweep = 0;
+Nsweeps = length(Ths) * length(lams) * length(spkThs);
 
 %% main loop
 for Th_idx=1:length(Ths)
@@ -100,72 +92,14 @@ for Th_idx=1:length(Ths)
             % move back to home directory & move .bin file there for next
             % loop
             movefile(bininfo.name, homedirectory)
-            cd .. 
             
             % update human
-            sprintf('Sweep %d of %d completed',cur_sweep , Nsweeps)
-            cur_sweep = cur_sweep + 1       
+            cur_sweep = cur_sweep + 1;
+            sprintf('Sweep %d of %d completed',cur_sweep , Nsweeps);    
        
         end
     end
 end
-
-%%   
-% %% inputs (old code)
-% if isempty(varargin)
-%     homedirectory = pwd;
-% else
-%     if isfolder(varargin{1})
-%         homedirectory = pwd;
-%         directorywithbinarys =varargin{1}
-%         cd directorywithbindaries
-%     else
-%         error('input must be in the format of a string leading to a dir')
-%     end
-% end
-
-
-
-
-% % make list of folders to processs
-% listoffolders = dir()
-% listoffolders(ismember( {listoffolders.name}, {'.', '..'})) = []; %remove . and ..
-% 
-% num_folders = length(listoffolders)
-% sprintf('There are %d folders to process', num_folders)
-% 
-% %% loop over folders
-% 
-% for i=1:num_folders
-%     % cd into ith sweep folder, there should be two config files and a .bin
-%     % file in here, grab the directory string
-%     cd(listoffolders(i).name)
-%     pathtobin = pwd
-%    
-%     % grab the name of the .bin file to use it later
-%     bininfo = dir('*.bin')
-%  
-%     % run kilosort (assumes same path for config and .bin file)
-%     sprintf('passing file %d of %d into kilosort',i,num_folders)
-%     main_kilosort_fx(pathtobin)
-%     sprintf('file %d of %d processed inkilosort',i,num_folders)
-%     
-%     %move bin file into next folder (except for on last loop)
-% 
-%     if i < num_folders
-%         pathtonextfolder = fullfile(listoffolders(i+1).folder, listoffolders(i+1).name)
-%         movefile(bininfo.name, pathtonextfolder)
-%     else
-%         sprintf('.bin located in final folder')
-%     end    
-%     
-%     % return to directory with other folders
-%     cd ..
-%     
-%     % update user
-%     
-%     
-% end
 
 end
 
