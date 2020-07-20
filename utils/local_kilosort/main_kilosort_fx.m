@@ -1,4 +1,4 @@
-function main_kilosort_fx(pathtobin, pathtoconfig, spkTh, lam, Th)
+function main_kilosort_fx(pathtobin, pathtoconfig, Th, lam, spkTh)
 
 %% you need to change most of the paths in this block
 
@@ -27,9 +27,9 @@ if ~isempty(fs)
 end
 
 % import oops for param sweeps
-ops.spkTh = spkTh
+ops.Th  = Th
 ops.lam = lam
-ops.Th = Th
+ops.spkTh = spkTh
 
 % find the binary file
 fs          = [dir(fullfile(rootZ, '*.bin')) dir(fullfile(rootZ, '*.dat'))];
