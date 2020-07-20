@@ -89,11 +89,12 @@ for Th_idx=1:length(Ths)
             main_kilosort_fx(sweep_directory, homedirectory, Ths{Th_idx}, ...
                 lams(lam_idx), spkThs(spkTh_idx))
             
-            % move back to home directory & move .bin file there for next
-            % loop
-            movefile(bininfo.name, homedirectory)
+            pwd 
             
-            % update human
+            % move .bin file back to home directory for next sweep
+            movefile(fullfile(sweep_directory, bininfo.name), homedirectory)
+            
+            % update human on progress
             cur_sweep = cur_sweep + 1;
             sprintf('Sweep %d of %d completed',cur_sweep , Nsweeps);    
        
