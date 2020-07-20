@@ -1,4 +1,4 @@
-function main_kilosort_fx(pathtobin)
+function main_kilosort_fx(pathtobin, pathtoconfig, spkTh, lam, Th)
 
 %% you need to change most of the paths in this block
 
@@ -6,7 +6,7 @@ addpath(genpath('C:\Users\jbred\Github\Brody_Lab_Ephys\utils\Kilosort2')) % path
 addpath('C:\Users\jbred\npy-matlab-master') % for converting to Phy
 rootZ = pathtobin; % the raw data binary file is in this folder
 rootH = rootZ; % path to temporary binary file (same size as data, should be on fast SSD)
-pathToYourConfigFile = pathtobin; % take from Github folder and put it somewhere else (together with the main_file)
+pathToYourConfigFile = pathtoconfig; % take from Github folder and put it somewhere else (together with the main_file)
 chanMapFile = '8tetrodes_channelmap.mat';
 
 
@@ -25,6 +25,11 @@ fs = dir(fullfile(rootZ, 'chan*.mat'));
 if ~isempty(fs)
     ops.chanMap = fullfile(rootZ, fs(1).name);
 end
+
+% import oops for param sweeps
+ops.spkTh = spkTh
+ops.lam = lam
+ops.Th = Th
 
 % find the binary file
 fs          = [dir(fullfile(rootZ, '*.bin')) dir(fullfile(rootZ, '*.dat'))];
