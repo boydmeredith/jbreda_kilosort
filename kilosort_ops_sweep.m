@@ -28,19 +28,19 @@ function kilosort_ops_sweep(varargin)
 % - kilosort_ops_sweep(Ths, lams, spkThs, 'directory/with/config/folders/here')
 % Ths= {[2 2 2] [3 6 6]}
 % lams = ][20 25 35 40]
-% spkThs = {[-0.5 -0.75 -1 -2 -4]}
+% spkThs = {[-0.5 -0.75 -1 -2 -4]} (chaning this parameter occasionally)
 % ---------------------
 %% inputs (new code)
 if length(varargin) == 3
     Ths = varargin{1}
     lams = varargin{2}
-    spkThs = varargin{3}
+    AUCs = varargin{3}
     homedirectory = pwd; %if no directory is passed, use current directory
 elseif length(varargin)==4
     
     Ths = varargin{1}
     lams = varargin{2}
-    spkThs = varagin{3}
+    AUCs = varagin{3}
     
     if isfolder(varargin{4})  
         homedirectory=pwd;
@@ -66,19 +66,19 @@ bininfo = dir('*.bin');
 
 % for updating purposes
 cur_sweep = 0;
-Nsweeps = length(Ths) * length(lams) * length(spkThs);
+Nsweeps = length(Ths) * length(lams) * length(AUCs);
 
 %% main loop
 for Th_idx=1:length(Ths)
     for lam_idx=1:length(lams)
-        for spkTh_idx=1:length(spkThs)
+        for AUC_idx=1:length(AUCs)
             
             % first, make a folder, add it to the path, and move the .bin
             % file into the folder
-            mkdir(fullfile(homedirectory, sprintf('sweep_%d_%d_%d', ...
-                Th_idx, lam_idx, spkTh_idx)))
-            sweep_directory = [homedirectory, delim, sprintf('sweep_%d_%d_%d', ...
-                Th_idx, lam_idx, spkTh_idx)]
+            mkdir(fullfile(homedirectory, sprintf('sweep_%d_%d_%d_AUC', ...
+                Th_idx, lam_idx, AUC_idx)))
+            sweep_directory = [homedirectory, delim, sprintf('sweep_%d_%d_%d_AUC', ...
+                Th_idx, lam_idx, AUC_idx)]
             addpath(sweep_directory)
             movefile(bininfo.name, sweep_directory)
             
@@ -87,7 +87,7 @@ for Th_idx=1:length(Ths)
             % direcory
             
             main_kilosort_fx(sweep_directory, homedirectory, Ths{Th_idx}, ...
-                lams(lam_idx), spkThs(spkTh_idx))
+                lams(lam_idx), AUCs(AUC_idx))
             
             pwd 
             
