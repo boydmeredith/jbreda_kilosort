@@ -5,13 +5,19 @@ function kilosort_ops_sweep(varargin)
 % configurations
 %
 % TODO:
-% - update input parameters 
 % - update README
 %
 % INPUT PARAMETERS:
-% Ths =
-% lams = 
-% spkThs = 
+% **check to make sure these are also inputs to main_kilosort_sweep_fx and
+% commented out in the config file in starting directory**
+% **see kilosort config file for more information on what these are
+% doing**
+%
+% Ths = Cell arry with threshold(s) to test. Ex: Threshold = {[3 6 6] [3 4
+% 4]}
+% lams = List with ops.lam amplitude penalty values to test. Ex: Lams = [20
+% 30 40]
+% AUC = List with ops.AUCsplit calues to test. Ex: AUC = [0.2 0.4]
 %
 % OPTIONAL PARAMETERS:
 % - homedirectory = string directing us to a folder that contains:
@@ -25,10 +31,8 @@ function kilosort_ops_sweep(varargin)
 % in other source to track
 %
 % = EXAMPLE CALLS:
-% - kilosort_ops_sweep(Ths, lams, spkThs, 'directory/with/config/folders/here')
-% Ths= {[2 2 2] [3 6 6]}
-% lams = ][20 25 35 40]
-% spkThs = {[-0.5 -0.75 -1 -2 -4]} (chaning this parameter occasionally)
+% - kilosort_ops_sweep(Ths, lams, AUCs, 'directory/with/config/folders/here')
+%
 % ---------------------
 %% inputs (new code)
 if length(varargin) == 3

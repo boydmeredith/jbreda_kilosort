@@ -4,7 +4,7 @@ function kilosort_preprocess(varargin)
 % ---------------------
 % written by Emily Jane Dennis 2020-06-14 (during pandemic!)
 % purpose is to take in binary files for each tetrode bundle from a 128
-% channel (32 tetrode) drive and remove/zero/interpolate giant sections where
+% channel (32 tetrode) drive and zero giant sections where
 % there is huge noise that we want to ignore. We also want to output some
 % plots and save them so we can do some quick validation by eye.
 %

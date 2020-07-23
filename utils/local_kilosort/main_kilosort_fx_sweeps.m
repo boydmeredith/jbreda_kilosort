@@ -26,7 +26,7 @@ if ~isempty(fs)
     ops.chanMap = fullfile(rootZ, fs(1).name);
 end
 
-% import oops for param sweeps
+% import ops for param sweeps
 ops.Th  = Th
 ops.lam = lam
 ops.AUCsplit = AUC
