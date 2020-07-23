@@ -86,7 +86,7 @@ for Th_idx=1:length(Ths)
             % it. Assumes that config file and channel map are in home
             % direcory
             
-            main_kilosort_fx(sweep_directory, homedirectory, Ths{Th_idx}, ...
+            main_kilosort_fx_sweeps(sweep_directory, homedirectory, Ths{Th_idx}, ...
                 lams(lam_idx), AUCs(AUC_idx))
             
             pwd 
