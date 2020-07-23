@@ -2,7 +2,8 @@
 function kilosort_preprocess(varargin)
 
 % ---------------------
-% written by Emily Jane Dennis 2020-06-14 (during pandemic!)
+% written by Emily Jane Dennis 2020-06-14 (during pandemic!) 
+% Edited by Jess Breda 2020-07 (just literally all july)
 % purpose is to take in binary files for each tetrode bundle from a 128
 % channel (32 tetrode) drive and zero giant sections where
 % there is huge noise that we want to ignore. We also want to output some
@@ -15,7 +16,7 @@ function kilosort_preprocess(varargin)
 % - come back after some kilosort testing and add a if/else statement for
 % if we should be saving the new binary files with the bad sections
 % removed, zerod, or interpd
-% 
+% - make threshold and window optional inputs
 %
 % INPUT PARAMETERS:
 % - none needed - it should be able to be run from a local folder
