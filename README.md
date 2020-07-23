@@ -10,10 +10,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ----------------------------------
 # TODO
-- adjust kilosort parameters to 'good' data & then reassess on 'bad' data using data_screen.m
-- integrate kilosort into repo
-- turn main kilosort into function
-- write a config file wrapper function to iterate over different configurations
+- kilosort parameter sweeps
 ---
 - determine 'protocol' for phy
 - Post-processing
@@ -95,7 +92,7 @@ To break up conversion process you can run:
 
 8. (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
 
-9. Go to step 8 in local step by step and run `kilosort_preprocess.m` & `kilosort`
+9. Go to step 8 in local step by step and run `kilosort_preprocess.m` & onward
 
 -----------------------
 ### Local step by step:
@@ -202,36 +199,64 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 - for each session, 4 .bin files in groups of 8 tetrodes will be created with the naming scheme `{session}_Nbundle.bin`
 - returns to the directory is starts in
 
-**Jess working here/cluster stops here**
+**cluster stops here**
 
 8. Run `kilosort_preprocess.m`
 
-**TODO for cluster: need to cd into `binfilesforkilsort2`**
 
-**overall:** this function takes .bin files, applies a butterworth filter and then creates a mask for large amplitude noise and zeros it out. Creates a new .bin file that can be passed into kilosort
+**overall:** this function takes .bin files, applies a butterworth filter and then creates a mask for large amplitude noise and zeros it out. Creates a new directory with containing a processed .bin file that can be passed into kilosort
 
 *this function optionally takes:*
 - directory containing .bin files(s) to process (cwd), number of channels (32), butterworth parameters (sample rate = 32000, highpass = 300)
   - for this example, you'd run from the directory `/jukebox/scratch/*your folder*/ephys/*folder with raw data*/binfilesforkilsort2`
 
+  *things that are currently hardcoded & worth playing with:*
+  - `threshold` = the voltage threshold at which to mask at (0.3 seems too low, 1 seems too high for our data)
+  - `window` = the window size for the rolling mean. The larger it is, the more that will be clipped for large noise events, but small noise events may not be seen.
+
 *this function performs:*
 - loops over portions of the data, reads them in, applies the high pass butterworth filter
-- finds the absolute means of the filtered data, (ie noise = large deviation from the mean), finds a rolling mean of the absolute means, creates binary mask for any mean voltage > 1, applies mask and zeros out noise
-- writes into a new file `{session}_Nbundle_forkilosort.bin`
+- finds the absolute means of the filtered data, (ie noise = large deviation from the mean), finds a rolling mean of the absolute means with windowsize = window, creates binary mask for any mean voltage > Threshold, applies mask and zeros out noise
+- writes into a new file `{session}_Nbundle_forkilosort.bin` under the new directory `{job_id}_{session}_{Threshold}_{Windowsize}_forkilosort`
 
 *this function returns:*
-- for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files in `binfilesforkilsort2` with the `_forkilsort` suffix
-
-**TODO for cluster:
-- how does kilosort handle a directory with many .bin files?
-- function to loop over file in a directory that have 'for kilosort in them, generate a new folder with {session} info, pass single bundle into kilosort, save file in {session} dir'**
-
+- for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files the `_forkilsort` suffix in X directories within `binfilesforkilsort2`
 
 ### 2. kilosort
 
-- run pre-processed .bin files in Kilosort
-**fill in setting information**
-- currently playing with Ops.Th, Ops.lam, Ops.AUC split. Effectively lowering them to let signal in as templates are being consumed by noise
+**See `utils` folder for kilosort2 git submodule.** I am running functions from `local_kilosort`.
+
+`main_kilosort_fx.m` takes main_kilosort script and turns into function. Takes a path to binary file as input. Assumes that .bin file, config file and channel map are in a directory by themselves. Will populate that directory with kilosort/phy output
+
+- I use `8tetrode_channelmap.mat` created by `maketetrodemap.m`
+- Config file is not set, see optimization below
+
+#### Parameter Optimization
+These functions were crated to sweep over different kilosort .ops. Can easily be adjusted to work with variety of ops.
+
+1. `main_kilosort_fx_sweeps.m`
+
+**overall** Takes a .bin path, .config path and parameters being swept over (currently ops.Th, ops.lam, ops.AUCsplit, but subject to change!!) and runs kilosort on them. *NOTE* make sure your parameters being passed in are assigned within the function and commented out in the config file!
+
+2. `kilosort_ops_sweeps.m`
+
+**overall** Iterates over arrays of 3 kilosort parameters (currently ops.Th, ops.lam, ops.AUCsplit, but subject to change!!) and iteratively passes into `main_kilosort_fx_sweeps`.
+
+*To run*
+- create a new directory ex: `{date}_sweeps`
+- in dir, place the kilosort config file (with parameters you're sweeping over commented out!), the channel map you're using and the .bin file you're testing. Add to path.
+- Initialize values to test in matlab & then run from `{date}_sweeps` dir. Ex:
+```
+Thresholds = {[2 3 3] [6 2 2]}
+Lams = [4 10 15]
+AUCs = [0.2 0.9]
+
+kilosort_ops_sweeps(Thresholds, Lams, AUCs)
+```
+- will create a folder for each sweep and populate with kilosort output for Phy
+- folder naming is done based on sweep index. For the example above `sweep_2_3_1` would have `ops.Th = [6 2 2]`, `ops.lam = 15`, and `ops.AUCsplit = 0.2`
+
+**TODO** fill in finalized setting information
 
 ### 3. Phy Validation
 
