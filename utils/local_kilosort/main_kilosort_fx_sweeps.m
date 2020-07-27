@@ -1,4 +1,4 @@
-function main_kilosort_fx_sweeps(pathtobin, pathtoconfig, Th, lam, AUC)
+function main_kilosort_fx_sweeps(pathtobin, pathtoconfig, Th, lam, spkTh)
 
 %% you need to change most of the paths in this block
 
@@ -7,7 +7,7 @@ addpath('C:\Users\jbred\npy-matlab-master') % for converting to Phy
 rootZ = pathtobin; % the raw data binary file is in this folder
 rootH = rootZ; % path to temporary binary file (same size as data, should be on fast SSD)
 pathToYourConfigFile = pathtoconfig; % take from Github folder and put it somewhere else (together with the main_file)
-chanMapFile = '8tetrodes_channelmap.mat';
+chanMapFile = 'KSchanMap_thousands.mat';
 
 
 ops.trange = [0 Inf]; % time range to sort (in seconds)
@@ -29,7 +29,7 @@ end
 % import ops for param sweeps
 ops.Th  = Th
 ops.lam = lam
-ops.AUCsplit = AUC
+ops.spkTh = spkTh
 
 % find the binary file
 fs          = [dir(fullfile(rootZ, '*.bin')) dir(fullfile(rootZ, '*.dat'))];

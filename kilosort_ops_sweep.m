@@ -38,13 +38,13 @@ function kilosort_ops_sweep(varargin)
 if length(varargin) == 3
     Ths = varargin{1}
     lams = varargin{2}
-    AUCs = varargin{3}
+    spkThs = varargin{3}
     homedirectory = pwd; %if no directory is passed, use current directory
 elseif length(varargin)==4
     
     Ths = varargin{1}
     lams = varargin{2}
-    AUCs = varagin{3}
+    spkThs = varagin{3}
     
     if isfolder(varargin{4})  
         homedirectory=pwd;
@@ -70,19 +70,19 @@ bininfo = dir('*.bin');
 
 % for updating purposes
 cur_sweep = 0;
-Nsweeps = length(Ths) * length(lams) * length(AUCs);
+Nsweeps = length(Ths) * length(lams) * length(spkThs);
 
 %% main loop
 for Th_idx=1:length(Ths)
     for lam_idx=1:length(lams)
-        for AUC_idx=1:length(AUCs)
+        for spkTh_idx=1:length(spkThs)
             
             % first, make a folder, add it to the path, and move the .bin
             % file into the folder
-            mkdir(fullfile(homedirectory, sprintf('sweep_%d_%d_%d_AUC', ...
-                Th_idx, lam_idx, AUC_idx)))
-            sweep_directory = [homedirectory, delim, sprintf('sweep_%d_%d_%d_AUC', ...
-                Th_idx, lam_idx, AUC_idx)]
+            mkdir(fullfile(homedirectory, sprintf('sweep_%d_%d_%d', ...
+                (Th_idx+4), (lam_idx), spkTh_idx)))
+            sweep_directory = [homedirectory, delim, sprintf('sweep_%d_%d_%d', ...
+                (Th_idx+4), (lam_idx), spkTh_idx)]
             addpath(sweep_directory)
             movefile(bininfo.name, sweep_directory)
             
@@ -91,7 +91,7 @@ for Th_idx=1:length(Ths)
             % direcory
             
             main_kilosort_fx_sweeps(sweep_directory, homedirectory, Ths{Th_idx}, ...
-                lams(lam_idx), AUCs(AUC_idx))
+                lams(lam_idx), spkThs(spkTh_idx))
             
             pwd 
             
@@ -100,7 +100,7 @@ for Th_idx=1:length(Ths)
             
             % update human on progress
             cur_sweep = cur_sweep + 1;
-            sprintf('Sweep %d of %d completed',cur_sweep , Nsweeps);    
+            sprintf('Sweep %d of %d completed',cur_sweep , Nsweeps)    
        
         end
     end

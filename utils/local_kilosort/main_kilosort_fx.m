@@ -7,13 +7,13 @@ addpath('C:\Users\jbred\npy-matlab-master') % for converting to Phy
 rootZ = pathtobin; % the raw data binary file is in this folder
 rootH = rootZ; % path to temporary binary file (same size as data, should be on fast SSD)
 pathToYourConfigFile = pathtobin; % take from Github folder and put it somewhere else (together with the main_file)
-chanMapFile = '8tetrodes_channelmap.mat';
+chanMapFile = 'KSchanMap_thousands.mat';
 
 
-ops.trange = [0 Inf]; % time range to sort (in seconds)
+ops.trange = [250 Inf]; % time range to sort (in seconds)
 ops.NchanTOT    = 32; % total number of channels in your recording
 
-run(fullfile(pathToYourConfigFile, 'StandardConfig_8tetrodes.m'))
+run(fullfile(pathToYourConfigFile, 'StandardConfig_8tetrodes_3_2_2_test.m'))
 ops.fproc       = fullfile(rootH, 'temp_wh.dat'); % proc file on a fast SSD
 ops.chanMap = fullfile(pathToYourConfigFile, chanMapFile);
 
