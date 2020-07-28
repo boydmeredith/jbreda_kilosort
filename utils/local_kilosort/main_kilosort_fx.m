@@ -7,7 +7,7 @@ addpath('C:\Users\jbred\npy-matlab-master') % for converting to Phy
 rootZ = pathtobin; % the raw data binary file is in this folder
 rootH = rootZ; % path to temporary binary file (same size as data, should be on fast SSD)
 pathToYourConfigFile = pathtobin; % take from Github folder and put it somewhere else (together with the main_file)
-chanMapFile = 'KSchanMap_thousands.mat';
+chanMapFile = 'KSchanMap_thousands_5off.mat';
 
 
 ops.trange = [250 Inf]; % time range to sort (in seconds)

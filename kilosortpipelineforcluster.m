@@ -36,16 +36,10 @@ fprintf(input_folder)
 
 % add paths
 repo_path = fullfile(input_folder, sprintf('/%s', repo_name))
-addpath(repo_path)
-addpath(input_folder)
+addpath(repo_path);
+addpath(input_folder);
+cd(input_folder) % should already be here but want to make sure
 
-% if paths aren't there, tell me
-if ~exist(repo_path,'dir')
-    error('no github repo')
-end
-
-if ~exist(input_folder,'dir')
-    error('no input folder')
 
 % call mda to bin funcion
 tetrode_32_mdatobin_forcluster(input_folder, jobid)
