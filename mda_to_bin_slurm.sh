@@ -10,7 +10,7 @@
 #SBATCH --partition=Brody                    # run on brodylab parition
 
 # pick up from where you left of in previous script & move into repo
-input_folder="/jukebox/scratch/jbreda/ephys/W122"
+input_folder="/jukebox/scratch/jbreda/ephys/Tyler_FOF"
 cd $input_folder
 repo="Brody_Lab_Ephys"
 cd $repo
