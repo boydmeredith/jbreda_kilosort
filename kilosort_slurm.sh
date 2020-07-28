@@ -43,7 +43,7 @@ pwd
 # open matlab
 module load matlab/R2019b5
 
-#call kilosortpipelineforcluster
+# call kilosortpipelineforcluster
 	matlab -nosplash -nodisplay -nodesktop -r "kilosortpipelineforcluster('${input_folder}','${repo}','${jobid}');exit"
 
 
