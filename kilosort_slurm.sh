@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --nodes=1                            # node count
-#SBATCH -o /jukebox/scratch/jbreda/ephys/ephys_W122.out  # where to save the output files of the job
-#SBATCH -e /jukebox/scratch/jbreda/ephys/ephys_W122.err  # where to save the error files of the job
+#SBATCH -o /jukebox/scratch/jbreda/ephys/ephys_tyler_FOF.out  # where to save the output files of the job
+#SBATCH -e /jukebox/scratch/jbreda/ephys/ephys_tyler_FOF.err  # where to save the error files of the job
 #SBATCH -t 1440                               # 24 hour time limit
 #SBATCH --mem=64000 # 64GB of RAM
 #SBATCH --mail-type=ALL
@@ -14,7 +14,7 @@
 # necessary fx: pipeline_fork2.sh, exportdio, exportmda, sdtorec, trodes.config, readmda, tetrode_32_mdatobin.m
 # input folder needs to have data & repo folder
 
-input_folder="/jukebox/scratch/jbreda/ephys/W122"
+input_folder="/jukebox/scratch/jbreda/ephys/Tyler_FOF"
 # output_folder="/jukebox/brody/jbreda/ephys"
 
 # Step 2: grab jobid and repo folder for later steps
