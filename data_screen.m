@@ -34,7 +34,7 @@ sfreq = 30000
     
     ten_min = (10 * 60) * sfreq
 
-    dataRAW = fread(fid, [chan 1e6], 'int16');
+    dataRAW = fread(fid, [chan ten_min/2], 'int16');
     
     for z = 1:8
         figure(1); subplot(chan/4,1,z); plot(dataRAW(z,:));
