@@ -37,60 +37,90 @@ function kilosort_preprocess_forcluster(varargin)
 %% inputs
 if isempty(varargin)
     homedirectory=pwd;
+    threshold = 0.5;
+    window = 10000;
     chan=32;
     ops.fs     = 32000;    
     ops.fshigh = 300;
-%     threshold = 0.5
-%     window = 10000
+   
 
 %if user provides input, check that it is a string for a directory
 elseif length(varargin)==1
     if isfolder(varargin{1})
-        homedirectory=pwd;
-        directorywithbinaries=varargin{1}; %#ok<NASGU>
-        cd directorywithbinaries
+        homedirectory=varargin{1}; %#ok<NASGU>
+        cd(homedirectory)
     else
         error('input must be in the format of a string leading to a directory')
     end    
-    chan=32;    
+    threshold = 0.5;
+    window = 10000;
+    chan=32;
     ops.fs     = 32000;    
     ops.fshigh = 300;
-%     threshold = 0.5
-%     window = 10000
     
 elseif length(varargin)==2
-    chan = varargin{2};
+     if isfolder(varargin{1})
+        homedirectory=varargin{1}; %#ok<NASGU>
+        cd(homedirectory)
+    else
+        error('input must be in the format of a string leading to a directory')
+    end 
+    threshold = varargin{2};
+    window = 10000;
+    chan=32;
     ops.fs     = 32000;    
     ops.fshigh = 300;
-%     threshold = 0.5
-%     window = 10000
+  
+elseif length(varargin) == 3
+     if isfolder(varargin{1})
+        homedirectory=varargin{1}; %#ok<NASGU>
+        cd(homedirectory)
+    else
+        error('input must be in the format of a string leading to a directory')
+    end 
+    threshold = varargin{2};
+    window = varargin{3};
+    chan=32;
+    ops.fs     = 32000;    
+    ops.fshigh = 300;
     
-elseif varargin == 3
-    chan=varargin{2};
-    ops.fs = varargin{3};
-    ops.fshigh=300;
-%     threshold = 0.5
-%     window = 10000
-    
-elseif varagin == 4
-    chan=varargin{2};
-    ops.fs = varargin{3};
-    ops.fshigh =varagin{4}
-%     threshold = 0.5
-%     window = 10000
-    
-% elseif varagin == 5
-%     chan=varargin{2};
-%     ops.fs = varargin{3};
-%     ops.fshigh = varagin{4}
-%     threshold = varagin{5}
-%     window = 10000
-% else
-%     chan=varargin{2};
-%     ops.fs = varargin{3};
-%     ops.fshigh = varagin{4}
-%     threshold = varagin{5}
-%     window = varagin{6}
+elseif length(varargin) == 4
+     if isfolder(varargin{1})
+        homedirectory=varargin{1}; %#ok<NASGU>
+        cd(homedirectory)
+    else
+        error('input must be in the format of a string leading to a directory')
+    end 
+    threshold = varargin{2};
+    window = varargin{3};
+    chan = varargin{4};
+    ops.fs     = 32000;    
+    ops.fshigh = 300;
+
+elseif length(varargin) == 5
+     if isfolder(varargin{1})
+        homedirectory=varargin{1}; %#ok<NASGU>
+        cd(homedirectory)
+    else
+        error('input must be in the format of a string leading to a directory')
+    end 
+    threshold = varargin{2};
+    window = varargin{3};
+    chan = varargin{4};
+    ops.fs     = varargin{5};    
+    ops.fshigh = 300;
+else
+     if isfolder(varargin{1})
+        homedirectory=varargin{1}; %#ok<NASGU>
+        cd(homedirectory)
+    else
+        error('input must be in the format of a string leading to a directory')
+    end 
+    threshold = varargin{2};
+    window = varargin{3};
+    chan = varargin{4};
+    ops.fs     = varargin{5};    
+    ops.fshigh = varargin{6};
     
 end
 %% filter & initialization

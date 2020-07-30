@@ -97,7 +97,7 @@ elseif length(varargin) == 4
     ops.fs     = 32000;    
     ops.fshigh = 300;
 
-elseif length(varagin) == 5
+elseif length(varargin) == 5
      if isfolder(varargin{1})
         homedirectory=varargin{1}; %#ok<NASGU>
         cd(homedirectory)
