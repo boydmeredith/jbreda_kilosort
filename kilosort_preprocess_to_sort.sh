@@ -15,7 +15,7 @@ input_folder="/jukebox/scratch/jbreda/ephys/W122/Kilosort_preprocess_testing"
 # repo should be in input_folder, grab its name to add path in matlab
 repo="Brody_Lab_Ephys"
 echo $repo
-
+cd $repo
 
 # open matlab
 module load matlab/R2019b5
