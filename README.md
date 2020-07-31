@@ -99,6 +99,8 @@ To break up conversion process you can run:
 
 **TODO make kilosort_slurm take an argument that stop and start at different parts of conversion**
 
+### preprocess .bin
+
 9. Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before kilosort
 
 **Function highlights:**
@@ -111,7 +113,7 @@ To break up conversion process you can run:
 
 **Steps to run (condensed version of steps 5-7 above)**
 - In the `binfilesforkilsort2_jobid` directory created in step 7 OR in any directory with .bin files you want to process, clone the repo. NOTE: this path is also your `input_folder`
- *TODO make this less redundant*
+-  *TODO make this less redundant*
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/binfilesforkilosort2_jobid
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
@@ -125,7 +127,7 @@ cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/binfilesforkiloso
 sbatch ./kilosort_preprocess_to_sort.sh
 ```
 
-10. Go to step ? in local step by step and run `main_kilosort_fx` & onward
+**10.** Go to step ? in local step by step and run `main_kilosort_fx` & onward
 
 -----------------------
 ### Local step by step:
