@@ -134,7 +134,7 @@ end
 [b1, a1] = butter(3, ops.fshigh/(ops.fs/2), 'high');
     
 % make list of files to process
-listofbinaryfiles=dir('*.bin')
+listofbinaryfiles=dir('*.bin');
 %make empty fftosave
 fftosave=[];
 
@@ -145,71 +145,69 @@ else
     delim='/';
 end
 
-fprintf('made it')
+%% loop over binary files
+for i = 1:length(listofbinaryfiles)
 
-% %% loop over binary files
-% for i = 1:length(listofbinaryfiles)
-% 
-%     % first, open the binary file to read
-%     fname = listofbinaryfiles(i).name;
-%     fid=fopen(fname,'r');
-% 
-%     
-%     % next, name and open a new binary file to write to, and put it in it's
-%     % own folder
-%     mkdir(fullfile(homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort%s',fname(1:end-4), num2str(threshold*10), num2str(window))))
-%     kilosortbinfolder = [homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort',fname(1:end-4), num2str(threshold*10), num2str(window))]
-%     
-%     addpath(kilosortbinfolder)
-%     cd(kilosortbinfolder)
-%     
-%     fidw = fopen(sprintf('%s_T%s_W%s_forkilosort.bin',fname(1:end-4), num2str(threshold*10), num2str(window)), 'w');
-% 
-%     while 1
-%     % now, read in a PORTION of the data. Format it as a matrix with chan rows and
-%     % 1e5 values - we will loop through this for each file until all data is
-%     % read in
-%         dataRAW = fread(fid, [chan 1e6], 'int16');
-%         sizeofdata=size(dataRAW);
-%         if sizeofdata(2) == 0
-%             break %breaks the while loop
-%         end
-% 
-%         % transpose
-%         dataRAW = dataRAW';
-%         % divide by 1000 because the filter prefers that
-%         dataRAW = double(dataRAW)/1000;
-%                
-%         % apply the filter
-%         datr = filtfilt(b1, a1, dataRAW);
-%         dataFILT = datr; %renaming now so I can plot later without overwriting
-% 
-%         % make a binary 'mask' for the data, looking for big changes to
-%         % remove
-%             % first we want absolute values, so we square datr, take the means of each
-%             % row (channel), and then take the square root
-%         dataABSVAL = mean(datr.^2, 2).^.5; 
-%             % create a binary mask where dataABSVAL > threshold
-%             % then, take moving mean of mask with window size
-%         mask1MEAN = movmean(double(dataABSVAL>threshold), window);
-%         
-%         % binary mask 'signal' = 1, 'noise' = 0
-%         mask2= mask1MEAN < 0.00001;
-%         
-%         % mask data & set noise to 0
-%         dataMASK = datr .* mask2;
-%         
-%         % save
-%         dat16 = int16(1000*dataMASK');
-%         fwrite(fidw, dat16, 'int16');
-%     end
-% 
-% fclose(fid);
-% fclose(fidw);
-% 
-% sprintf('finished file %d of %d files to process',i,length(listofbinaryfiles))
-% cd .. %return to directory with other binary files
-% 
-% end
+    % first, open the binary file to read
+    fname = listofbinaryfiles(i).name;
+    fid=fopen(fname,'r');
+
+    
+    % next, name and open a new binary file to write to, and put it in it's
+    % own folder
+    mkdir(fullfile(homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort%s',fname(1:end-4), num2str(threshold*10), num2str(window))))
+    kilosortbinfolder = [homedirectory, delim, sprintf('%s_T%s_W%s_forkilosort',fname(1:end-4), num2str(threshold*10), num2str(window))]
+    
+    addpath(kilosortbinfolder)
+    cd(kilosortbinfolder)
+    
+    fidw = fopen(sprintf('%s_T%s_W%s_forkilosort.bin',fname(1:end-4), num2str(threshold*10), num2str(window)), 'w');
+
+    while 1
+    % now, read in a PORTION of the data. Format it as a matrix with chan rows and
+    % 1e5 values - we will loop through this for each file until all data is
+    % read in
+        dataRAW = fread(fid, [chan 1e6], 'int16');
+        sizeofdata=size(dataRAW);
+        if sizeofdata(2) == 0
+            break %breaks the while loop
+        end
+
+        % transpose
+        dataRAW = dataRAW';
+        % divide by 1000 because the filter prefers that
+        dataRAW = double(dataRAW)/1000;
+               
+        % apply the filter
+        datr = filtfilt(b1, a1, dataRAW);
+        dataFILT = datr; %renaming now so I can plot later without overwriting
+
+        % make a binary 'mask' for the data, looking for big changes to
+        % remove
+            % first we want absolute values, so we square datr, take the means of each
+            % row (channel), and then take the square root
+        dataABSVAL = mean(datr.^2, 2).^.5; 
+            % create a binary mask where dataABSVAL > threshold
+            % then, take moving mean of mask with window size
+        mask1MEAN = movmean(double(dataABSVAL>threshold), window);
+        
+        % binary mask 'signal' = 1, 'noise' = 0
+        mask2= mask1MEAN < 0.00001;
+        
+        % mask data & set noise to 0
+        dataMASK = datr .* mask2;
+        
+        % save
+        dat16 = int16(1000*dataMASK');
+        fwrite(fidw, dat16, 'int16');
+    end
+
+fclose(fid);
+fclose(fidw);
+
+sprintf('finished file %d of %d files to process',i,length(listofbinaryfiles))
+cd .. %return to directory with other binary files
+
+end
 
 end
