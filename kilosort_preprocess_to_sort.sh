@@ -15,10 +15,10 @@ input_folder="/jukebox/scratch/jbreda/ephys/W122/Kilosort_preprocess_testing"
 # repo should be in input_folder, grab its name to add path in matlab
 repo="Brody_Lab_Ephys"
 echo $repo
-cd $repo
+pwd
 
 # open matlab
-module load matlab/R2019b5
+# module load matlab/R2019b5
 
 # call kilosort_preprocess_forcluster_wrapper
-	matlab -nosplash -nodisplay -nodesktop -r "kilosort_preprocess_forcluster_wrapper('${input_folder}','${repo}');exit"
+#	matlab -nosplash -nodisplay -nodesktop -r "kilosort_preprocess_forcluster_wrapper('${input_folder}','${repo}');exit"
