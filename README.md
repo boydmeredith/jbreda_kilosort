@@ -10,9 +10,17 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ----------------------------------
 # TODO
-- kilosort parameter sweeps
+- document kilosort_preprocess_forcluster.m.
+  - update local & cluster directions
+  - comment both fx in matlab bc inputs changed
+- kilosort preprocess onto cluster
+  - document
+- kilosort onto tigress (just one job)
+  - document
+- parallelize kilosort on tigress (many jobs)
+- update fx names to be more specific/consistent(?)
+- cluster cut locally on 06-09-2019 bundle
 ---
-- determine 'protocol' for phy
 - Post-processing
 
 ------------------------------------
