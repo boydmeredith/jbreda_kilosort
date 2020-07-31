@@ -33,28 +33,28 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 #### .rec, .dat, .mda --> .bin
 
-1. Sign into spock
+**1.** Sign into spock
 ```
 ssh yourid@spock
 password
 ```
-2. In scratch make sure there is a folder with your name and subfolder(s) with ephys/rat info. This is where you will clone the repo to, add unprocessed data into & use as input_folder for SLURM script
+**2.** In scratch make sure there is a folder with your name and subfolder(s) with ephys/rat info. This is where you will clone the repo to, add unprocessed data into & use as input_folder for SLURM script
 
 ```
 /jukebox/scratch/*your folder*/ephys/*folder for raw data*
 ```
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
-3. Move files you want to process into `/jukebox/scratch/*your folder*/ephys/*folder for raw data*` (**do this on globus!**)
+**3.** Move files you want to process into `/jukebox/scratch/*your folder*/ephys/*folder for raw data*` (**do this on globus!**)
 
-4. Clone Brody_lab_ephys git hub repo to your scratch folder
+**4.** Clone Brody_lab_ephys git hub repo to your scratch folder
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
 
-5. Open kilosort_slurm.sh & edit input & output folders. Additionally, adjust paths in the header for job output/errors & email for job updates.
+**5.** Open `kilosort_slurm.sh` & edit `input folder` to be folder with raw data. Additionally, adjust paths in the header for job output/errors & email for job updates.
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
 nano kilosort_slurm.sh
@@ -74,7 +74,7 @@ tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <De
   - To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
 
-7. Run `kilosort_slurm.sh` to convert any .dat, .rec files --> .mda files --> .bin bundles for kilosort
+**6.** Run `kilosort_slurm.sh` to convert any .dat, .rec files --> .mda files --> .bin bundles for kilosort
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
@@ -91,7 +91,7 @@ sbatch ./kilosort_slurm.sh
 
 - (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
 
-8. OPTIONAL .dat and .rec --> .mda or .mda --> .bin bundles
+**7.** OPTIONAL .dat and .rec --> .mda or .mda --> .bin bundles
 
 To break up conversion process you can run:
 
@@ -101,7 +101,7 @@ To break up conversion process you can run:
 
 ### preprocess .bin
 
-9. Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before kilosort
+**8.** Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before kilosort
 
 **Function highlights:**
 - 1. takes given input_folder and repo name and passes them into `kilosort_preprocess_forcluster_wrapper.m`
@@ -127,7 +127,7 @@ cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/binfilesforkiloso
 sbatch ./kilosort_preprocess_to_sort.sh
 ```
 
-**10.** Go to step ? in local step by step and run `main_kilosort_fx` & onward
+**9.** Go to step ? in local step by step and run `main_kilosort_fx` & onward
 
 -----------------------
 ### Local step by step:
@@ -136,13 +136,13 @@ sbatch ./kilosort_preprocess_to_sort.sh
 
 Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions). 1-2 only needed for first time use
 
-1. In scratch make sure there is a folder with your name and subfolder with ephys/rat info. This is where you will run and save your data from/to
+**1.** In scratch make sure there is a folder with your name and subfolder with ephys/rat info. This is where you will run and save your data from/to
 
 `/jukebox/scratch/*your folder*/ephys/*folder for raw data*`
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
 
-2. Clone Brody_Lab_Ephys github repo into your scratch data folder
+**2.** Clone Brody_Lab_Ephys github repo into your scratch data folder
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder for raw data*
@@ -161,7 +161,7 @@ Repo function highlights:
 - `kilosort_preprocess` removes large noise artifacts & persistent noise from .bin files so they don't eat up templates in kilosort
 
 
-3. In globus, take a .dat or .rec file(s) from archive and copy it into your scratch folder
+**3.** In globus, take a .dat or .rec file(s) from archive and copy it into your scratch folder
 
 Stored in: `/jukebox/archive/brody/RATTER/PhysData/Raw/*your folder*/*your rat*/*session file*`
 Move to: `/jukebox/scratch/*your folder*/ephys/*folder for raw data*`
@@ -171,7 +171,7 @@ File format:
 - this is no longer the case, just needs to be `.dat` or `.rec`
 - Brody lab naming conventions = `{session}.dat` or `{session}.rec` where `{session}` = any string with data/tetrode/rat information
 
-4. Sign into spock and create a new tmux screen in the repo.
+**4.** Sign into spock and create a new tmux screen in the repo.
 
 ```
 ssh yourid@spock
@@ -183,12 +183,12 @@ tmux new -s <DescriptiveSessionName>
 ```
 To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
-5. Grab a Brody lab node
+**5.** Grab a Brody lab node
 
 `salloc -p Brody -t 4:00:00 -c 11 srun --pty bash`
   - Creates a new shell on the node  with 11 cores & reserves for 4 hours
 
-6. Run the pipeline_fork2.sh (pipeline for kilosort 2) `pipeline_fork2 "{session}.dat"` OR `pipeline_fork2 "{session}.rec"`
+**6.** Run the pipeline_fork2.sh (pipeline for kilosort 2) `pipeline_fork2 "{session}.dat"` OR `pipeline_fork2 "{session}.rec"`
 
 **overall:** converts .dat or .rec files to .mda files
   - This is a modified version of pipeline.sh written by Marino
@@ -213,7 +213,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 
 #### In matlab:
 
-7. Run `tetrode_32_mdatobin.m`
+**7.** Run `tetrode_32_mdatobin.m`
 
 **overall:** takes 32 channel .mda files and converts them to 4 .bin files in groups of 8 tetrodes
 
@@ -234,9 +234,8 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 - for each session, 4 .bin files in groups of 8 tetrodes will be created with the naming scheme `{session}_Nbundle.bin`
 - returns to the directory is starts in
 
-**cluster stops here**
 
-8. Run `kilosort_preprocess.m`
+**8.** Run `kilosort_preprocess.m`
 
 
 **overall:** this function takes .bin files, applies a butterworth  highpass filter and then creates a mask for large amplitude noise and zeros it out. Creates a new directory with containing a processed .bin file that can be passed into kilosort
@@ -257,6 +256,8 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 *this function returns:*
 - for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files the `_forkilsort` suffix in X directories within `binfilesforkilsort2`
 
+**cluster stops here**
+
 ### 2. kilosort
 
 **See `utils` folder for kilosort2 git submodule.** I am running functions from `local_kilosort`.
@@ -269,11 +270,11 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 #### Parameter Optimization
 These functions were crated to sweep over different kilosort .ops. Can easily be adjusted to work with variety of ops.
 
-1. `main_kilosort_fx_sweeps.m`
+**1.** `main_kilosort_fx_sweeps.m`
 
 **overall** Takes a .bin path, .config path and parameters being swept over (currently ops.Th, ops.lam, ops.AUCsplit, but subject to change!!) and runs kilosort on them. *NOTE* make sure your parameters being passed in are assigned within the function and commented out in the config file!
 
-2. `kilosort_ops_sweeps.m`
+**2.**`kilosort_ops_sweeps.m`
 
 **overall** Iterates over arrays of 3 kilosort parameters (currently ops.Th, ops.lam, ops.AUCsplit, but subject to change!!) and iteratively passes into `main_kilosort_fx_sweeps`.
 
