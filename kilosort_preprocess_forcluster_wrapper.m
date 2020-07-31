@@ -46,11 +46,10 @@ addpath(repo_path);
 addpath(input_folder);
 cd(input_folder) % need to get into data folder b/c called from repo folder
 
-pwd
+
 % call preprocess function (can take additional arguments, see
 % documentation for mor info)
-% kilosort_preprocess_forcluster(input_folder)
-
+kilosort_preprocess_forcluster(input_folder)
 
 %helpful for later 
 %test = genpath('C:\Users\jbred\Github\Brody_Lab_Ephys')
