@@ -52,6 +52,10 @@ pwd
 % kilosort_preprocess_forcluster(input_folder)
 
 
+%helpful for later 
+%test = genpath('C:\Users\jbred\Github\Brody_Lab_Ephys')
+%addpath(test) adds all the paths underneath the subfolder.
+
 % message complete
 disp('completed succesffully')
 
