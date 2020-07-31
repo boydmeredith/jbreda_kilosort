@@ -66,7 +66,7 @@ input_folder="/jukebox/scratch/*your folder*/ephys/*folder with raw data*"
 
 slurm notes:
 - 1. this is set to run on a Brody lab partition, remove the --partition line if this does not apply to you
-- 2. rather than running on slurm via sbatch (step 7 below), if the job is small enough, you can allocate a node instead:
+- 2. rather than running on slurm via sbatch (step 7 below), if the job is small enough, you can allocate a node instead (not great for matlab stuff):
 ```
 tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash
 ```
@@ -81,7 +81,7 @@ cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
 sbatch ./kilosort_slurm.sh
 ```
 
-Function highlights:
+**Function highlights:**
 - 1. cds into input_folder directory and makes an array of file names with .rec or .dat extension
 - 2. Loops over file names and passes each into `pipeline_fork2` to create .mda files
   - a. this function converts .dat and .rec files into .mda files
@@ -89,6 +89,7 @@ Function highlights:
   - a. This function adds all needed paths & cds into correct directory before passing .mda folders into `tetrode_32_mdatobin_forcluster.m`
   - b. `tetrode_32_mdatobin_forcluster.m` takes directory of .mda folders, makes a new directory with jobid appended and converts each recording session into .bin files split into 4 groups of 8 tetrodes for each session
 
+- (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
 
 8. OPTIONAL .dat and .rec --> .mda or .mda --> .bin bundles
 
@@ -98,9 +99,33 @@ To break up conversion process you can run:
 
 **TODO make kilosort_slurm take an argument that stop and start at different parts of conversion**
 
-8. (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
+9. Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before kilosort
 
-9. Go to step 8 in local step by step and run `kilosort_preprocess.m` & onward
+**Function highlights:**
+- 1. takes given input_folder and repo name and passes them into `kilosort_preprocess_forcluster_wrapper.m`
+  - a. this function adds appropriate matlab paths and then calls `kilosort_preprocess_forcluster.m`
+- 2. `kilosort_preprocess_forcluster.m,`
+  - a. iterates over each .bin file in a directory (input_folder), applies a butterworth  highpass filter and then creates a mask for large amplitude noise and zeros it out
+  - b. for each .bin file, creates a directory with its name and puts preprocessed file in it
+  - c. see `kilosort_preprocess.m` for more information on input arguments & adjustments that can be made
+
+**Steps to run (condensed version of steps 5-7 above)**
+- In the `binfilesforkilsort2_jobid` directory created in step 7 OR in any directory with .bin files you want to process, clone the repo. NOTE: this path is also your `input_folder`
+ *TODO make this less redundant*
+```
+cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/binfilesforkilosort2_jobid
+git clone https://github.com/jess-breda/Brody_Lab_Ephys
+```
+
+- Open `kilosort_preprocess_to_sort.sh` & edit input folder such that it is the directory containing .bin files to process. Additionally, adjust paths in the header for job output/errors & email for job updates.
+
+- Run
+```
+cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/binfilesforkilosort2_jobid/Brody_Lab_Ephys
+sbatch ./kilosort_preprocess_to_sort.sh
+```
+
+10. Go to step ? in local step by step and run `main_kilosort_fx` & onward
 
 -----------------------
 ### Local step by step:
@@ -212,7 +237,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 8. Run `kilosort_preprocess.m`
 
 
-**overall:** this function takes .bin files, applies a butterworth filter and then creates a mask for large amplitude noise and zeros it out. Creates a new directory with containing a processed .bin file that can be passed into kilosort
+**overall:** this function takes .bin files, applies a butterworth  highpass filter and then creates a mask for large amplitude noise and zeros it out. Creates a new directory with containing a processed .bin file that can be passed into kilosort
 
 *this function optionally takes:*
 - directory containing .bin files(s) to process (cwd), number of channels (32), butterworth parameters (sample rate = 32000, highpass = 300)
