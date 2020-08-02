@@ -54,10 +54,10 @@ cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
 
-**5.** Open `kilosort_slurm.sh` & edit `input folder` to be folder with raw data. Additionally, adjust paths in the header for job output/errors & email for job updates.
+**5.** Open `datrec_to_bin.sh` & edit `input folder` to be folder with raw data. Additionally, adjust paths in the header for job output/errors & email for job updates.
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
-nano kilosort_slurm.sh
+nano datrec_to_bin.sh
  --- in nano ---
 input_folder="/jukebox/scratch/*your folder*/ephys/*folder with raw data*"
 
@@ -74,11 +74,11 @@ tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <De
   - To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
 
-**6.** Run `kilosort_slurm.sh` to convert any .dat, .rec files --> .mda files --> .bin bundles for kilosort
+**6.** Run `datrec_to_bin.sh` to convert any .dat, .rec files --> .mda files --> .bin bundles for kilosort
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
-sbatch ./kilosort_slurm.sh
+sbatch ./datrec_to_bin.sh
 ```
 
 **Function highlights:**
@@ -96,8 +96,6 @@ sbatch ./kilosort_slurm.sh
 To break up conversion process you can run:
 
 `datrec_to_mda.sh` and `mda_to_bin.sh`
-
-**TODO make kilosort_slurm take an argument that stop and start at different parts of conversion**
 
 ### preprocess .bin
 
