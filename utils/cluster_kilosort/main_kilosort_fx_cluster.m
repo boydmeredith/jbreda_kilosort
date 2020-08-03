@@ -1,4 +1,4 @@
-function main_kilosort_fx(pathtobin, pathtoconfig)
+function main_kilosort_fx_cluster(pathtobin, pathtoconfig)
 
 %% you need to change most of the paths in this block
 

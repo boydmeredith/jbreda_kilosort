@@ -1,20 +1,23 @@
-ops.chanMap             = 'C:\Users\jbred\Github\Brody_Lab_Ephys\utils\local_kilosort\8tetrodes_channelmap.mat';
+%%
+
+ops.chanMap             = fullfile(pathToYourConfigFile, chanMapFile);
 % ops.chanMap = 1:ops.Nchan; % treated as linear probe if no chanMap file
 
 % sample rate
 ops.fs = 30000;  
 
 % frequency for high pass filtering (150)
-ops.fshigh = 150;   
+ops.fshigh = 300;   
+ops.FILTERON = 1; 
 
 % minimum firing rate on a "good" channel (0 to skip)
 ops.minfr_goodchannels = 0.1; 
 
 % threshold on projections (like in Kilosort1, can be different for last pass like [10 4])
-ops.Th = [10 4];  
+ops.Th = [6 2];  
 
 % how important is the amplitude penalty (like in Kilosort1, 0 means not used, 10 is average, 50 is a lot) 
-ops.lam = 10;  
+ops.lam = 20;  
 
 % splitting a cluster at the end requires at least this much isolation for each sub-cluster (max = 1)
 ops.AUCsplit = 0.9; 
@@ -30,14 +33,22 @@ ops.sigmaMask = 30;
 
 % threshold crossings for pre-clustering (in PCA projection space)
 ops.ThPre = 8; 
+
+% noise
+% ops.criterionNoiseChannels = 0.01
+
+% CAR filter (because why not at this point)
+ops.CAR = 1
+
+
 %% danger, changing these settings can lead to fatal errors
 % options for determining PCs
-ops.spkTh           = -6;      % spike threshold in standard deviations (-6)
+ops.spkTh           = -1.5;      % spike threshold in standard deviations (-6)
 ops.reorder         = 1;       % whether to reorder batches for drift correction. 
 ops.nskip           = 25;  % how many batches to skip for determining spike PCs
 
 ops.GPU                 = 1; % has to be 1, no CPU version yet, sorry
-% ops.Nfilt               = 1024; % max number of clusters
+% ops.Nfilt               = 1024 * 2; % max number of clusters (doubling this JB)
 ops.nfilt_factor        = 4; % max number of clusters per good channel (even temporary ones)
 ops.ntbuff              = 64;    % samples of symmetrical buffer for whitening and spike detection
 ops.NT                  = 64*1024+ ops.ntbuff; % must be multiple of 32 + ntbuff. This is the batch size (try decreasing if out of memory). 
