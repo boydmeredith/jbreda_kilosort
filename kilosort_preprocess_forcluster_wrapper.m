@@ -1,6 +1,6 @@
 
 % ---------------------
-% written by Jess Breda
+% written by Jess Breda 20200731
 % purpose is to run kilosort_preprocess function on SLURM cluster. Currently used
 % as a wrapper for a fx to convert preprocess.bin To be run
 % with <ENTER SLURM SCRIPT HERE>
@@ -10,6 +10,8 @@
 % TODO:
 % - work into previous part of pipeline(.dat/.rec to .bin) and future
 % - work into future part of pipeline (actually pass these preproces into KS2 
+% - change this to take a repo path so the repo doesn't need to be cloned
+% again into the fx, but can be used from previous path steps
 
 % INPUT PARAMETERS:
 % - input_folder = folder containin .bin files to preprocess. will be
@@ -51,9 +53,6 @@ cd(input_folder) % need to get into data folder b/c called from repo folder
 % documentation for mor info)
 kilosort_preprocess_forcluster(input_folder)
 
-%helpful for later 
-%test = genpath('C:\Users\jbred\Github\Brody_Lab_Ephys')
-%addpath(test) adds all the paths underneath the subfolder.
 
 % message complete
 disp('completed succesffully')

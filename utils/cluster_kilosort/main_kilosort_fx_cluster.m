@@ -1,6 +1,17 @@
+% adapted from KS2 main_kilosort.m on 20200803 by Jess Breda
+% purpose is to run kilosort on TigerGPU
+
 function main_kilosort_fx_cluster(pathtobin, pathtoconfig)
 
-%% you need to change most of the paths in this block
+%% Things in this block that have been harded for my (JRB) use:
+% path to kilosort folder
+% path to npy library
+% name of channel map
+% time (start 250 in)
+% config file name
+
+% TODO
+% align start of sorting to bdata
 
 addpath(genpath('/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys/utils/Kilosort2')) % path to kilosort folder
 addpath('/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys/utils/npy-matlab-master') % for converting to Phy
