@@ -23,6 +23,8 @@ repo_folder="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys"
 # where the config and channel map info are (inputs to main_kilosort fx)
 config_folder="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys/utils/cluster_kilosort"
  
+cd $config_folder
+
 # load matlab
 module load matlab/R2019b
 
