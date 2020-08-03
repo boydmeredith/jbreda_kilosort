@@ -1,14 +1,15 @@
 #!/bin/bash
+#
 #SBATCH -p all                # partition (queue)
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
 #SBATCH --ntasks-per-socket=1
 #SBATCH --gres=gpu:1
 #SBATCH --contiguous
-#SBATCH --mem=128000         # 128 GB RAM 
+#SBATCH --mem=5000         # 5 GB RAM 
 #SBATCH -t 60                # time (minutes)
-#SBATCH -o /jukebox/scratch/jbreda/ephys/logs/val_%j.out
-#SBATCH -e /jukebox/scratch/jbreda/ephys/logs/val_%j.err
+#SBATCH -o /scratch/gpfs/jbreda/ephys/kilosort/logs/output.out
+#SBATCH -e /scratch/gpfs/jbreda/ephys/kilosort/logs/error.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jbreda@princeton.edu
 
