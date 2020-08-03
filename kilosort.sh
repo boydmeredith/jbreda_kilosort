@@ -13,12 +13,19 @@
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=jbreda@princeton.edu
 
-# input_folder = path to folder
-# config folder = path to folder with config and channel map info
 
+# where the .bin file is
+input_folder="/scratch/gpfs/jbreda/ephys/kilosort/data_sdb_20190724_193007_fromSD_firstbundle_T5_W10000_forkilosort" 
+
+# where the Brody_Lab_Ephys repo is
+repo_folder="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys"
+
+# where the config and channel map info are (inputs to main_kilosort fx)
+config_folder="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys/utils/cluster_kilosort"
+ 
 # load matlab
+module load matlab/R2019b5
 
 # call main kilosort_wrapper
+	matlab -nosplash -nodisplay -nodesktop -r "main_kilosort_forcluster_wrapper('${input_folder}','${config_folder}','${repo_folder}');exit"
 
-repo="Brody_Lab_Ephys"
-echo $repo
