@@ -26,8 +26,9 @@ config_folder="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys/utils/cluster
 cd $config_folder
 
 # load matlab
+module purge
 module load matlab/R2019b
 
 # call main kilosort_wrapper
-	matlab -nosplash -nodisplay -nodesktop -r "main_kilosort_forcluster_wrapper('${input_folder}','${config_folder}','${repo_folder}');exit"
+	matlab -singleCompThread -nosplash -nodisplay -nodesktop -r "main_kilosort_forcluster_wrapper('${input_folder}','${config_folder}','${repo_folder}');exit"
 
