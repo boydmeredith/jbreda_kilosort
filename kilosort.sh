@@ -1,11 +1,9 @@
 #!/bin/bash
 #
-#SBATCH -p all                # partition (queue)
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=1
 #SBATCH --ntasks-per-socket=1
 #SBATCH --gres=gpu:1
-#SBATCH --contiguous
 #SBATCH --mem=5000         # 5 GB RAM 
 #SBATCH -t 60                # time (minutes)
 #SBATCH -o /scratch/gpfs/jbreda/ephys/kilosort/logs/output.out
