@@ -27,7 +27,7 @@ pwd
 
 # load matlab
 module purge
-module load matlab/R2019b
+module load matlab/R2018b
 
 # call main kilosort_wrapper
 # matlab -singleCompThread -nosplash -nodisplay -nodesktop -r "main_kilosort_forcluster_wrapper('${input_folder}','${config_folder}','${repo_folder}');exit"
