@@ -41,15 +41,9 @@ repo_and_subfolders = genpath(repo_folder); %where everything else is (including
 addpath(repo_and_subfolders);
 
 
-pwd
-% get into folder with main_kilsort_fx_cluster (conveniently also where I keep config
-% files)
-cd(config_folder)
-
-pwd
-
 disp('Passing into Kilosort')
-% call main_kilosort_fx_cluster(input_folder, config_folder)
+% call main_kilosort_fx
+main_kilosort_fx_cluster(input_folder, config_folder)
 disp('Kilosort Completed Successfully')
 
 end
