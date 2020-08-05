@@ -12,13 +12,11 @@
 # hard coding input folder for git documentation, this should be where your raw .bin bundles are
 input_folder="/jukebox/scratch/jbreda/ephys/W122/binfilesforkilosort2_19523713"
 
-# repo should be in input_folder, grab its name to add path in matlab, note that this function is called from the repo, so this your cwd
-
-repo="Brody_Lab_Ephys"
-echo $repo
+# need to add to matlab path, not this function is called from the repo, so this your cwd
+repo_path="/jukebox/scratch/jbreda/ephys/W122"
 
 # open matlab
 module load matlab/R2019b5
 
 # call kilosort_preprocess_forcluster_wrapper
-	matlab -nosplash -nodisplay -nodesktop -r "kilosort_preprocess_forcluster_wrapper('${input_folder}','${repo}');exit"
+	matlab -nosplash -nodisplay -nodesktop -r "kilosort_preprocess_forcluster_wrapper('${input_folder}','${repo_path}');exit"
