@@ -3,9 +3,8 @@
 % written by Jess Breda 20200731
 % purpose is to run kilosort_preprocess function on SLURM cluster. Currently used
 % as a wrapper for a fx to convert preprocess.bin To be run
-% with <ENTER SLURM SCRIPT HERE>
-% **Assumes that bin files and repo are in same directory**
-%
+% with kilosort_preprocess_to_sort.sh
+% 
 %
 % TODO:
 % - work into previous part of pipeline(.dat/.rec to .bin) and future
@@ -13,11 +12,11 @@
 % - change this to take a repo path so the repo doesn't need to be cloned
 % again into the fx, but can be used from previous path steps
 
-% INPUT PARAMETERS:
+% INPUT PARAMETERS: (hard coded into slurm script)
 % - input_folder = folder containin .bin files to preprocess. will be
 % harded coded into SLURM script
-% - repo_name = 'Brody_Lab_Ephys' or name of repo with
-% 'kilosort_preprocess_forcluster.m'
+% - repo_path = path where repo is located. Usually located in the same
+% folder as the raw data from .dat/.rec conversion step
 %
 % OPTIONAL PARAMETERS:
 % - none
@@ -32,7 +31,7 @@
 % ---------------------
 %
 %%
-function kilosort_preprocess_forcluster_wrapper(input_folder, repo_name)
+function kilosort_preprocess_forcluster_wrapper(input_folder, repo_path)
 
 % slurm script will take a 'bin files for kilosort folder as an input
 % folder. this input folder needs to be added to the path along with the
@@ -43,9 +42,9 @@ function kilosort_preprocess_forcluster_wrapper(input_folder, repo_name)
 fprintf(input_folder)
 
 % add paths
-repo_path = fullfile(input_folder, sprintf('/%s', repo_name))
-addpath(repo_path);
 addpath(input_folder);
+addpath(repo_path);
+
 cd(input_folder) % need to get into data folder b/c called from repo folder
 
 
