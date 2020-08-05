@@ -31,7 +31,7 @@
 % ---------------------
 %
 %%
-function kilosort_preprocess_forcluster_wrapper(input_folder, repo_path)
+function kilosort_preprocess_forcluster_wrapper(input_path, repo_path)
 
 % slurm script will take a 'bin files for kilosort folder as an input
 % folder. this input folder needs to be added to the path along with the
@@ -39,18 +39,19 @@ function kilosort_preprocess_forcluster_wrapper(input_folder, repo_path)
 
 
 % print things to verify what is being passed into the function
-fprintf(input_folder)
+fprintf(input_path)
+fprintf(repo_path)
 
 % add paths
-addpath(input_folder);
+addpath(input_path);
 addpath(repo_path);
 
-cd(input_folder) % need to get into data folder b/c called from repo folder
+cd(repo_path) % might be redundant, but just need to make sure we here to call the next function
 
 
 % call preprocess function (can take additional arguments, see
 % documentation for mor info)
-kilosort_preprocess_forcluster(input_folder)
+kilosort_preprocess_forcluster(input_path)
 
 
 % message complete

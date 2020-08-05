@@ -19,4 +19,4 @@ repo_path="/jukebox/scratch/jbreda/ephys/W122/Kilosort_preprocess_testing/Brody_
 module load matlab/R2019b5
 
 # call kilosort_preprocess_forcluster_wrapper
-	matlab -nosplash -nodisplay -nodesktop -r "kilosort_preprocess_forcluster_wrapper('${input_folder}','${repo_path}');exit"
+	matlab -nosplash -nodisplay -nodesktop -r "kilosort_preprocess_forcluster_wrapper('${input_path}','${repo_path}');exit"
