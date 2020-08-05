@@ -20,6 +20,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 - parallelize kilosort on tigress (many jobs)
 - update fx names to be more specific/consistent(?)
 - cluster cut locally on 06-09-2019 bundle
+- change preprocess to take repo_folder rather than repo_name
 ---
 - Post-processing
 
@@ -54,7 +55,7 @@ cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
 
-**5.** Open `datrec_to_bin.sh` & edit `input folder` to be folder with raw data. Additionally, adjust paths in the header for job output/errors & email for job updates.
+**5.** Open `datrec_to_bin.sh` & edit `input_folder` to be folder with raw data. Additionally, adjust paths in the header for job output/errors & email for job updates.
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
 nano datrec_to_bin.sh
@@ -78,7 +79,7 @@ tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <De
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
-sbatch ./datrec_to_bin.sh
+sbatch datrec_to_bin.sh
 ```
 
 **Function highlights:**
@@ -102,27 +103,27 @@ To break up conversion process you can run:
 **8.** Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before kilosort
 
 **Function highlights:**
-- 1. takes given input_folder and repo name and passes them into `kilosort_preprocess_forcluster_wrapper.m`
+- 1. takes given `input_path` and `repo_path` and passes them into `kilosort_preprocess_forcluster_wrapper.m`
   - a. this function adds appropriate matlab paths and then calls `kilosort_preprocess_forcluster.m`
 - 2. `kilosort_preprocess_forcluster.m,`
-  - a. iterates over each .bin file in a directory (input_folder), applies a butterworth  highpass filter and then creates a mask for large amplitude noise and zeros it out
+  - a. iterates over each .bin file in a directory (`input_path`), applies a butterworth  highpass filter and then creates a mask for large amplitude noise and zeros it out
   - b. for each .bin file, creates a directory with its name and puts preprocessed file in it
   - c. see `kilosort_preprocess.m` for more information on input arguments & adjustments that can be made
 
 **Steps to run (condensed version of steps 5-7 above)**
-- In the `binfilesforkilsort2_jobid` directory created in step 7 OR in any directory with .bin files you want to process, clone the repo. NOTE: this path is also your `input_folder`
--  *TODO make this less redundant*
+- If you've cloned this repo locally already, find its path & skip this step. If you have not, clone the github repo to your local machine. It is likely easiest to clone it to your `input_path` where the .bin files to be processed are.
+
 ```
-cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/binfilesforkilosort2_jobid
+cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/*input_folder*
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
 
-- Open `kilosort_preprocess_to_sort.sh` & edit input folder such that it is the directory containing .bin files to process. Additionally, adjust paths in the header for job output/errors & email for job updates.
+- Open `kilosort_preprocess_to_sort.sh` & edit `input_path` such that it is the directory containing .bin files to process. Edit the `repo_path` so that it points to this repo. Additionally, adjust paths in the header for job output/errors & email for job updates.
 
 - Run
 ```
-cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/binfilesforkilosort2_jobid/Brody_Lab_Ephys
-sbatch ./kilosort_preprocess_to_sort.sh
+cd path/to/this/repo
+sbatch kilosort_preprocess_to_sort.sh
 ```
 
 **9.** Go to step ? in local step by step and run `main_kilosort_fx` & onward
