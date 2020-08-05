@@ -10,7 +10,7 @@
 #SBATCH --partition=Brody                    # run on brodylab parition
 
 # hard coding input folder for git documentation, this should be where your raw .bin bundles are
-input_folder="/jukebox/scratch/jbreda/ephys/W122/Kilosort_preprocess_testing/repo_path_testing"
+input_path="/jukebox/scratch/jbreda/ephys/W122/Kilosort_preprocess_testing/repo_path_testing"
 
 # need to add to matlab path, not this function is called from the repo, so this your cwd
 repo_path="/jukebox/scratch/jbreda/ephys/W122/Kilosort_preprocess_testing/Brody_Lab_Ephys"
