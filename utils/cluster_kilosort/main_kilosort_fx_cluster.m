@@ -1,7 +1,7 @@
 % adapted from KS2 main_kilosort.m on 20200803 by Jess Breda
 % purpose is to run kilosort on TigerGPU
 
-function main_kilosort_fx_cluster(pathtobin, pathtoconfig)
+function main_kilosort_fx_cluster(pathtobin, pathtoconfig, start_time)
 
 %% Things in this block that have been harded for my (JRB) use:
 % path to kilosort folder
@@ -21,7 +21,7 @@ pathToYourConfigFile = pathtoconfig; % take from Github folder and put it somewh
 chanMapFile = 'KSchanMap_thousands.mat';
 
 
-ops.trange = [250 Inf]; % time range to sort (in seconds)
+ops.trange = [start_time Inf]; % time range to sort (in seconds)
 ops.NchanTOT    = 32; % total number of channels in your recording
 
 run(fullfile(pathToYourConfigFile, 'StandardConfig_JB_20200803.m'))
