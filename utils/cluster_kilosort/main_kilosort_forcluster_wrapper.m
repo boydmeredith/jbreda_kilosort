@@ -28,7 +28,7 @@
 %('${input_folder}','${config_folder}','${repo_folder}');exit"
 % ---------------------
 %%
-function main_kilosort_forcluster_wrapper(input_folder, config_folder, repo_folder)
+function main_kilosort_forcluster_wrapper(input_folder, config_folder, repo_folder, start_time)
 
 % printing test for cluster
 fprintf(input_folder)
@@ -43,7 +43,7 @@ addpath(repo_and_subfolders);
 
 disp('Passing into Kilosort')
 % call main_kilosort_fx
-main_kilosort_fx_cluster(input_folder, config_folder)
+main_kilosort_fx_cluster(input_folder, config_folder, start_time)
 disp('Kilosort Completed Successfully')
 
 end
