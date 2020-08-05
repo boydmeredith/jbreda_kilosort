@@ -10,13 +10,13 @@
 #SBATCH --partition=Brody                    # run on brodylab parition
 
 # hard coding input folder for git documentation, this should be where your raw .bin bundles are
-input_folder="/jukebox/scratch/jbreda/ephys/W122/binfilesforkilosort2_19523713"
+input_path="/jukebox/scratch/jbreda/ephys/W122/binfilesforkilosort2_19523713"
 
-# need to add to matlab path, not this function is called from the repo, so this your cwd
+# need to add to matlab path, note this function is called from the repo, so this your cwd
 repo_path="/jukebox/scratch/jbreda/ephys/W122"
 
 # open matlab
 module load matlab/R2019b5
 
 # call kilosort_preprocess_forcluster_wrapper
-	matlab -nosplash -nodisplay -nodesktop -r "kilosort_preprocess_forcluster_wrapper('${input_folder}','${repo_path}');exit"
+	matlab -nosplash -nodisplay -nodesktop -r "kilosort_preprocess_forcluster_wrapper('${input_path}','${repo_path}');exit"
