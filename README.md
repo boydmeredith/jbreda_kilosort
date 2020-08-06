@@ -39,7 +39,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 ssh yourid@spock
 password
 ```
-**2.** In scratch make sure there is a folder with your name and subfolder(s) with ephys/rat info. This is where you will clone the repo to, add unprocessed data into & use as input_folder for SLURM script
+**2.** In scratch make sure there is a folder with your name and subfolder(s) with ephys/rat info. This is where you will clone the repo to, add unprocessed data into & use as `input_path` for first slurm scripts
 
 ```
 /jukebox/scratch/*your folder*/ephys/*folder for raw data*
@@ -55,12 +55,13 @@ cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
 
-**5.** Open `datrec_to_bin.sh` & edit `input_folder` to be folder with raw data. Additionally, adjust paths in the header for job output/errors & email for job updates.
+**5.** Open `datrec_to_bin.sh` & edit `input_path` to be folder with raw data. Additionally, adjust paths in the header for job output/errors & email for job updates. If you are working with .mda files see step **7**.
+
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
 nano datrec_to_bin.sh
  --- in nano ---
-input_folder="/jukebox/scratch/*your folder*/ephys/*folder with raw data*"
+input_path="/jukebox/scratch/*your folder*/ephys/*folder with raw data*"
 
 !!!also adjust header for your ID!!!
 ```
@@ -69,7 +70,8 @@ slurm notes:
 - 1. this is set to run on a Brody lab partition, remove the --partition line if this does not apply to you
 - 2. rather than running on slurm via sbatch (step 7 below), if the job is small enough, you can allocate a node instead (not great for matlab stuff):
 ```
-tmux new -s DescriptiveSessionName salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash
+tmux new -s DescriptiveSessionName
+salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash
 ```
   - Creates a new shell on the node  with 11 cores & reserves for 11 hours
   - To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
@@ -83,10 +85,10 @@ sbatch datrec_to_bin.sh
 ```
 
 **Function highlights:**
-- 1. cds into input_folder directory and makes an array of file names with .rec or .dat extension
+- 1. cds into input_path and makes an array of file names with .rec or .dat extension
 - 2. Loops over file names and passes each into `pipeline_fork2` to create .mda files
   - a. this function converts .dat and .rec files into .mda files
-- 3. in input_folder with new .mda folders, passes them into `kilosortpipelineforcluster.m` along with the repo name and jobid
+- 3. in input_path with new .mda folders, passes them into `kilosortpipelineforcluster.m` along with the repo name and jobid
   - a. This function adds all needed paths & cds into correct directory before passing .mda folders into `tetrode_32_mdatobin_forcluster.m`
   - b. `tetrode_32_mdatobin_forcluster.m` takes directory of .mda folders, makes a new directory with jobid appended and converts each recording session into .bin files split into 4 groups of 8 tetrodes for each session
 
@@ -96,11 +98,12 @@ sbatch datrec_to_bin.sh
 
 To break up conversion process you can run:
 
-`datrec_to_mda.sh` and `mda_to_bin.sh`
+`datrec_to_mda.sh` and `mda_to_bin.sh` instead once header & `input_path` are changed
+
 
 ### preprocess .bin
 
-**8.** Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before kilosort
+**1.** Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before passing into kilosort
 
 **Function highlights:**
 - 1. takes given `input_path` and `repo_path` and passes them into `kilosort_preprocess_forcluster_wrapper.m`
@@ -111,10 +114,10 @@ To break up conversion process you can run:
   - c. see `kilosort_preprocess.m` for more information on input arguments & adjustments that can be made
 
 **Steps to run (condensed version of steps 5-7 above)**
-- If you've cloned this repo locally already, find its path & skip this step. If you have not, clone the github repo to your local machine. It is likely easiest to clone it to your `input_path` where the .bin files to be processed are.
+- If you've cloned this repo locally already, find its path & skip this step. If you have not, clone the github repo to your local machine. It is easiest to clone it to your `input_path` where the .bin files to be processed are.
 
 ```
-cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/*input_folder*
+cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/*jobid_binfilesforkilosort2*
 git clone https://github.com/jess-breda/Brody_Lab_Ephys
 ```
 
@@ -126,7 +129,82 @@ cd path/to/this/repo
 sbatch kilosort_preprocess_to_sort.sh
 ```
 
-**9.** Go to step ? in local step by step and run `main_kilosort_fx` & onward
+### Run Kilosort on tigerGPU
+
+**1.** Sign into tigerGPU
+```
+ssh yourid@tigergpu
+password
+```
+
+**2.** Create a directory to move your preprocessed data into. For example, the file structure I use is:
+
+`/scratch/gpfs/jbreda/ephys/kilosort/*{session}_Xbundle_TY_WZ_forkilosort*`
+
+**3.** Move preprocessed file(s) from Spock to tigerGPU. Make a tmux screen if you are doing many files & want to close your computer.
+```
+tmux new -s DescriptiveSessionName
+scp -r yourid@spock.princeton.edu:/jukebox/scratch/foldertotransfer yourid@tigergpu.princeton.edu:/scratch/gpfs/foldermadeinstep2```
+```
+
+**4.** Clone repo to this directory
+```
+cd /scratch/gpfs/jbreda/ephys/kilosort
+git clone https://github.com/jess-breda/Brody_Lab_Ephys`
+```
+
+**5.** Initiate the kilosort submodule (pulls their most recent commit)
+```
+cd Brody_Lab_Ephys
+git submodule init
+git submodule update
+```
+
+**6.** Set up mex-cuda-GPU per kilosort [readme](https://github.com/MouseLand/Kilosort2
+  **note**: unsure if this needs to be done each time or is a one time thing. Will get an error "Undefined function or variable 'mexThSpkPC'." if not set up properly
+```
+cd /utils/Kilosort2/CUDA
+module purge
+module load matlab2018b
+mexGPUall.m
+```
+
+**7.** Edit weird spkTh bug.
+
+For whatever reason, the spkTh parameter is overwritten in the code and set much higher than we need (-6 versus -1.5 std)
+
+```
+cd /utils/Kilosort2/mainLoop
+nano learnTemplates.m
+```
+Comment out:
+% spike threshold for finding missed spikes in residuals                                                              
+% ops.spkTh = -6; % why am I overwriting this here?
+
+**8.** Edit config files & channel map if needed
+
+Currently, I am using a channel map for 8 tetrodes that has each tetrode spaced 1000 um from each other to prevent noise templates from being made. It can be found in `Brody_Lab_Ephys/utils/cluster_kilosort/KSchanMap_thousands.mat`
+
+Currently, I am using a config file with `ops.Th = [6 2]`, `ops.lam = 20`, `ops.SpkTh = =1.5`, `ops.CAR = 1`, `ops.fshigh = 300`. Otherwise, all parameters are default. These settings seem to work well for wireless ephys, but can easily be adjusted. Found in: `Brody_Lab_Ephys/utils/cluster_kilosort/StandardConfig_JB_20200803`
+
+**note**: if you edit these files & give them different names, you must go into `main_kilsosort_fx_cluster` and change these names
+
+**7.** Edit paths in `main_kilsosort_fx_cluster`
+
+I've hard coded these because they shouldn't change from run to run but will change form person to person. This is dependent on how you structure your files on tigerGPU. If you have a directory with the structure: `/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys` all you will need to do is change jbreda --> your id
+
+Paths to change:
+- path to kilosort folder
+- path to npy-master
+
+
+
+
+
+
+
+
+
 
 -----------------------
 ### Local step by step:
@@ -254,8 +332,6 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 
 *this function returns:*
 - for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files the `_forkilsort` suffix in X directories within `binfilesforkilsort2`
-
-**cluster stops here**
 
 ### 2. kilosort
 
