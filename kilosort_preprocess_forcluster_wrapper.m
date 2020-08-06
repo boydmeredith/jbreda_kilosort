@@ -13,7 +13,7 @@
 % again into the fx, but can be used from previous path steps
 
 % INPUT PARAMETERS: (hard coded into slurm script)
-% - input_folder = folder containin .bin files to preprocess. will be
+% - input_path = folder containing .bin files to preprocess. will be
 % harded coded into SLURM script
 % - repo_path = path where repo is located. Usually located in the same
 % folder as the raw data from .dat/.rec conversion step

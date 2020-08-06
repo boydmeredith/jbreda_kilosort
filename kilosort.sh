@@ -13,20 +13,20 @@
 
 
 # where the .bin file is
-input_folder="/scratch/gpfs/jbreda/ephys/kilosort/data_sdb_20190724_193007_fromSD_firstbundle_T5_W10000_forkilosort" 
+input_path="/scratch/gpfs/jbreda/ephys/kilosort/data_sdb_20190724_193007_fromSD_firstbundle_T5_W10000_forkilosort" 
 
 # where the Brody_Lab_Ephys repo is
-repo_folder="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys"
+repo_path="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys"
 
 # where the config and channel map info are (inputs to main_kilosort fx)
-config_folder="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys/utils/cluster_kilosort"
+config_path="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys/utils/cluster_kilosort"
  
-cd $config_folder
+cd $config_path
 
 # load matlab
 module purge
 module load matlab/R2018b
 
-# call main kilosort_wrapper
-	matlab -singleCompThread -nosplash -nodisplay -nodesktop -r "main_kilosort_forcluster_wrapper('${input_folder}','${config_folder}','${repo_folder}', 500);exit"
+# call main kilosort_wrapper the 500 = time in seconds where the sorting starts, skipping first chunck bc very noisy
+	matlab -singleCompThread -nosplash -nodisplay -nodesktop -r "main_kilosort_forcluster_wrapper('${input_path}','${config_path}','${repo_path}', 500);exit"
 
