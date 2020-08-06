@@ -10,15 +10,13 @@
 #SBATCH --partition=Brody                    # run on brodylab parition
 
 
-# Step 1: hardcode input and output folders (this assumes you have copied necessary functions to input folder)
+# Step 1: hardcode input path (this assumes you have copied necessary functions to input folder or cloned repo)
 # necessary fx: pipeline_fork2.sh, exportdio, exportmda, sdtorec, trodes.config, readmda, tetrode_32_mdatobin.m
-# input folder needs to have data & functions!!
 
-input_folder="/jukebox/scratch/jbreda/ephys/W122"
-# output_folder="/jukebox/brody/jbreda/ephys"
+input_path="/jukebox/scratch/jbreda/ephys/W122"
 
 # Step 2: in input folder, look for files with .rec and .dat extension, add their names to a list & print to output
-cd $input_folder
+cd $input_path
 files=$( ls *{.dat,.rec})
 echo $files
 

@@ -9,9 +9,12 @@
 #SBATCH --cpus-per-task=11                   # 11 cores requested
 #SBATCH --partition=Brody                    # run on brodylab parition
 
-# pick up from where you left of in previous script & move into repo
-input_folder="/jukebox/scratch/jbreda/ephys/Tyler_FOF"
-cd $input_folder
+# pick up from where you left of in previous script & move into repo to call mda to bin function now 
+# now files are in mda format. Note repo needs to be located in input_path 
+
+input_path="/jukebox/scratch/jbreda/ephys/Tyler_FOF"
+
+cd $input_path
 repo="Brody_Lab_Ephys"
 cd $repo
 pwd
@@ -24,7 +27,7 @@ echo $jobid
 module load matlab/R2019b5
 
 # call kilosortpipelineforcluster
-	matlab -nosplash -nodisplay -nodesktop -r "kilosortpipelineforcluster('${input_folder}','${repo}','${jobid}');exit"
+	matlab -nosplash -nodisplay -nodesktop -r "kilosortpipelineforcluster('${input_path}','${repo}','${jobid}');exit"
 
 
 # echo "Done"
