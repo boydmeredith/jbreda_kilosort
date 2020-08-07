@@ -17,7 +17,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ------------------------------------
 
-# Analysis: Cluster
+# Spike Sorting: Cluster
 
 ## Pre-processing
 
@@ -99,7 +99,7 @@ To break up conversion process you can run:
 **Function highlights:**
 - takes given `input_path` and `repo_path` and passes them into `kilosort_preprocess_forcluster_wrapper.m`
   - this function adds appropriate matlab paths and then calls `kilosort_preprocess_forcluster.m`
-- `kilosort_preprocess_forcluster.m,`
+- `kilosort_preprocess_forcluster.m`
   - iterates over each .bin file in a directory (`input_path`), applies a butterworth  highpass filter and then creates a mask for large amplitude noise and zeros it out
   - for each .bin file, creates a directory with its name and puts preprocessed file in it
   - see `kilosort_preprocess.m` for more information on input arguments & adjustments that can be made
@@ -154,7 +154,7 @@ git submodule update
 ```
 
 **6.** Set up mex-cuda-GPU per kilosort [readme](https://github.com/MouseLand/Kilosort2)
-  **note:** unsure if this needs to be done each time or is a one time thing. Will get an error "Undefined function or variable 'mexThSpkPC'." if not set up properly
+**note:** unsure if this needs to be done each time or is a one time thing. Will get an error "Undefined function or variable 'mexThSpkPC'." if not set up properly
 ```
 cd /utils/Kilosort2/CUDA
 module purge
@@ -213,7 +213,7 @@ sbatch kilosort.sh
 - takes paths outlined above, cds into config_path, loads matlab and then passes information into `main_kilosort_forcluster_wrapper.m` along with the sorting start time
   - start time currently set to 500 seconds to skip noisy file start that gets 0 out in preprocessing
 - wrapper fx adds all the necessary paths and then passes information into `main_kilsort_fx_cluster`
-- main_fx is adapted from `main_kilosort.m` from [Kilosort repo](https://github.com/MouseLand/Kilosort2/blob/master/main_kilosort.m). It takes directory with .bin file, directory with config information and start_time as arguments and then runs Kilosort2
+- main_fx is adapted from `main_kilosort.m` from [Kilosort](https://github.com/MouseLand/Kilosort2/blob/master/main_kilosort.m). It takes directory with .bin file, directory with config information and start_time as arguments and then runs Kilosort2
 - **returns** in `input_path` outputs for [Phy Template GUI](https://github.com/cortex-lab/phy) are generated
 
 optional: git add, commit, push here to document jobid & file(s) sorted
@@ -226,7 +226,7 @@ scp -r yourid@tigergpu.princeton.edu:/input_path yourid@spock.princeton.edu:/juk
 
 -----------------------
 
-# Analysis: Local
+# Spike Sorting: Local
 
 ## Pre-processing
 
