@@ -10,17 +10,8 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ----------------------------------
 # TODO
-- document kilosort_preprocess_forcluster.m.
-  - update local & cluster directions
-  - comment both fx in matlab bc inputs changed
-- kilosort preprocess onto cluster
-  - document
-- kilosort onto tigress (just one job)
-  - document
 - parallelize kilosort on tigress (many jobs)
-- update fx names to be more specific/consistent(?)
 - cluster cut locally on 06-09-2019 bundle
-- change preprocess to take repo_folder rather than repo_name
 ---
 - Post-processing
 
@@ -85,14 +76,14 @@ sbatch datrec_to_bin.sh
 ```
 
 **Function highlights:**
-- 1. cds into input_path and makes an array of file names with .rec or .dat extension
-- 2. Loops over file names and passes each into `pipeline_fork2` to create .mda files
-  - a. this function converts .dat and .rec files into .mda files
-- 3. in input_path with new .mda folders, passes them into `kilosortpipelineforcluster.m` along with the repo name and jobid
-  - a. This function adds all needed paths & cds into correct directory before passing .mda folders into `tetrode_32_mdatobin_forcluster.m`
-  - b. `tetrode_32_mdatobin_forcluster.m` takes directory of .mda folders, makes a new directory with jobid appended and converts each recording session into .bin files split into 4 groups of 8 tetrodes for each session
+- cds into input_path and makes an array of file names with .rec or .dat extension
+- Loops over file names and passes each into `pipeline_fork2` to create .mda files
+  - this function converts .dat and .rec files into .mda files
+- in input_path with new .mda folders, passes them into `kilosortpipelineforcluster.m` along with the repo name and jobid
+  - This function adds all needed paths & cds into correct directory before passing .mda folders into `tetrode_32_mdatobin_forcluster.m`
+  - `tetrode_32_mdatobin_forcluster.m` takes directory of .mda folders, makes a new directory with jobid appended and converts each recording session into .bin files split into 4 groups of 8 tetrodes for each session
 
-- (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records
+- (optional) link your working repo to this directory. Git add, commit & push `kilosort_slurm.sh` with job ID for your records to document what input was for the job
 
 **7.** OPTIONAL .dat and .rec --> .mda or .mda --> .bin bundles
 
@@ -106,12 +97,12 @@ To break up conversion process you can run:
 **1.** Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before passing into kilosort
 
 **Function highlights:**
-- 1. takes given `input_path` and `repo_path` and passes them into `kilosort_preprocess_forcluster_wrapper.m`
-  - a. this function adds appropriate matlab paths and then calls `kilosort_preprocess_forcluster.m`
-- 2. `kilosort_preprocess_forcluster.m,`
-  - a. iterates over each .bin file in a directory (`input_path`), applies a butterworth  highpass filter and then creates a mask for large amplitude noise and zeros it out
-  - b. for each .bin file, creates a directory with its name and puts preprocessed file in it
-  - c. see `kilosort_preprocess.m` for more information on input arguments & adjustments that can be made
+- takes given `input_path` and `repo_path` and passes them into `kilosort_preprocess_forcluster_wrapper.m`
+  - this function adds appropriate matlab paths and then calls `kilosort_preprocess_forcluster.m`
+- `kilosort_preprocess_forcluster.m,`
+  - iterates over each .bin file in a directory (`input_path`), applies a butterworth  highpass filter and then creates a mask for large amplitude noise and zeros it out
+  - for each .bin file, creates a directory with its name and puts preprocessed file in it
+  - see `kilosort_preprocess.m` for more information on input arguments & adjustments that can be made
 
 **Steps to run (condensed version of steps 5-7 above)**
 - If you've cloned this repo locally already, find its path & skip this step. If you have not, clone the github repo to your local machine. It is easiest to clone it to your `input_path` where the .bin files to be processed are.
@@ -131,7 +122,7 @@ sbatch kilosort_preprocess_to_sort.sh
 
 ### Run Kilosort on tigerGPU
 
-**1.** Sign into tigerGPU
+**1.** Sign into tigerGPU. If you're not authorized the OIT cluster fill out this form [here](https://forms.rc.princeton.edu/newsponsor/)
 ```
 ssh yourid@tigergpu
 password
@@ -160,7 +151,7 @@ git submodule init
 git submodule update
 ```
 
-**6.** Set up mex-cuda-GPU per kilosort [readme](https://github.com/MouseLand/Kilosort2
+**6.** Set up mex-cuda-GPU per kilosort [readme](https://github.com/MouseLand/Kilosort2)
   **note**: unsure if this needs to be done each time or is a one time thing. Will get an error "Undefined function or variable 'mexThSpkPC'." if not set up properly
 ```
 cd /utils/Kilosort2/CUDA
@@ -177,25 +168,66 @@ For whatever reason, the spkTh parameter is overwritten in the code and set much
 cd /utils/Kilosort2/mainLoop
 nano learnTemplates.m
 ```
+
 Comment out:
+```
 % spike threshold for finding missed spikes in residuals                                                              
 % ops.spkTh = -6; % why am I overwriting this here?
+```
 
-**8.** Edit config files & channel map if needed
 
-Currently, I am using a channel map for 8 tetrodes that has each tetrode spaced 1000 um from each other to prevent noise templates from being made. It can be found in `Brody_Lab_Ephys/utils/cluster_kilosort/KSchanMap_thousands.mat`
+**8.** Edit config files & channel map (if needed)
 
-Currently, I am using a config file with `ops.Th = [6 2]`, `ops.lam = 20`, `ops.SpkTh = =1.5`, `ops.CAR = 1`, `ops.fshigh = 300`. Otherwise, all parameters are default. These settings seem to work well for wireless ephys, but can easily be adjusted. Found in: `Brody_Lab_Ephys/utils/cluster_kilosort/StandardConfig_JB_20200803`
+Currently, I am using a channel map for 8 tetrodes that has each tetrode spaced 1000 um from each other to prevent noise templates from being made. It can be found in:
+`Brody_Lab_Ephys/utils/cluster_kilosort/KSchanMap_thousands.mat`
 
-**note**: if you edit these files & give them different names, you must go into `main_kilsosort_fx_cluster` and change these names
+Currently, I am using a config file with `ops.Th = [6 2]`, `ops.lam = 20`, `ops.SpkTh = =1.5`, `ops.CAR = 1`, `ops.fshigh = 300`. Otherwise, all parameters are default. These settings seem to work well for wireless ephys, but can easily be adjusted. Found in:
+`Brody_Lab_Ephys/utils/cluster_kilosort/StandardConfig_JB_20200803`
 
-**7.** Edit paths in `main_kilsosort_fx_cluster`
+**note**: if you edit these files & give them different names, you must go into `main_kilsosort_fx_cluster.m` and change these names
 
-I've hard coded these because they shouldn't change from run to run but will change form person to person. This is dependent on how you structure your files on tigerGPU. If you have a directory with the structure: `/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys` all you will need to do is change jbreda --> your id
+**7.** Edit paths in `main_kilsosort_fx_cluster.m`
+
+I've hard coded these because they shouldn't change from run to run but will change form person to person. This is dependent on how you structure your files on tigerGPU. If you have a directory with the structure: `/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys` all you will need to do is change `jbreda` --> `yourid` in the paths provided
 
 Paths to change:
 - path to kilosort folder
 - path to npy-master
+
+
+**8.** Edit `input_path`, `repo_path` and `config_path` in `kilosort.sh` along with header information in preparation for run.
+
+`input_path` = directory that preprocess .bin file is in
+`repo_path` = path to Brody_Lab_Ephys repository
+`config_path` = where your channel map and config file are located
+- **note** the config path also needs to contain `main_kilosort_fx_cluster.m` and `main_kilosort_forcluster_wrapper.m`. They are currently all stored in `/utils/cluster_kilosort`
+
+**9.** Run `kilosort.sh`
+
+```
+cd repo_path
+sbatch kilosort.sh
+```
+**Function highlights:**
+- takes paths outlined above, cds into config_path, loads matlab and then passes information into `main_kilosort_forcluster_wrapper.m` along with the sorting start time
+  - start time currently set to 500 seconds to skip noisy file start that gets 0 out in preprocessing
+- wrapper fx adds all the necessary paths and then passes information into `main_kilsort_fx_cluster`
+- main_fx is adapted from `main_kilosort`. It takes directory with .bin file, directory with config information and start_time as arguments and then runs kilosort2
+- **returns** in `input_path` outputs for [Phy Template GUI](https://github.com/cortex-lab/phy) are generated
+
+optional: git add, commit, push here to document jobid & file sorted
+
+**10.** Move sorted files back to spock/jukebox for manual sorting
+```
+tmux new -s DescriptiveSessionName
+scp -r yourid@tigergpu.princeton.edu:/input_path yourid@spock.princeton.edu:/jukebox/whereyoustore/storedfiles
+```
+
+
+
+
+
+
 
 
 
