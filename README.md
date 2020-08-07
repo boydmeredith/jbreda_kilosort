@@ -17,11 +17,11 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ------------------------------------
 
-# Analysis
+# Analysis Cluster
 
 ## Pre-processing
 
-### Running on Spock:
+### Spock
 
 #### .rec, .dat, .mda --> .bin
 
@@ -35,11 +35,11 @@ password
 ```
 /jukebox/scratch/*your folder*/ephys/*folder for raw data*
 ```
-- note: you will need to get permission access to scratch from pnihelp via Chuck
+- **note:** you will need to get permission access to scratch from pnihelp via Chuck
 
 **3.** Move files you want to process into `/jukebox/scratch/*your folder*/ephys/*folder for raw data*` (**do this on globus!**)
 
-**4.** Clone Brody_lab_ephys git hub repo to your scratch folder
+**4.** Clone Brody_lab_Ephys git hub repo to your scratch folder
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*
@@ -59,13 +59,13 @@ input_path="/jukebox/scratch/*your folder*/ephys/*folder with raw data*"
 
 slurm notes:
 - 1. this is set to run on a Brody lab partition, remove the --partition line if this does not apply to you
-- 2. rather than running on slurm via sbatch (step 7 below), if the job is small enough, you can allocate a node instead (not great for matlab stuff):
+- 2. rather than running on slurm via sbatch (step 7 below), if the job is small enough, you can allocate a node instead:
 ```
 tmux new -s DescriptiveSessionName
 salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash
 ```
   - Creates a new shell on the node  with 11 cores & reserves for 11 hours
-  - To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
+  - To exit screen: `Ctrl` + `b` + `d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
 
 **6.** Run `datrec_to_bin.sh` to convert any .dat, .rec files --> .mda files --> .bin bundles for kilosort
@@ -92,7 +92,7 @@ To break up conversion process you can run:
 `datrec_to_mda.sh` and `mda_to_bin.sh` instead once header & `input_path` are changed
 
 
-### preprocess .bin
+#### preprocess .bin
 
 **1.** Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before passing into kilosort
 
@@ -116,11 +116,13 @@ git clone https://github.com/jess-breda/Brody_Lab_Ephys
 
 - Run
 ```
-cd path/to/this/repo
+cd repo_path
 sbatch kilosort_preprocess_to_sort.sh
 ```
 
-### Run Kilosort on tigerGPU
+## Kilosort 2
+----
+### tigerGPU
 
 **1.** Sign into tigerGPU. If you're not authorized the OIT cluster fill out this form [here](https://forms.rc.princeton.edu/newsponsor/)
 ```
@@ -152,7 +154,7 @@ git submodule update
 ```
 
 **6.** Set up mex-cuda-GPU per kilosort [readme](https://github.com/MouseLand/Kilosort2)
-  **note**: unsure if this needs to be done each time or is a one time thing. Will get an error "Undefined function or variable 'mexThSpkPC'." if not set up properly
+  **note:** unsure if this needs to be done each time or is a one time thing. Will get an error "Undefined function or variable 'mexThSpkPC'." if not set up properly
 ```
 cd /utils/Kilosort2/CUDA
 module purge
@@ -160,7 +162,7 @@ module load matlab2018b
 mexGPUall.m
 ```
 
-**7.** Edit weird spkTh bug.
+**7.** Edit weird spkTh bug
 
 For whatever reason, the spkTh parameter is overwritten in the code and set much higher than we need (-6 versus -1.5 std)
 
@@ -178,31 +180,30 @@ Comment out:
 
 **8.** Edit config files & channel map (if needed)
 
-Currently, I am using a channel map for 8 tetrodes that has each tetrode spaced 1000 um from each other to prevent noise templates from being made. It can be found in:
+Currently (August 2020), I am using a channel map for 8 tetrodes that has each tetrode spaced 1000 um from each other to prevent noise templates from being made. It can be found in:
 `Brody_Lab_Ephys/utils/cluster_kilosort/KSchanMap_thousands.mat`
 
 Currently, I am using a config file with `ops.Th = [6 2]`, `ops.lam = 20`, `ops.SpkTh = =1.5`, `ops.CAR = 1`, `ops.fshigh = 300`. Otherwise, all parameters are default. These settings seem to work well for wireless ephys, but can easily be adjusted. Found in:
 `Brody_Lab_Ephys/utils/cluster_kilosort/StandardConfig_JB_20200803`
 
-**note**: if you edit these files & give them different names, you must go into `main_kilsosort_fx_cluster.m` and change these names
+**note:** if you edit these files & give them different names, you must go into `main_kilsosort_fx_cluster.m` and change these names
 
-**7.** Edit paths in `main_kilsosort_fx_cluster.m`
+**9.** Edit paths in `main_kilsosort_fx_cluster.m`
 
-I've hard coded these because they shouldn't change from run to run but will change form person to person. This is dependent on how you structure your files on tigerGPU. If you have a directory with the structure: `/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys` all you will need to do is change `jbreda` --> `yourid` in the paths provided
+I've hard coded these because they shouldn't change from run to run but will change form person to person. This depends on how you structure your files on tigerGPU. If you have a directory with the structure: `/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys` all you will need to do is change `jbreda` --> `yourid` in the paths provided
 
 Paths to change:
 - path to kilosort folder
 - path to npy-master
 
-
-**8.** Edit `input_path`, `repo_path` and `config_path` in `kilosort.sh` along with header information in preparation for run.
+**10.** Edit `input_path`, `repo_path` and `config_path` in `kilosort.sh` along with header information in preparation for run.
 
 `input_path` = directory that preprocess .bin file is in
 `repo_path` = path to Brody_Lab_Ephys repository
 `config_path` = where your channel map and config file are located
-- **note** the config path also needs to contain `main_kilosort_fx_cluster.m` and `main_kilosort_forcluster_wrapper.m`. They are currently all stored in `/utils/cluster_kilosort`
+- **note:** the config path also needs to contain `main_kilosort_fx_cluster.m` and `main_kilosort_forcluster_wrapper.m`. They are currently all stored in `/utils/cluster_kilosort`, so this only applies if you change the structure of the repository.
 
-**9.** Run `kilosort.sh`
+**11.** Run `kilosort.sh`
 
 ```
 cd repo_path
@@ -212,36 +213,24 @@ sbatch kilosort.sh
 - takes paths outlined above, cds into config_path, loads matlab and then passes information into `main_kilosort_forcluster_wrapper.m` along with the sorting start time
   - start time currently set to 500 seconds to skip noisy file start that gets 0 out in preprocessing
 - wrapper fx adds all the necessary paths and then passes information into `main_kilsort_fx_cluster`
-- main_fx is adapted from `main_kilosort`. It takes directory with .bin file, directory with config information and start_time as arguments and then runs kilosort2
+- main_fx is adapted from `main_kilosort.m` from [Kilosort repo](https://github.com/MouseLand/Kilosort2/blob/master/main_kilosort.m). It takes directory with .bin file, directory with config information and start_time as arguments and then runs Kilosort2
 - **returns** in `input_path` outputs for [Phy Template GUI](https://github.com/cortex-lab/phy) are generated
 
-optional: git add, commit, push here to document jobid & file sorted
+optional: git add, commit, push here to document jobid & file(s) sorted
 
-**10.** Move sorted files back to spock/jukebox for manual sorting
+**12.** Move sorted files back to spock/jukebox for manual sorting in Phy
 ```
 tmux new -s DescriptiveSessionName
 scp -r yourid@tigergpu.princeton.edu:/input_path yourid@spock.princeton.edu:/jukebox/whereyoustore/storedfiles
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 -----------------------
-### Local step by step:
 
-#### Prepare for Kilosort
+# Analysis Local
+
+## Pre-processing
+
+#### .rec, .dat --> .mda
 
 Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions). 1-2 only needed for first time use
 
@@ -251,7 +240,7 @@ Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?tit
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
 
-**2.** Clone Brody_Lab_Ephys github repo into your scratch data folder
+**2.** Clone `Brody_Lab_Ephys` github repo into your scratch data folder
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder for raw data*
@@ -290,7 +279,7 @@ cd  /jukebox/scratch/*your folder*/ephys/*folder with raw data*
 
 tmux new -s <DescriptiveSessionName>
 ```
-To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
+To exit screen: `Ctrl + b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) for more info
 
 **5.** Grab a Brody lab node
 
@@ -300,7 +289,7 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 **6.** Run the pipeline_fork2.sh (pipeline for kilosort 2) `pipeline_fork2 "{session}.dat"` OR `pipeline_fork2 "{session}.rec"`
 
 **overall:** converts .dat or .rec files to .mda files
-  - This is a modified version of pipeline.sh written by Marino
+  - This is a modified version of `pipeline.sh` written by Marino
 
 *this function takes:*
 - a .dat or .rec file in strings
@@ -320,9 +309,9 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
   - `{session}.ntX.referenced` where `X = channel number`
   - they will all be the same size and there will be 32 of them
 
-#### In matlab:
+#### .mda --> .bin bundles
 
-**7.** Run `tetrode_32_mdatobin.m`
+**7.** Run `tetrode_32_mdatobin.m`(once you've pulled files down from jukebox)
 
 **overall:** takes 32 channel .mda files and converts them to 4 .bin files in groups of 8 tetrodes
 
@@ -343,9 +332,9 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 - for each session, 4 .bin files in groups of 8 tetrodes will be created with the naming scheme `{session}_Nbundle.bin`
 - returns to the directory is starts in
 
+#### preprocess .bin
 
 **8.** Run `kilosort_preprocess.m`
-
 
 **overall:** this function takes .bin files, applies a butterworth  highpass filter and then creates a mask for large amplitude noise and zeros it out. Creates a new directory with containing a processed .bin file that can be passed into kilosort
 
@@ -365,48 +354,83 @@ To exit screen: `Ctrl+b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/) 
 *this function returns:*
 - for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files the `_forkilsort` suffix in X directories within `binfilesforkilsort2`
 
-### 2. kilosort
+## Kilosort 2
+
+#### Single Run
 
 **See `utils` folder for kilosort2 git submodule.** I am running functions from `local_kilosort`.
 
-`main_kilosort_fx.m` takes main_kilosort script and turns into function. Takes a path to binary file as input. Assumes that .bin file, config file and channel map are in a directory by themselves. Will populate that directory with kilosort/phy output
+**1.** Initiate the kilosort submodule (pulls their most recent commit)
+```
+cd Brody_Lab_Ephys
+git submodule init
+git submodule update
+```
 
-- I use `8tetrode_channelmap.mat` created by `maketetrodemap.m`
-- Config file is not set, see optimization below
+**2.** Set up mex-cuda-GPU per kilosort [readme](https://github.com/MouseLand/Kilosort2) if not already done
+```
+--in matlab--
+cd /utils/Kilosort2/CUDA
+mexGPUall.m
+```
+
+**3.** Edit weird spkTh bug
+
+For whatever reason, the spkTh parameter is overwritten in the code and set much higher than we need (-6 versus -1.5 std)
+
+```
+--in matlab--
+cd /utils/Kilosort2/mainLoop
+double click --> learnTemplates.m for editing
+```
+
+Comment out:
+```
+% spike threshold for finding missed spikes in residuals                                                              
+% ops.spkTh = -6; % why am I overwriting this here?
+```
+
+**4.** Function notes:
+
+`main_kilosort_fx.m` takes `main_kilosort` script from [Kilosort](https://github.com/jess-breda/Brody_Lab_Ephys/blob/master/utils/cluster_kilosort/main_kilosort_forcluster_wrapper.m) and turns into function. Takes a path to binary file as input. Assumes that .bin file, config file and channel map are in a directory by themselves. Will populate that directory with kilosort/phy output
+
+- Channel map: `KSchanMap_thousands.mat`
+- Config file: `StandardConfig_JB_20200803.m`
+See steps above for more details on these config files & function modifications
 
 #### Parameter Optimization
-These functions were crated to sweep over different kilosort .ops. Can easily be adjusted to work with variety of ops.
 
-**1.** `main_kilosort_fx_sweeps.m`
+These functions were crated to sweep over different Kilosort .ops. Can easily be adjusted to work with variety of ops.
 
-**overall** Takes a .bin path, .config path and parameters being swept over (currently ops.Th, ops.lam, ops.AUCsplit, but subject to change!!) and runs kilosort on them. *NOTE* make sure your parameters being passed in are assigned within the function and commented out in the config file!
+**1.** In `Brody_Lab_Ephys/utils/local_kilsort` you will find `main_kilosort_fx_sweeps.m`
+
+**overall** Takes a .bin path, .config path and parameters being swept over (currently ops.Th, ops.lam, ops.AUCsplit) and runs kilosort on them. *NOTE* make sure your parameters being passed in are assigned within the function and commented out in the config file!
 
 **2.**`kilosort_ops_sweeps.m`
 
-**overall** Iterates over arrays of 3 kilosort parameters (currently ops.Th, ops.lam, ops.AUCsplit, but subject to change!!) and iteratively passes into `main_kilosort_fx_sweeps`.
+**overall** Iterates over arrays of 3 kilosort parameters (currently ops.Th, ops.lam, ops.AUCsplit) and iteratively passes into `main_kilosort_fx_sweeps`.
 
 *To run*
 - create a new directory ex: `{date}_sweeps`
-- in dir, place the kilosort config file (with parameters you're sweeping over commented out!), the channel map you're using and the .bin file you're testing. Add to path.
+- in dir, place the kilosort config file (with parameters you're sweeping over commented out!), the channel map you're using and the .bin file you're testing. Add all to matlab path.
 - Initialize values to test in matlab & then run from `{date}_sweeps` dir. Ex:
 ```
-Thresholds = {[2 3 3] [6 2 2]}
+Thresholds = {[2 3] [6 2]}
 Lams = [4 10 15]
 AUCs = [0.2 0.9]
 
 kilosort_ops_sweeps(Thresholds, Lams, AUCs)
 ```
 - will create a folder for each sweep and populate with kilosort output for Phy
-- folder naming is done based on sweep index. For the example above `sweep_2_3_1` would have `ops.Th = [6 2 2]`, `ops.lam = 15`, and `ops.AUCsplit = 0.2`
+- folder naming is done based on sweep index. For the example above `sweep_2_3_1` would have `ops.Th = [6 2]`, `ops.lam = 15`, and `ops.AUCsplit = 0.2`
+----
 
-**TODO** fill in finalized setting information
-
-### 3. Phy Validation
+# Phy Validation
 
 - run kilosort output in phy and determine valid units
 **expand**
 
-## Post-processing
+# Post-processing
 
 ### Initial Steps
 
