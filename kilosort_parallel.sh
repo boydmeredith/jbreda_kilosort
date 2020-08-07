@@ -6,14 +6,12 @@
 #SBATCH --gres=gpu:1
 #SBATCH --mem=20000          # 20 GB RAM 
 #SBATCH -t 60                # time (minutes)
-#SBATCH -o /scratch/gpfs/jbreda/ephys/kilosort/logs/output_%j.out
-#SBATCH -e /scratch/gpfs/jbreda/ephys/kilosort/logs/error_%j.err
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=jbreda@princeton.edu
+#SBATCH -o /scratch/gpfs/jbreda/ephys/kilosort/logs/output_%a_%j.out
+#SBATCH -e /scratch/gpfs/jbreda/ephys/kilosort/logs/error_%a_%j.err
 
 
-# where the .bin file is
-input_path="/scratch/gpfs/jbreda/ephys/kilosort/data_sdb_20190724_193007_fromSD_firstbundle_T5_W10000_forkilosort" 
+# where the directorys containing .bin files are 
+input_folders="/scratch/gpfs/jbreda/ephys/kilosort/kilosort_array_test" 
 
 # where the Brody_Lab_Ephys repo is
 repo_path="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys"
@@ -21,6 +19,17 @@ repo_path="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys"
 # where the config and channel map info are (inputs to main_kilosort fx)
 config_path="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys/utils/cluster_kilosort"
  
+# step 1: get list of all directories & array index
+
+echo "Array Index: $SLURM_ARRAY_TASK_ID"
+
+cd $input_folders
+bin_folders=`ls -d */`
+bin_folders_arr=($bin_folders)
+
+# need to find a way to make a full file path from list and base input_folders and then pass that into next fx
+
+
 cd $config_path
 
 # load matlab
