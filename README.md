@@ -17,7 +17,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ------------------------------------
 
-# Analysis Cluster
+# Analysis: Cluster
 
 ## Pre-processing
 
@@ -226,7 +226,7 @@ scp -r yourid@tigergpu.princeton.edu:/input_path yourid@spock.princeton.edu:/juk
 
 -----------------------
 
-# Analysis Local
+# Analysis: Local
 
 ## Pre-processing
 
