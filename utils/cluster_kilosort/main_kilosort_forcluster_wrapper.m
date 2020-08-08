@@ -28,27 +28,23 @@
 %('${input_folder}','${config_folder}','${repo_folder}');exit"
 % ---------------------
 %%
-function main_kilosort_forcluster_wrapper(job_folder, input_folders, config_folder, repo_folder, start_time)
+function main_kilosort_forcluster_wrapper(input_path, config_path, repo_path, start_time)
 
 % printing test for cluster
-fprintf(input_folders)
-fprintf(config_folder)
-fprintf(repo_folder)
-fprintf(job_folder)
+fprintf(input_path)
+fprintf(config_path)
+fprintf(repo_path)
 
-
-% generate folder to process
-(fullfile(input_folders, delim, job_folder)))
 
 % add paths
-addpath(input_folder); %where bin file is
-repo_and_subfolders = genpath(repo_folder); %where everything else is (including config files)
+addpath(input_path); %where bin file is
+repo_and_subfolders = genpath(repo_path); %where everything else is (including config files)
 addpath(repo_and_subfolders);
 
 
-% disp('Passing into Kilosort')
-% % call main_kilosort_fx
-% main_kilosort_fx_cluster(input_folder, config_folder, start_time)
-% disp('Kilosort Completed Successfully')
+disp('Passing into Kilosort')
+% call main_kilosort_fx
+main_kilosort_fx_cluster(input_path, config_path, start_time)
+disp('Kilosort Completed Successfully')
 
 end
