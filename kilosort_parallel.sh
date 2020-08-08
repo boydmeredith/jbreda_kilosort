@@ -11,7 +11,7 @@
 
 
 # where the directorys containing .bin files are 
-input_folders="/scratch/gpfs/jbreda/ephys/kilosort/kilosort_array_test" 
+input_base_path="/scratch/gpfs/jbreda/ephys/kilosort/kilosort_array_test" 
 
 # where the Brody_Lab_Ephys repo is
 repo_path="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys"
@@ -23,11 +23,12 @@ config_path="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys/utils/cluster_k
 
 echo "Array Index: $SLURM_ARRAY_TASK_ID"
 
-cd $input_folders
+cd $input_base_path
 bin_folders=`ls -d */`
 bin_folders_arr=($bin_folders)
+arr=$SLURM_ARRAY_TASK_ID
 
-# need to find a way to make a full file path from list and base input_folders and then pass that into next fx
+# step 2: pass a bin folder in using array task id to kilosort
 
 
 cd $config_path
@@ -37,5 +38,5 @@ module purge
 module load matlab/R2018b
 
 # call main kilosort_wrapper the 500 = time in seconds where the sorting starts, skipping first chunck bc very noisy
-	matlab -singleCompThread -nosplash -nodisplay -nodesktop -r "main_kilosort_forcluster_wrapper('${input_path}','${config_path}','${repo_path}', 500);exit"
+	matlab -singleCompThread -nosplash -nodisplay -nodesktop -r "main_kilosort_forcluster_parallel_wrapper('${bin_folders_arr[${arr}]}','${input_base_path}','${config_path}','${repo_path}', 500);exit"
 
