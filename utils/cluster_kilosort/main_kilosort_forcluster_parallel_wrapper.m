@@ -31,10 +31,10 @@
 function main_kilosort_forcluster_parallel_wrapper(job_folder, input_base_path, config_path, repo_path, start_time)
 
 % printing test for cluster
-fprintf(input_base_path)
-fprintf(config_path)
-fprintf(repo_path)
-fprintf(job_folder)
+% fprintf(input_base_path)
+% fprintf(config_path)
+% fprintf(repo_path)
+% fprintf(job_folder)
 
 
 % generate folder to process
