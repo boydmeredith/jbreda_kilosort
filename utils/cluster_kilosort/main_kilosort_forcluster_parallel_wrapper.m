@@ -56,7 +56,7 @@ addpath(repo_and_subfolders);
 
 disp('Passing into Kilosort')
 % call main_kilosort_fx
-main_kilosort_fx_cluster(input_folder, config_folder, start_time)
+main_kilosort_fx_cluster(input_path, config_path, start_time)
 disp('Kilosort Completed Successfully')
 
 end
