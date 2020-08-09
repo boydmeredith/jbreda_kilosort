@@ -54,9 +54,9 @@ repo_and_subfolders = genpath(repo_path); %where everything else is (including c
 addpath(repo_and_subfolders);
 
 
-% disp('Passing into Kilosort')
-% % call main_kilosort_fx
-% main_kilosort_fx_cluster(input_folder, config_folder, start_time)
-% disp('Kilosort Completed Successfully')
+disp('Passing into Kilosort')
+% call main_kilosort_fx
+main_kilosort_fx_cluster(input_folder, config_folder, start_time)
+disp('Kilosort Completed Successfully')
 
 end
