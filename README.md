@@ -124,6 +124,8 @@ sbatch kilosort_preprocess_to_sort.sh
 ----
 ### tigerGPU
 
+#### Single File
+
 **1.** Sign into tigerGPU. If you're not authorized the OIT cluster fill out this form [here](https://forms.rc.princeton.edu/newsponsor/)
 ```
 ssh yourid@tigergpu
@@ -224,6 +226,58 @@ tmux new -s DescriptiveSessionName
 scp -r yourid@tigergpu.princeton.edu:/input_path yourid@spock.princeton.edu:/jukebox/whereyoustore/storedfiles
 ```
 
+#### Many files
+
+**1.** Sign into tigerGPU. If you're not authorized the OIT cluster fill out this form [here](https://forms.rc.princeton.edu/newsponsor/)
+```
+ssh yourid@tigergpu
+password
+```
+
+**2.** Create a directory to move your preprocessed data into. For example, the file structure I use is:
+
+`/scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*`
+
+**3.** In a second window, sign into Spock and navigate to where your preprocessed files are located. ***I am assuming the structure I outlined above is being used*** Where a `binfilesforkilsort2_jobid` folder contains raw .bin bundle files and, for each file, a directory containing preprocessed file with `_forkilosort` label.
+
+```
+ssh yourid@spock
+password
+
+cd /jukebox/scratch/jbreda/ephys/Rat_Name/binfilesforkilsort2_jobid
+```
+
+**4.** Make a new directory, move **only** preprocessed files into this directory.
+
+We are doing this so we can copy only these files to tigerGPU
+
+```
+mkdir preprocessed_Rat_Name_jobid
+cd preprocsessed_Rat_Name_jobid
+
+# only move contents that have _forkilosort in name
+mv /scratch/jbreda/ephys/Rat_Name/binfilesforkilsort2_jobid/*_forkilosort .
+```
+
+**5** Transfer preprocessed files to TigerGPU
+
+```
+tmux new -s transfer
+scp -r jbreda@spock.princeton.edu:/jukebox/scratch/jbreda/ephys/Rat_Name/binfilesforkilosort2_jobid/preprocessed_Rat_Name_jobid jbreda@tigergpu.princeton.edu:/scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*
+ ```
+**6.** Find length of number of .bin files you want to process (optional)
+
+You could run the array job from 0 to a large number, but it's nice to know how many should be run and run +1 of that
+
+```
+---In TigerGPU---
+cd /scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*
+bin_folders=`ls -d */`
+bin_folders_arr=($bin_folders)
+echo ${#bin_folders_arr[@]}
+```
+
+***Assuming steps 4-7 in "Single File" directions have been completed. If not, complete them now***
 -----------------------
 
 # Spike Sorting: Local
