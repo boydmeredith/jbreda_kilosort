@@ -247,30 +247,42 @@ password
 cd /jukebox/scratch/jbreda/ephys/Rat_Name/binfilesforkilsort2_jobid
 ```
 
-**4.** Make a new directory, move **only** preprocessed files into this directory.
+**4.** Make a new directory, move **only** preprocessed files into this directory. Check the size & request more quota on tigerGPU if needed
 
 We are doing this so we can copy only these files to tigerGPU
 
 ```
+--- in Spock ---
 mkdir preprocessed_Rat_Name_jobid
 cd preprocsessed_Rat_Name_jobid
 
 # only move contents that have _forkilosort in name
 mv /scratch/jbreda/ephys/Rat_Name/binfilesforkilsort2_jobid/*_forkilosort .
+
+# size check
+du - sh
 ```
+
+```
+--- in tigerGPU ---
+checkquota
+```
+
+If you need more space, submit a request [here](https://forms.rc.princeton.edu/quota/)
 
 **5** Transfer preprocessed files to TigerGPU
 
 ```
+--- In tigerGPU or Spock ---
 tmux new -s transfer
 scp -r jbreda@spock.princeton.edu:/jukebox/scratch/jbreda/ephys/Rat_Name/binfilesforkilosort2_jobid/preprocessed_Rat_Name_jobid jbreda@tigergpu.princeton.edu:/scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*
  ```
 **6.** Find length of number of .bin files you want to process (optional)
 
-You could run the array job from 0 to a large number, but it's nice to know how many should be run and run +1 of that
+You could run the array job from 0 to a large number, but it's nice to know how many should be run and run +1 of that so you don't have a bynch of error logs
 
 ```
----In TigerGPU---
+--- In TigerGPU ---
 cd /scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*
 bin_folders=`ls -d */`
 bin_folders_arr=($bin_folders)
