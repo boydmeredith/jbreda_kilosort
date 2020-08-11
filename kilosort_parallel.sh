@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-socket=1
 #SBATCH --gres=gpu:1
 #SBATCH --mem=10000          # 10 GB RAM 
-#SBATCH -t 20                # time (minutes)
+#SBATCH -t 360                # time (minutes)
 #SBATCH -o /scratch/gpfs/jbreda/ephys/kilosort/W122/logs/output_%a_%j.out
 #SBATCH -e /scratch/gpfs/jbreda/ephys/kilosort/W122/logs/error_%a_%j.err
 
