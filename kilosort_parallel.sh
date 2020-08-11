@@ -4,14 +4,14 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --ntasks-per-socket=1
 #SBATCH --gres=gpu:1
-#SBATCH --mem=20000          # 20 GB RAM 
-#SBATCH -t 60                # time (minutes)
-#SBATCH -o /scratch/gpfs/jbreda/ephys/kilosort/logs/output_%a_%j.out
-#SBATCH -e /scratch/gpfs/jbreda/ephys/kilosort/logs/error_%a_%j.err
+#SBATCH --mem=10000          # 10 GB RAM 
+#SBATCH -t 20                # time (minutes)
+#SBATCH -o /scratch/gpfs/jbreda/ephys/kilosort/W122/logs/output_%a_%j.out
+#SBATCH -e /scratch/gpfs/jbreda/ephys/kilosort/W122/logs/error_%a_%j.err
 
 
 # where the directorys containing .bin files are 
-input_base_path="/scratch/gpfs/jbreda/ephys/kilosort/kilosort_array_test" 
+input_base_path="/scratch/gpfs/jbreda/ephys/kilosort/W122/preprocessed_W122_19523713" 
 
 # where the Brody_Lab_Ephys repo is
 repo_path="/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys"
@@ -29,7 +29,6 @@ bin_folders_arr=($bin_folders)
 arr=$SLURM_ARRAY_TASK_ID
 
 # step 2: pass a bin folder in using array task id to kilosort
-
 
 cd $config_path
 
