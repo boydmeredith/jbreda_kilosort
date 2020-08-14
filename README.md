@@ -22,7 +22,7 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ### Spock
 
-#### .rec, .dat, .mda --> .bin
+_#### .rec, .dat, .mda --> .bin_
 
 **1.** Sign into spock
 ```
@@ -91,7 +91,7 @@ To break up conversion process you can run:
 `datrec_to_mda.sh` and `mda_to_bin.sh` instead once header & `input_path` are changed
 
 
-#### preprocess .bin
+_#### preprocess .bin_
 
 **1.** Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before passing into kilosort
 
@@ -123,7 +123,7 @@ sbatch kilosort_preprocess_to_sort.sh
 ----
 ### tigerGPU
 
-#### Single File
+_#### Single File_
 
 **1.** Sign into tigerGPU. If you're not authorized the OIT cluster fill out this form [here](https://forms.rc.princeton.edu/newsponsor/)
 ```
@@ -178,7 +178,6 @@ Comment out:
 % ops.spkTh = -6; % why am I overwriting this here?
 ```
 
-
 **8.** Edit config files & channel map (if needed)
 
 Currently (August 2020), I am using a channel map for 8 tetrodes that has each tetrode spaced 1000 um from each other to prevent noise templates from being made. It can be found in:
@@ -225,7 +224,7 @@ tmux new -s DescriptiveSessionName
 scp -r yourid@tigergpu.princeton.edu:/input_path yourid@spock.princeton.edu:/jukebox/whereyoustore/storedfiles
 ```
 
-#### Many files
+_#### Many files_
 
 **1.** Sign into tigerGPU. If you're not authorized the OIT cluster fill out this form [here](https://forms.rc.princeton.edu/newsponsor/)
 ```
@@ -285,7 +284,8 @@ scp -r jbreda@spock.princeton.edu:/jukebox/scratch/jbreda/ephys/Rat_Name/binfile
  ```
 
 *Assuming steps 4-9 in "Single File" directions have been completed. If not, complete them now*
-These steps include
+
+These steps include:
 - cloning repo
 - initializing kilosort on a new machine
 - adjusting kilosort parameters/channel map
@@ -301,7 +301,7 @@ cd /scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*/preprocessed_Rat_Name_jobid
 ls | wc -1
 ```
 
-**7.** Edit `input_base_path`, `repo_path` and `config_path` in `kilosort.sh` along with header information in preparation for run.
+**7.** Edit `input_base_path`, `repo_path` and `config_path` in `kilosort_parallel.sh` along with header information in preparation for run.
 
 `input_base_path` = directory containing directories of .bin files to pass into kilosort
 `repo_path` = path to Brody_Lab_Ephys repository
@@ -319,7 +319,7 @@ sbatch --array=0-120 kilosort_parallel.sh
 
 **Function highlights:**
 - given `input_base_path` contains X directories where each directory contains a preprocessed .bin file ready for kilosort, creates a list of each directory in `input_base_path` called `bin_folders_arr`
-- cds into config bath, and passes information into `main_kilosort_forcluster_parallel_wrapper.m`with array task_ID number
+- cds into `config_path`, and passes information into `main_kilosort_forcluster_parallel_wrapper.m` with array task_ID number
   - effectively submitting a separate job for each directory in the base path
   - array ID task number is used to index into directory list to create a full path from the base path
   - start time currently set to 500 seconds to skip noisy file start that gets 0 out in preprocessing
@@ -329,7 +329,7 @@ sbatch --array=0-120 kilosort_parallel.sh
 
 optional: git add, commit, push here to document jobid & file(s) sorted
 
-**12.** Move sorted files & logs back to spock/jukebox for manual sorting in Phy (assumes you store your logs like I do, see **step 2**)
+**9.** Move sorted files & logs back to spock/jukebox for manual sorting in Phy (assumes you store your logs like I do, see **step 2**)
 ```
 tmux new -s DescriptiveSessionName
 scp -r yourid@tigergpu.princeton.edu:/scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name* yourid@spock.princeton.edu:/jukebox/whereyoustore/storedfiles
@@ -342,7 +342,7 @@ scp -r yourid@tigergpu.princeton.edu:/scratch/gpfs/jbreda/ephys/kilosort/*Rat_Na
 
 ## Pre-processing
 
-#### .rec, .dat --> .mda
+_#### .rec, .dat --> .mda_
 
 Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions). 1-2 only needed for first time use
 
@@ -421,7 +421,7 @@ To exit screen: `Ctrl + b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/
   - `{session}.ntX.referenced` where `X = channel number`
   - they will all be the same size and there will be 32 of them
 
-#### .mda --> .bin bundles
+_#### .mda --> .bin bundles_
 
 **7.** Run `tetrode_32_mdatobin.m`(once you've pulled files down from jukebox)
 
@@ -444,7 +444,7 @@ To exit screen: `Ctrl + b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/
 - for each session, 4 .bin files in groups of 8 tetrodes will be created with the naming scheme `{session}_Nbundle.bin`
 - returns to the directory is starts in
 
-#### preprocess .bin
+_#### preprocess .bin_
 
 **8.** Run `kilosort_preprocess.m`
 
@@ -468,7 +468,7 @@ To exit screen: `Ctrl + b + d` See [Tmux cheatsheet](https://tmuxcheatsheet.com/
 
 ## Kilosort 2
 
-#### Single Run
+_#### Single Run_
 
 **See `utils` folder for kilosort2 git submodule.** I am running functions from `local_kilosort`.
 
@@ -510,7 +510,7 @@ Comment out:
 - Config file: `StandardConfig_JB_20200803.m`
 See steps above for more details on these config files & function modifications
 
-- #### Parameter Optimization
+_#### Parameter Optimization_
 
 These functions were crated to sweep over different Kilosort .ops. Can easily be adjusted to work with variety of ops.
 
