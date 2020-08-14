@@ -10,9 +10,8 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ----------------------------------
 # TODO
-- parallelize kilosort on tigress (many jobs)
-- cluster cut locally on 06-09-2019 bundle
----
+- fork into brody lab repo
+- in main_kilosort_forcluster_parallel_wrapper, remove temp_wh.dat to save space after kilosort has run
 - Post-processing
 
 ------------------------------------
@@ -234,11 +233,18 @@ ssh yourid@tigergpu
 password
 ```
 
-**2.** Create a directory to move your preprocessed data into. For example, the file structure I use is:
+**2.** Create a directory to move your preprocessed data & logs into. For example, the file structure I use is:
 
 `/scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*`
 
-**3.** In a second window, sign into Spock and navigate to where your preprocessed files are located. ***I am assuming the structure I outlined above is being used*** Where a `binfilesforkilsort2_jobid` folder contains raw .bin bundle files and, for each file, a directory containing preprocessed file with `_forkilosort` label.
+Because so many jobs are running, I like to easily transfer my logs with my files after kilosort & this is the structure I use:
+
+```
+cd /scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*
+mkdir logs
+```
+
+**3.** In a second window, sign into Spock and navigate to where your preprocessed files are located. ***I am assuming the structure I outlined above is being used*** where a `binfilesforkilsort2_jobid` folder contains raw .bin bundle files and, for each file, a directory containing preprocessed file with `_forkilosort` label.
 
 ```
 ssh yourid@spock
@@ -249,7 +255,7 @@ cd /jukebox/scratch/jbreda/ephys/Rat_Name/binfilesforkilsort2_jobid
 
 **4.** Make a new directory, move **only** preprocessed files into this directory. Check the size & request more quota on tigerGPU if needed
 
-We are doing this so we can copy only these files to tigerGPU
+We are doing this so we can copy only these files to tigerGPU (and then back to jukebox)
 
 ```
 --- in Spock ---
@@ -260,7 +266,7 @@ cd preprocsessed_Rat_Name_jobid
 mv /scratch/jbreda/ephys/Rat_Name/binfilesforkilsort2_jobid/*_forkilosort .
 
 # size check
-du - sh
+du -sh
 ```
 
 ```
@@ -268,28 +274,68 @@ du - sh
 checkquota
 ```
 
-If you need more space, submit a request [here](https://forms.rc.princeton.edu/quota/)
+if `du -sh > checkquota`, submit a request for more space [here](https://forms.rc.princeton.edu/quota/)
 
-**5** Transfer preprocessed files to TigerGPU
+**5.** Transfer preprocessed files to TigerGPU
 
 ```
 --- In tigerGPU or Spock ---
 tmux new -s transfer
 scp -r jbreda@spock.princeton.edu:/jukebox/scratch/jbreda/ephys/Rat_Name/binfilesforkilosort2_jobid/preprocessed_Rat_Name_jobid jbreda@tigergpu.princeton.edu:/scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*
  ```
+
+*Assuming steps 4-9 in "Single File" directions have been completed. If not, complete them now*
+These steps include
+- cloning repo
+- initializing kilosort on a new machine
+- adjusting kilosort parameters/channel map
+- adjusting hard coded input paths in kilosort fxs
+
 **6.** Find length of number of .bin files you want to process (optional)
 
-You could run the array job from 0 to a large number, but it's nice to know how many should be run and run +1 of that so you don't have a bynch of error logs
+You could run the array job from 0 to a large number, but it's nice to know how many should be run and run +1 of that so you don't have an unnecessary amount of logs
 
 ```
 --- In TigerGPU ---
-cd /scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*
-bin_folders=`ls -d */`
-bin_folders_arr=($bin_folders)
-echo ${#bin_folders_arr[@]}
+cd /scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name*/preprocessed_Rat_Name_jobid
+ls | wc -1
 ```
 
-***Assuming steps 4-7 in "Single File" directions have been completed. If not, complete them now***
+**7.** Edit `input_base_path`, `repo_path` and `config_path` in `kilosort.sh` along with header information in preparation for run.
+
+`input_base_path` = directory containing directories of .bin files to pass into kilosort
+`repo_path` = path to Brody_Lab_Ephys repository
+`config_path` = where your channel map and config file are located
+- **note:** the config path also needs to contain `main_kilosort_fx_cluster.m` and `main_kilosort_forcluster_parallel_wrapper.m`. They are currently all stored in `/utils/cluster_kilosort`, so this only applies if you change the structure of the repository.
+
+
+**8.** Run `kilosort_parrallel.sh`
+
+Example with 120 preprocessed directories
+```
+cd repo_path
+sbatch --array=0-120 kilosort_parallel.sh
+```
+
+**Function highlights:**
+- given `input_base_path` contains X directories where each directory contains a preprocessed .bin file ready for kilosort, creates a list of each directory in `input_base_path` called `bin_folders_arr`
+- cds into config bath, and passes information into `main_kilosort_forcluster_parallel_wrapper.m`with array task_ID number
+  - effectively submitting a separate job for each directory in the base path
+  - array ID task number is used to index into directory list to create a full path from the base path
+  - start time currently set to 500 seconds to skip noisy file start that gets 0 out in preprocessing
+- wrapper fx adds all the necessary paths and then passes information into `main_kilsort_fx_cluster`
+- main_fx is adapted from `main_kilosort.m` from [Kilosort](https://github.com/MouseLand/Kilosort2/blob/master/main_kilosort.m). It takes directory with .bin file, directory with config information and start_time as arguments and then runs Kilosort2
+- **returns** in `input_base_path + bin_folders_arr[array_ID]` where `array_ID = {0,1,..X}`, outputs for [Phy Template GUI](https://github.com/cortex-lab/phy) are generated
+
+optional: git add, commit, push here to document jobid & file(s) sorted
+
+**12.** Move sorted files & logs back to spock/jukebox for manual sorting in Phy (assumes you store your logs like I do, see **step 2**)
+```
+tmux new -s DescriptiveSessionName
+scp -r yourid@tigergpu.princeton.edu:/scratch/gpfs/jbreda/ephys/kilosort/*Rat_Name* yourid@spock.princeton.edu:/jukebox/whereyoustore/storedfiles
+```
+
+
 -----------------------
 
 # Spike Sorting: Local
@@ -464,7 +510,7 @@ Comment out:
 - Config file: `StandardConfig_JB_20200803.m`
 See steps above for more details on these config files & function modifications
 
-#### Parameter Optimization
+- #### Parameter Optimization
 
 These functions were crated to sweep over different Kilosort .ops. Can easily be adjusted to work with variety of ops.
 
