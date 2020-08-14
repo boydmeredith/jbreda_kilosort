@@ -10,7 +10,8 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 
 ----------------------------------
 # TODO
-- fork into brody lab repo
+- update all paths to go from Brody_Lab_Ephys --> jbreda_kilosort
+  fork into brody lab repo
 - in main_kilosort_forcluster_parallel_wrapper, remove temp_wh.dat to save space after kilosort has run
 - Post-processing
 
@@ -38,17 +39,17 @@ password
 
 **3.** Move files you want to process into `/jukebox/scratch/*your folder*/ephys/*folder for raw data*` (**do this on globus!**)
 
-**4.** Clone Brody_lab_Ephys git hub repo to your scratch folder
+**4.** Clone jbreda_kilosort git hub repo to your scratch folder
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*
-git clone https://github.com/jess-breda/Brody_Lab_Ephys
+git clone https://github.com/jess-breda/jbreda_kilosort
 ```
 
 **5.** Open `datrec_to_bin.sh` & edit `input_path` to be folder with raw data. Additionally, adjust paths in the header for job output/errors & email for job updates. If you are working with .mda files see step **7**.
 
 ```
-cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
+cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/jbreda_kilosort
 nano datrec_to_bin.sh
  --- in nano ---
 input_path="/jukebox/scratch/*your folder*/ephys/*folder with raw data*"
@@ -70,7 +71,7 @@ salloc -p Brody -t 11:00:00 -c 11 srun -J <DescriptiveJobName> -pty bash
 **6.** Run `datrec_to_bin.sh` to convert any .dat, .rec files --> .mda files --> .bin bundles for kilosort
 
 ```
-cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/Brody_Lab_Ephys
+cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/jbreda_kilosort
 sbatch datrec_to_bin.sh
 ```
 
@@ -108,7 +109,7 @@ _#### preprocess .bin_
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder with raw data*/*jobid_binfilesforkilosort2*
-git clone https://github.com/jess-breda/Brody_Lab_Ephys
+git clone https://github.com/jess-breda/jbreda_kilosort
 ```
 
 - Open `kilosort_preprocess_to_sort.sh` & edit `input_path` such that it is the directory containing .bin files to process. Edit the `repo_path` so that it points to this repo. Additionally, adjust paths in the header for job output/errors & email for job updates.
@@ -144,12 +145,12 @@ scp -r yourid@spock.princeton.edu:/jukebox/scratch/foldertotransfer yourid@tiger
 **4.** Clone repo to this directory
 ```
 cd /scratch/gpfs/jbreda/ephys/kilosort
-git clone https://github.com/jess-breda/Brody_Lab_Ephys`
+git clone https://github.com/jess-breda/jbreda_kilosort`
 ```
 
 **5.** Initiate the kilosort submodule (pulls their most recent commit)
 ```
-cd Brody_Lab_Ephys
+cd jbreda_kilosort
 git submodule init
 git submodule update
 ```
@@ -181,16 +182,16 @@ Comment out:
 **8.** Edit config files & channel map (if needed)
 
 Currently (August 2020), I am using a channel map for 8 tetrodes that has each tetrode spaced 1000 um from each other to prevent noise templates from being made. It can be found in:
-`Brody_Lab_Ephys/utils/cluster_kilosort/KSchanMap_thousands.mat`
+`jbreda_kilosort/utils/cluster_kilosort/KSchanMap_thousands.mat`
 
 Currently, I am using a config file with `ops.Th = [6 2]`, `ops.lam = 20`, `ops.SpkTh = =1.5`, `ops.CAR = 1`, `ops.fshigh = 300`. Otherwise, all parameters are default. These settings seem to work well for wireless ephys, but can easily be adjusted. Found in:
-`Brody_Lab_Ephys/utils/cluster_kilosort/StandardConfig_JB_20200803`
+`jbreda_kilosort/utils/cluster_kilosort/StandardConfig_JB_20200803`
 
 **note:** if you edit these files & give them different names, you must go into `main_kilsosort_fx_cluster.m` and change these names
 
 **9.** Edit paths in `main_kilsosort_fx_cluster.m`
 
-I've hard coded these because they shouldn't change from run to run but will change form person to person. This depends on how you structure your files on tigerGPU. If you have a directory with the structure: `/scratch/gpfs/jbreda/ephys/kilosort/Brody_Lab_Ephys` all you will need to do is change `jbreda` --> `yourid` in the paths provided
+I've hard coded these because they shouldn't change from run to run but will change form person to person. This depends on how you structure your files on tigerGPU. If you have a directory with the structure: `/scratch/gpfs/jbreda/ephys/kilosort/jbreda_kilosort` all you will need to do is change `jbreda` --> `yourid` in the paths provided
 
 Paths to change:
 - path to kilosort folder
@@ -199,7 +200,7 @@ Paths to change:
 **10.** Edit `input_path`, `repo_path` and `config_path` in `kilosort.sh` along with header information in preparation for run.
 
 `input_path` = directory that preprocess .bin file is in
-`repo_path` = path to Brody_Lab_Ephys repository
+`repo_path` = path to jbreda_kilosort repository
 `config_path` = where your channel map and config file are located
 - **note:** the config path also needs to contain `main_kilosort_fx_cluster.m` and `main_kilosort_forcluster_wrapper.m`. They are currently all stored in `/utils/cluster_kilosort`, so this only applies if you change the structure of the repository.
 
@@ -304,7 +305,7 @@ ls | wc -1
 **7.** Edit `input_base_path`, `repo_path` and `config_path` in `kilosort_parallel.sh` along with header information in preparation for run.
 
 `input_base_path` = directory containing directories of .bin files to pass into kilosort
-`repo_path` = path to Brody_Lab_Ephys repository
+`repo_path` = path to jbreda_kilosort repository
 `config_path` = where your channel map and config file are located
 - **note:** the config path also needs to contain `main_kilosort_fx_cluster.m` and `main_kilosort_forcluster_parallel_wrapper.m`. They are currently all stored in `/utils/cluster_kilosort`, so this only applies if you change the structure of the repository.
 
@@ -352,17 +353,17 @@ Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?tit
 - note: you will need to get permission access to scratch from pnihelp via Chuck
 
 
-**2.** Clone `Brody_Lab_Ephys` github repo into your scratch data folder
+**2.** Clone `jbreda_kilosort` github repo into your scratch data folder
 
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder for raw data*
-git clone https://github.com/jess-breda/Brody_Lab_Ephys
+git clone https://github.com/jess-breda/jbreda_kilosort
 ```
 
 Then, copy the trodes config file up out of the repo and into the folder so it is on the same level as the data (this is automatically done if running `kilosort_slurm.sh`). It's okay if it is already there, it will be copied over.
 ```
 cd /jukebox/scratch/*your folder*/ephys/*folder for raw data*
-cp Brody_Lab_Ephys/128_Tetrodes_Sensors_CustomRF.trodesconf .  
+cp jbreda_kilosort/128_Tetrodes_Sensors_CustomRF.trodesconf .  
 ```
 
 Repo function highlights:
@@ -474,7 +475,7 @@ _#### Single Run_
 
 **1.** Initiate the kilosort submodule (pulls their most recent commit)
 ```
-cd Brody_Lab_Ephys
+cd jbreda_kilosort
 git submodule init
 git submodule update
 ```
@@ -504,7 +505,7 @@ Comment out:
 
 **4.** Function notes:
 
-`main_kilosort_fx.m` takes `main_kilosort` script from [Kilosort](https://github.com/jess-breda/Brody_Lab_Ephys/blob/master/utils/cluster_kilosort/main_kilosort_forcluster_wrapper.m) and turns into function. Takes a path to binary file as input. Assumes that .bin file, config file and channel map are in a directory by themselves. Will populate that directory with kilosort/phy output
+`main_kilosort_fx.m` takes `main_kilosort` script from [Kilosort](https://github.com/jess-breda/jbreda_kilosort/blob/master/utils/cluster_kilosort/main_kilosort_forcluster_wrapper.m) and turns into function. Takes a path to binary file as input. Assumes that .bin file, config file and channel map are in a directory by themselves. Will populate that directory with kilosort/phy output
 
 - Channel map: `KSchanMap_thousands.mat`
 - Config file: `StandardConfig_JB_20200803.m`
@@ -514,7 +515,7 @@ _#### Parameter Optimization_
 
 These functions were crated to sweep over different Kilosort .ops. Can easily be adjusted to work with variety of ops.
 
-**1.** In `Brody_Lab_Ephys/utils/local_kilsort` you will find `main_kilosort_fx_sweeps.m`
+**1.** In `jbreda_kilosort/utils/local_kilsort` you will find `main_kilosort_fx_sweeps.m`
 
 **overall** Takes a .bin path, .config path and parameters being swept over (currently ops.Th, ops.lam, ops.AUCsplit) and runs kilosort on them. *NOTE* make sure your parameters being passed in are assigned within the function and commented out in the config file!
 
