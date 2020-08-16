@@ -22,8 +22,8 @@ Recordings from rats performing PWM task with 32 tetrode, 128 channel recordings
 ## Pre-processing
 
 ### Spock
-
-_#### .rec, .dat, .mda --> .bin_
+---
+#### .rec, .dat, .mda --> .bin
 
 **1.** Sign into spock
 ```
@@ -91,8 +91,8 @@ To break up conversion process you can run:
 
 `datrec_to_mda.sh` and `mda_to_bin.sh` instead once header & `input_path` are changed
 
-
-_#### preprocess .bin_
+---
+#### preprocess .bin
 
 **1.** Run `kilosort_preprocess_to_sort.sh` to preprocess .bin files before passing into kilosort
 
@@ -123,8 +123,8 @@ sbatch kilosort_preprocess_to_sort.sh
 ## Kilosort 2
 ----
 ### tigerGPU
-
-_#### Single File_
+---
+#### Single File
 
 **1.** Sign into tigerGPU. If you're not authorized the OIT cluster fill out this form [here](https://forms.rc.princeton.edu/newsponsor/)
 ```
@@ -224,8 +224,8 @@ optional: git add, commit, push here to document jobid & file(s) sorted
 tmux new -s DescriptiveSessionName
 scp -r yourid@tigergpu.princeton.edu:/input_path yourid@spock.princeton.edu:/jukebox/whereyoustore/storedfiles
 ```
-
-_#### Many files_
+---
+#### Many files
 
 **1.** Sign into tigerGPU. If you're not authorized the OIT cluster fill out this form [here](https://forms.rc.princeton.edu/newsponsor/)
 ```
@@ -342,9 +342,8 @@ scp -r yourid@tigergpu.princeton.edu:/scratch/gpfs/jbreda/ephys/kilosort/*Rat_Na
 # Spike Sorting: Local
 
 ## Pre-processing
-
-_#### .rec, .dat --> .mda_
-
+---
+#### .rec, .dat --> .mda
 Steps modified from [here](https://brodylabwiki.princeton.edu/wiki/index.php?title=Internal:Wireless_Ephys_Instructions). 1-2 only needed for first time use
 
 **1.** In scratch make sure there is a folder with your name and subfolder with ephys/rat info. This is where you will run and save your data from/to
@@ -468,8 +467,8 @@ _#### preprocess .bin_
 - for X .bin files in the `binfilesforkilsort2`, X pre-processed .bin files the `_forkilsort` suffix in X directories within `binfilesforkilsort2`
 
 ## Kilosort 2
-
-_#### Single Run_
+---
+#### Single Run
 
 **See `utils` folder for kilosort2 git submodule.** I am running functions from `local_kilosort`.
 
@@ -510,8 +509,8 @@ Comment out:
 - Channel map: `KSchanMap_thousands.mat`
 - Config file: `StandardConfig_JB_20200803.m`
 See steps above for more details on these config files & function modifications
-
-_#### Parameter Optimization_
+---
+#### Parameter Optimization
 
 These functions were crated to sweep over different Kilosort .ops. Can easily be adjusted to work with variety of ops.
 
@@ -549,6 +548,4 @@ kilosort_ops_sweeps(Thresholds, Lams, AUCs)
 
 - bdata integration
 - behavior alignment
-- PSTHs/spike trig avgs/etc. *think on this more later*
-- Running in cluster
-- Combine w/ preprocess & run on tigress
+- PSTHs/spike trig avgs/etc. 
