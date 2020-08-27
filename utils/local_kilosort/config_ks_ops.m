@@ -1,9 +1,19 @@
-%%
-if exist('pathToYourConfigFile','var') & exist('chanMapFile','var')
-ops.chanMap             = fullfile(pathToYourConfigFile, chanMapFile);
-else
-    warn('no variabe pathToYourConfigFile or no variable chanMapFile in workspace. Will set chanMap up later');
+function ops = config_ks_ops(chan_map_fpath)
+% function ops = config_ks_opts(p)
+% sets up the ops struct to pass settings to kilosort
+% takes input struct p containing a field 'chan_map_fpath'
+% which contains the full file path to the channel map
+% if no input is given, it just uses the default created by running p =
+% path_config()
+
+if nargin  < 1
+    chan_map_fpath = '';
 end
+
+ops.trange      = [60 Inf]; % time range to sort (in seconds)
+ops.NchanTOT    = 32; % total number of channels in your recording
+
+ops.chanMap             = fullfile(chan_map_fpath);
 % ops.chanMap = 1:ops.Nchan; % treated as linear probe if no chanMap file
 
 % sample rate
@@ -41,7 +51,7 @@ ops.ThPre = 8;
 % ops.criterionNoiseChannels = 0.01
 
 % CAR filter (because why not at this point)
-ops.CAR = 1
+ops.CAR = 1;
 
 
 %% danger, changing these settings can lead to fatal errors
