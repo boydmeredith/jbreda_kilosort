@@ -27,10 +27,12 @@ ops.FILTERON = 1;
 ops.minfr_goodchannels = 0.1; 
 
 % threshold on projections (like in Kilosort1, can be different for last pass like [10 4])
-ops.Th = [6 2];  
+ops.Th = [10 4];
+% [6 2]; 
+% ---- TB had this as [4 2]  ----- %
 
 % how important is the amplitude penalty (like in Kilosort1, 0 means not used, 10 is average, 50 is a lot) 
-ops.lam = 20;  
+ops.lam = 10; %5;  
 
 % splitting a cluster at the end requires at least this much isolation for each sub-cluster (max = 1)
 ops.AUCsplit = 0.9; 
@@ -45,7 +47,8 @@ ops.momentum = [20 400];
 ops.sigmaMask = 30; 
 
 % threshold crossings for pre-clustering (in PCA projection space)
-ops.ThPre = 8; 
+ops.ThPre = 2; % changing from 8 to 4 to see if this helps kilosort run 
+% ---- TB had this as [2] ----- %
 
 % noise
 % ops.criterionNoiseChannels = 0.01
@@ -64,7 +67,7 @@ ops.GPU                 = 1; % has to be 1, no CPU version yet, sorry
 % ops.Nfilt               = 1024 * 2; % max number of clusters (doubling this JB)
 ops.nfilt_factor        = 4; % max number of clusters per good channel (even temporary ones)
 ops.ntbuff              = 64;    % samples of symmetrical buffer for whitening and spike detection
-ops.NT                  = 64*1024+ ops.ntbuff; % must be multiple of 32 + ntbuff. This is the batch size (try decreasing if out of memory). 
+ops.NT                  = 2*64*1024 + ops.ntbuff; % must be multiple of 32 + ntbuff. This is the batch size (try decreasing if out of memory). 
 ops.whiteningRange      = 32; % number of channels to use for whitening each channel
 ops.nSkipCov            = 25; % compute whitening matrix from every N-th batch
 ops.scaleproc           = 200;   % int16 scaling of whitened data
